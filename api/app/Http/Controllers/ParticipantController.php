@@ -28,7 +28,7 @@ class ParticipantController extends Controller
         return response()->json($participants);
     }
 
-    public function deleteById($id) {
+    public function delete($id) {
         $participant = Participant::find($id);
         $participant->delete();
         return response()->json('Participant deleted successfully');
