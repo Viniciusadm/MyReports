@@ -13,11 +13,11 @@
             <p>{{ report_cuted }}</p>
         </div>
         <div class="report_participants">
-            <p>Participants:</p>
-            <ul v-for="(participant, index) in participants" :key="participant.id">
-                <li v-if="index !== participants.length - 1">{{ participant.person.name }}, </li>
-                <li v-else>{{ participant.person.name }}</li>
-            </ul>
+            <p class="title">Participants:</p>
+            <p class="participant" v-for="(participant, index) in participants" :key="participant.id">
+                <template v-if="index !== participants.length - 1">{{ participant.person.name }}, </template>
+                <template v-else>{{ participant.person.name }}</template>
+            </p>
         </div>
     </div>
 </template>
@@ -56,18 +56,12 @@
             display: flex;
             margin-top: 0.3rem;
 
-            p {
+            > .title {
                 margin-right: 0.5rem;
             }
 
-            ul {
-                list-style: none;
-                padding: 0;
-                display: flex;
-
-                li {
-                    margin-right: 0.5rem;
-                }
+            > .participant {
+                margin-right: 0.5rem;
             }
         }
     }
