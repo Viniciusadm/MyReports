@@ -30,6 +30,7 @@ class ReportController extends Controller
     public function create(Request $request) {
         $this->validate($request, [
             'report' => 'required|string',
+            'humor' => 'required|string',
             'type' => 'required|in:personal,daily',
             'persons_ids' => 'required|array'
         ]);
@@ -38,6 +39,7 @@ class ReportController extends Controller
         $report = new Report();
 
         $report->report = $data['report'];
+        $report->humor = $data['humor'];
         $report->type = $data['type'];
 
         $report->save();
@@ -54,13 +56,15 @@ class ReportController extends Controller
 
     public function updateReport(Request $request, $id) {
         $this->validate($request, [
-            'report' => 'required|string'
+            'report' => 'required|string',
+            'humor' => 'required|string',
         ]);
 
         $data = $request->all();
 
         $report = Report::find($id);
         $report->report = $data['report'];
+        $report->humor = $data['humor'];
         $report->save();
 
         return response()->json($report);
