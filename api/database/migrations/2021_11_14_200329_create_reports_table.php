@@ -16,6 +16,7 @@ class CreateReportsTable extends Migration
         Schema::create('reports', function (Blueprint $table) {
             $table->id();
             $table->text('report');
+            $table->string('humor');
             $table->enum('type', ['personal', 'daily']);
             $table->timestamps();
         });
