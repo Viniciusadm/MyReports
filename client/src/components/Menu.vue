@@ -1,7 +1,7 @@
 <template>
     <nav class="menu">
         <router-link to="/">Página Inicial</router-link>
-        <router-link to="/reports">Registros</router-link>
+        <router-link to="/reports">Relatórios</router-link>
         <router-link to="/people">Pessoas</router-link>
     </nav>
 </template>
