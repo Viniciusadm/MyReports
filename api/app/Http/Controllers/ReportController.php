@@ -30,6 +30,7 @@ class ReportController extends Controller
 
     public function create(Request $request) {
         $this->validate($request, [
+            'title' => 'required|string',
             'report' => 'required|string',
             'humor' => 'required|string',
             'type' => 'required|in:personal,daily',
@@ -39,6 +40,7 @@ class ReportController extends Controller
         $data = $request->all();
         $report = new Report();
 
+        $report->title = $data['title'];
         $report->report = $data['report'];
         $report->humor = $data['humor'];
         $report->type = $data['type'];
@@ -57,6 +59,7 @@ class ReportController extends Controller
 
     public function updateReport(Request $request, $id) {
         $this->validate($request, [
+            'title' => 'required|string',
             'report' => 'required|string',
             'humor' => 'required|string',
         ]);
@@ -64,6 +67,7 @@ class ReportController extends Controller
         $data = $request->all();
 
         $report = Report::find($id);
+        $report->title = $data['title'];
         $report->report = $data['report'];
         $report->humor = $data['humor'];
         $report->save();
