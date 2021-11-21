@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Participant;
 use App\Models\Report;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class ReportController extends Controller
 {
@@ -20,10 +19,10 @@ class ReportController extends Controller
     }
 
     public function getByParticipantId($id) {
-        $reports = DB::select("select reports.id, reports.report
-        from reports, participants
-        where participants.report_id = reports.id
-        and participants.person_id = $id");
+        $reports = Report::select('reports.id', 'reports.report')
+        ->join('participants', 'participants.report_id', '=', 'reports.id')
+        ->where('participants.person_id', $id)
+        ->get();
 
         return response()->json($reports);
     }
