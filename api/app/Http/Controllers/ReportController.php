@@ -9,7 +9,8 @@ use Illuminate\Http\Request;
 class ReportController extends Controller
 {
     public function getAll() {
-        $reports = Report::all();
+        $reports = Report::with('participant.person')
+        ->get();
         return response()->json($reports);
     }
 
