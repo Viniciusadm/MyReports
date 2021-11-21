@@ -69,9 +69,6 @@
 
 <script>
 export default {
-    mounted() {
-        console.log(this.participants);  
-    },
     props: ['title', 'report', 'type', 'humor', 'date', 'participants'],
     computed: {
         report_cuted() {
