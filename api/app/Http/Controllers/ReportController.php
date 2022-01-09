@@ -9,75 +9,152 @@ use Illuminate\Http\Request;
 class ReportController extends Controller
 {
     public function getAll() {
-        $reports = Report::with('participant.person')
-        ->get();
-        return response()->json($reports);
+        try {
+            $reports = Report::with('participant.person')
+            ->get();
+            return response()->json([
+                'status' => 'success',
+                'data' => $reports
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function getById($id) {
-        $report = Report::find($id);
-        return response()->json($report);
+        try {
+            $report = Report::find($id);
+        
+            if (!$report) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Report not found'
+                ], 404);
+            }
+    
+            return response()->json($report);    
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function getByParticipantId($id) {
-        $reports = Report::select('reports.id', 'reports.report')
-        ->join('participants', 'participants.report_id', '=', 'reports.id')
-        ->where('participants.person_id', $id)
-        ->get();
+        try {
+            $reports = Report::select('reports.id', 'reports.report')
+            ->join('participants', 'participants.report_id', '=', 'reports.id')
+            ->where('participants.person_id', $id)
+            ->get();
 
-        return response()->json($reports);
+            return response()->json([
+                'status' => 'success',
+                'data' => $reports
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function create(Request $request) {
-        $this->validate($request, [
-            'title' => 'required|string',
-            'report' => 'required|string',
-            'humor' => 'required|string',
-            'type' => 'required|in:personal,daily',
-            'persons_ids' => 'required|array'
-        ]);
-
-        $data = $request->all();
-        $report = new Report();
-
-        $report->title = $data['title'];
-        $report->report = $data['report'];
-        $report->humor = $data['humor'];
-        $report->type = $data['type'];
-
-        $report->save();
-
-        foreach ($data['persons_ids'] as $person_id) {
-            $participant = new Participant();
-            $participant->report_id = $report->id;
-            $participant->person_id = $person_id;
-            $participant->save();
+        try {
+            $this->validate($request, [
+                'title' => 'required',
+                'report' => 'required',
+                'humor' => 'required',
+                'type' => 'required|in:personal,daily',
+                'persons_ids' => 'required|array'
+            ]);
+    
+            $data = $request->all();
+            $report = new Report();
+            
+            $report->title = $data['title'];
+            $report->report = $data['report'];
+            $report->humor = $data['humor'];
+            $report->type = $data['type'];
+    
+            $report->save();
+    
+            foreach ($data['persons_ids'] as $person_id) {
+                $participant = new Participant();
+                $participant->report_id = $report->id;
+                $participant->person_id = $person_id;
+                $participant->save();
+            }
+    
+            return response()->json([
+                'status' => 'success',
+                'report' => $report
+            ], 201);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 400);
         }
-
-        return response()->json($report);
     }
 
     public function updateReport(Request $request, $id) {
-        $this->validate($request, [
-            'title' => 'required|string',
-            'report' => 'required|string',
-            'humor' => 'required|string',
-        ]);
+        try {
+            $this->validate($request, [
+                'title' => 'required',
+                'report' => 'required',
+                'humor' => 'required',
+            ]);
+    
+            $data = $request->all();
+    
+            $report = Report::find($id);
 
-        $data = $request->all();
+            if (!$report) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Report not found'
+                ], 404);
+            }
 
-        $report = Report::find($id);
-        $report->title = $data['title'];
-        $report->report = $data['report'];
-        $report->humor = $data['humor'];
-        $report->save();
-
-        return response()->json($report);
+            $report->title = $data['title'];
+            $report->report = $data['report'];
+            $report->humor = $data['humor'];
+            $report->save();
+    
+            return response()->json($report);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function delete($id) {
-        $report = Report::find($id);
-        $report->delete();
-        return response()->json('Report deleted successfully');
+        try {
+            $report = Report::find($id);
+
+            if (!$report) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Report not found'
+                ], 404);
+            }
+
+            $report->delete();
+            return response()->json('Report deleted successfully');    
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 }
