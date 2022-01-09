@@ -12,11 +12,11 @@
         <div class="report_body">
             <p>{{ report_cuted }}</p>
         </div>
-        <div class="report_participants">
-            <p class="title">Participants:</p>
-            <p class="participant" v-for="(participant, index) in participants" :key="participant.id">
-                <template v-if="index !== participants.length - 1">{{ participant.person.name }}, </template>
-                <template v-else>{{ participant.person.name }}</template>
+        <div class="report_people">
+            <p class="title">Pessoas:</p>
+            <p class="person" v-for="(person, index) in people" :key="person.id">
+                <template v-if="index !== people.length - 1">{{ person.name }}, </template>
+                <template v-else>{{ person.name }}</template>
             </p>
         </div>
     </div>
@@ -51,7 +51,7 @@
             width: 95%;
         }
 
-        &_participants {
+        &_people {
             width: 95%;
             display: flex;
             margin-top: 0.3rem;
@@ -60,7 +60,7 @@
                 margin-right: 0.5rem;
             }
 
-            .participant {
+            .person {
                 margin-right: 0.5rem;
             }
         }
@@ -69,7 +69,7 @@
 
 <script>
 export default {
-    props: ['title', 'report', 'type', 'humor', 'date', 'participants'],
+    props: ['title', 'report', 'type', 'humor', 'date', 'people'],
     computed: {
         report_cuted() {
             if (this.report.length > 100) {

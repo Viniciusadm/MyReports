@@ -8,7 +8,7 @@
         :humor="report.humor"
         :date="report.created_at"
         :type="report.type"
-        :participants="report.participant"
+        :people="report.people"
         ></Report>
     </div>
 </template>
@@ -23,7 +23,8 @@
 </style>
 
 <script>
-import Report from '../../components/Report.vue'
+import Report from '../../components/Report.vue';
+import api from '../../services/api';
 
 export default {
     components: {
@@ -36,11 +37,14 @@ export default {
     },
     methods: {
         getReports() {
-            fetch('http://localhost:8000/api/reports')
-                .then(response => response.json())
-                .then(json => {
-                    this.reports = json
-                })
+            api.get('/reports')
+            .then(response => {
+                if (response.status === 200) {
+                    this.reports = response.data.data;
+                } else {
+                    console.log(response.data.message);
+                }
+            })
         }
     },
     mounted() {

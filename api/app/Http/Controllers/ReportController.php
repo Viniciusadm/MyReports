@@ -13,17 +13,15 @@ class ReportController extends Controller
             $reports = Report::get();
 
             foreach($reports as $report) {
-                $report->person = Person::whereIn('id', json_decode($report->persons_ids))->get();
+                $report->people = Person::whereIn('id', json_decode($report->persons_ids))->get();
             }
 
             return response()->json([
-                'status' => 'success',
                 'data' => $reports
             ], 200);
 
         } catch (\Exception $e) {
             return response()->json([
-                'status' => 'error',
                 'message' => $e->getMessage()
             ], 500);
         }
@@ -33,19 +31,20 @@ class ReportController extends Controller
         try {
             $report = Report::find($id);
             
-            $report->persons = Person::whereIn('id', json_decode($report->persons_ids))->get();
-
             if (!$report) {
                 return response()->json([
-                    'status' => 'error',
                     'message' => 'Report not found'
                 ], 404);
             }
+
+            $report->people = Person::whereIn('id', json_decode($report->persons_ids))->get();
     
-            return response()->json($report);    
+            return response()->json([
+                'data' => $report
+            ], 200);
+
         } catch (\Exception $e) {
             return response()->json([
-                'status' => 'error',
                 'message' => $e->getMessage()
             ], 500);
         }
@@ -60,17 +59,15 @@ class ReportController extends Controller
             ->get();
 
             foreach($reports as $report) {
-                $report->person = Person::whereIn('id', json_decode($report->persons_ids))->get();
+                $report->people = Person::whereIn('id', json_decode($report->persons_ids))->get();
             }
 
             return response()->json([
-                'status' => 'success',
                 'data' => $reports
             ], 200);
 
         } catch (\Exception $e) {
             return response()->json([
-                'status' => 'error',
                 'message' => $e->getMessage()
             ], 500);
         }
@@ -98,13 +95,11 @@ class ReportController extends Controller
             $report->save();
     
             return response()->json([
-                'status' => 'success',
-                'report' => $report
+                'data' => $report
             ], 201);
             
         } catch (\Exception $e) {
             return response()->json([
-                'status' => 'error',
                 'message' => $e->getMessage()
             ], 400);
         }
@@ -124,7 +119,6 @@ class ReportController extends Controller
 
             if (!$report) {
                 return response()->json([
-                    'status' => 'error',
                     'message' => 'Report not found'
                 ], 404);
             }
@@ -137,7 +131,6 @@ class ReportController extends Controller
             return response()->json($report);
         } catch (\Exception $e) {
             return response()->json([
-                'status' => 'error',
                 'message' => $e->getMessage()
             ], 500);
         }
@@ -149,7 +142,6 @@ class ReportController extends Controller
 
             if (!$report) {
                 return response()->json([
-                    'status' => 'error',
                     'message' => 'Report not found'
                 ], 404);
             }
@@ -158,7 +150,6 @@ class ReportController extends Controller
             return response()->json('Report deleted successfully');    
         } catch (\Exception $e) {
             return response()->json([
-                'status' => 'error',
                 'message' => $e->getMessage()
             ], 500);
         }
