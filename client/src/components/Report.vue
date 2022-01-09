@@ -1,13 +1,13 @@
 <template>
     <div class="report">
         <div class="report_header">
-            <p class="title">{{ title }}</p>
-            <p class="hyphen">-</p>
-            <p class="humor">{{ humor }}</p>
-            <p class="hyphen">-</p>
-            <p class="type">{{ type_formatted }}</p>
-            <p class="hyphen">-</p>
-            <p class="date">{{ date_formatted }}</p>
+            <span class="title">{{ title }}</span>
+            <span class="hyphen">-</span>
+            <span class="humor">{{ humor }}</span>
+            <span class="hyphen">-</span>
+            <span class="type">{{ type_formatted }}</span>
+            <span class="hyphen">-</span>
+            <span class="date">{{ date_formatted }}</span>
         </div>
         <div class="report_body">
             <p>{{ report_cuted }}</p>
@@ -56,11 +56,11 @@
             display: flex;
             margin-top: 0.3rem;
 
-            > .title {
+            .title {
                 margin-right: 0.5rem;
             }
 
-            > .participant {
+            .participant {
                 margin-right: 0.5rem;
             }
         }
@@ -72,7 +72,11 @@ export default {
     props: ['title', 'report', 'type', 'humor', 'date', 'participants'],
     computed: {
         report_cuted() {
-            return this.report.substring(0, 300) + '...'
+            if (this.report.length > 100) {
+                return this.report.slice(0, 100) + '...';
+            } else {
+                return this.report;
+            }
         },
         date_formatted() {
             return this.date.split('T')[0].split('-').reverse().join('/')
