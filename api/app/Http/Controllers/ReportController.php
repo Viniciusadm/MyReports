@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Participant;
+use App\Models\Person;
 use App\Models\Report;
 use Illuminate\Http\Request;
 
@@ -10,12 +10,17 @@ class ReportController extends Controller
 {
     public function getAll() {
         try {
-            $reports = Report::with('participant.person')
-            ->get();
+            $reports = Report::get();
+
+            foreach($reports as $report) {
+                $report->person = Person::whereIn('id', json_decode($report->persons_ids))->get();
+            }
+
             return response()->json([
                 'status' => 'success',
                 'data' => $reports
             ], 200);
+
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -27,7 +32,9 @@ class ReportController extends Controller
     public function getById($id) {
         try {
             $report = Report::find($id);
-        
+            
+            $report->persons = Person::whereIn('id', json_decode($report->persons_ids))->get();
+
             if (!$report) {
                 return response()->json([
                     'status' => 'error',
@@ -44,12 +51,17 @@ class ReportController extends Controller
         }
     }
 
-    public function getByParticipantId($id) {
+    public function getByPersonId($id) {
         try {
-            $reports = Report::select('reports.id', 'reports.report')
-            ->join('participants', 'participants.report_id', '=', 'reports.id')
-            ->where('participants.person_id', $id)
+            $reports = Report::where('persons_ids', 'like', '%[' . $id . ']%')
+            ->orWhere('persons_ids', 'like', '%,' . $id . ']%')
+            ->orWhere('persons_ids', 'like', '%[' . $id . ',%')
+            ->orWhere('persons_ids', 'like', '%,' . $id . ',%')
             ->get();
+
+            foreach($reports as $report) {
+                $report->person = Person::whereIn('id', json_decode($report->persons_ids))->get();
+            }
 
             return response()->json([
                 'status' => 'success',
@@ -81,15 +93,9 @@ class ReportController extends Controller
             $report->report = $data['report'];
             $report->humor = $data['humor'];
             $report->type = $data['type'];
-    
+            $report->persons_ids = json_encode($data['persons_ids']);
+
             $report->save();
-    
-            foreach ($data['persons_ids'] as $person_id) {
-                $participant = new Participant();
-                $participant->report_id = $report->id;
-                $participant->person_id = $person_id;
-                $participant->save();
-            }
     
             return response()->json([
                 'status' => 'success',

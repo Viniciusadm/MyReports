@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\ParticipantController;
 use App\Http\Controllers\PersonController;
 use App\Http\Controllers\ReportController;
 use Illuminate\Http\Request;
@@ -28,16 +27,7 @@ Route::prefix('reports')->group(function () {
     Route::delete('{id}', [ReportController::class, 'delete']);
     Route::patch('{id}', [ReportController::class, 'updateReport']);
 
-    Route::get('participant/{id}', [ReportController::class, 'getByParticipantId']);
-});
-
-Route::prefix('participants')->group(function () {
-    Route::get('/', [ParticipantController::class, 'getAll']);
-    Route::get('{id}', [ParticipantController::class, 'getById']);
-    Route::delete('{id}', [ParticipantController::class, 'delete']);
-    Route::post('{id}', [ParticipantController::class, 'createByIdReport']);
-    
-    Route::get('report/{id}', [ParticipantController::class, 'getByIdReport']);
+    Route::get('person/{id}', [ReportController::class, 'getByPersonId']);
 });
 
 Route::prefix('people')->group(function () {

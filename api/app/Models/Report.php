@@ -8,9 +8,4 @@ use Illuminate\Database\Eloquent\Model;
 class Report extends Model
 {
     use HasFactory;
-
-    public function participant()
-    {
-        return $this->hasMany(Participant::class);
-    }
 }
