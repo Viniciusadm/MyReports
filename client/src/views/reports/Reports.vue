@@ -23,7 +23,7 @@
 </style>
 
 <script>
-import Report from '../components/Report.vue'
+import Report from '../../components/Report.vue'
 
 export default {
     components: {
