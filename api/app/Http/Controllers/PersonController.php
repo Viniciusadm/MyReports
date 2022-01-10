@@ -8,8 +8,36 @@ use Illuminate\Http\Request;
 class PersonController extends Controller
 {
     public function getAll() {
-        $people = Person::all();
-        return response()->json($people);
+        try {
+            $people = Person::all()
+            ->sortBy('name');
+    
+            return response()->json($people, 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function search() {
+        try {
+            if (request('q') == null) {
+                return response()->json('', 200);
+            }
+
+            $people = Person::select('id', 'name')
+            ->where('name', 'like', '%' . request('q') . '%')
+            ->take(5)
+            ->get();
+            
+            return response()->json($people, 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function getById($id) {

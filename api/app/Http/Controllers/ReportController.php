@@ -16,9 +16,7 @@ class ReportController extends Controller
                 $report->people = Person::whereIn('id', json_decode($report->persons_ids))->get();
             }
 
-            return response()->json([
-                'data' => $reports
-            ], 200);
+            return response()->json($reports, 200);
 
         } catch (\Exception $e) {
             return response()->json([
@@ -39,9 +37,7 @@ class ReportController extends Controller
 
             $report->people = Person::whereIn('id', json_decode($report->persons_ids))->get();
     
-            return response()->json([
-                'data' => $report
-            ], 200);
+            return response()->json($report, 200);
 
         } catch (\Exception $e) {
             return response()->json([
@@ -62,9 +58,7 @@ class ReportController extends Controller
                 $report->people = Person::whereIn('id', json_decode($report->persons_ids))->get();
             }
 
-            return response()->json([
-                'data' => $reports
-            ], 200);
+            return response()->json($reports, 200);
 
         } catch (\Exception $e) {
             return response()->json([
@@ -94,9 +88,7 @@ class ReportController extends Controller
 
             $report->save();
     
-            return response()->json([
-                'data' => $report
-            ], 201);
+            return response()->json($report, 201);
             
         } catch (\Exception $e) {
             return response()->json([
@@ -129,6 +121,7 @@ class ReportController extends Controller
             $report->save();
     
             return response()->json($report);
+
         } catch (\Exception $e) {
             return response()->json([
                 'message' => $e->getMessage()
@@ -147,7 +140,10 @@ class ReportController extends Controller
             }
 
             $report->delete();
-            return response()->json('Report deleted successfully');    
+            return response()->json([
+                'message' => 'Report deleted'
+            ], 200);
+
         } catch (\Exception $e) {
             return response()->json([
                 'message' => $e->getMessage()

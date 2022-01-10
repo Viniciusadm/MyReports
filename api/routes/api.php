@@ -32,6 +32,7 @@ Route::prefix('reports')->group(function () {
 
 Route::prefix('people')->group(function () {
     Route::get('/', [PersonController::class, 'getAll']);
+    Route::get('/search', [PersonController::class, 'search']);
     Route::get('{id}', [PersonController::class, 'getById']);
     Route::post('/', [PersonController::class, 'create']);
     Route::delete('{id}', [PersonController::class, 'delete']);
