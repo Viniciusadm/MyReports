@@ -9,7 +9,12 @@ class Person extends Model
 {
     use HasFactory;
 
-    public function participant() {
-        return $this->hasMany(Participant::class);
-    }
+    protected $fillable = [
+        'name',
+        'birth_date',
+        'email',
+        'phone',
+        'address',
+        'description'
+    ];
 }

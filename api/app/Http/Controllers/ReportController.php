@@ -4,11 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Person;
 use App\Models\Report;
+use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class ReportController extends Controller
 {
-    public function getAll() {
+    public function getAll(): JsonResponse
+    {
         try {
             $reports = Report::get();
 
@@ -16,19 +19,20 @@ class ReportController extends Controller
                 $report->people = Person::whereIn('id', json_decode($report->persons_ids))->get();
             }
 
-            return response()->json($reports, 200);
+            return response()->json($reports);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json([
                 'message' => $e->getMessage()
             ], 500);
         }
     }
 
-    public function getById($id) {
+    public function getById($id): JsonResponse
+    {
         try {
             $report = Report::find($id);
-            
+
             if (!$report) {
                 return response()->json([
                     'message' => 'Report not found'
@@ -36,17 +40,18 @@ class ReportController extends Controller
             }
 
             $report->people = Person::whereIn('id', json_decode($report->persons_ids))->get();
-    
-            return response()->json($report, 200);
 
-        } catch (\Exception $e) {
+            return response()->json($report);
+
+        } catch (Exception $e) {
             return response()->json([
                 'message' => $e->getMessage()
             ], 500);
         }
     }
 
-    public function getByPersonId($id) {
+    public function getByPersonId($id): JsonResponse
+    {
         try {
             $reports = Report::where('persons_ids', 'like', '%[' . $id . ']%')
             ->orWhere('persons_ids', 'like', '%,' . $id . ']%')
@@ -58,16 +63,17 @@ class ReportController extends Controller
                 $report->people = Person::whereIn('id', json_decode($report->persons_ids))->get();
             }
 
-            return response()->json($reports, 200);
+            return response()->json($reports);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json([
                 'message' => $e->getMessage()
             ], 500);
         }
     }
 
-    public function create(Request $request) {
+    public function create(Request $request): JsonResponse
+    {
         try {
             $this->validate($request, [
                 'title' => 'required',
@@ -76,37 +82,33 @@ class ReportController extends Controller
                 'type' => 'required|in:personal,daily',
                 'persons_ids' => 'required|array'
             ]);
-    
-            $data = $request->all();
-            $report = new Report();
-            
-            $report->title = $data['title'];
-            $report->report = $data['report'];
-            $report->humor = $data['humor'];
-            $report->type = $data['type'];
-            $report->persons_ids = json_encode($data['persons_ids']);
 
-            $report->save();
-    
+            $data = $request->all();
+
+            $data['persons_ids'] = json_encode($data['persons_ids']);
+
+            $report = Report::create($data);
+
             return response()->json($report, 201);
-            
-        } catch (\Exception $e) {
+
+        } catch (Exception $e) {
             return response()->json([
                 'message' => $e->getMessage()
-            ], 400);
+            ], 500);
         }
     }
 
-    public function updateReport(Request $request, $id) {
+    public function updateReport(Request $request, $id): JsonResponse
+    {
         try {
             $this->validate($request, [
                 'title' => 'required',
                 'report' => 'required',
                 'humor' => 'required',
             ]);
-    
+
             $data = $request->all();
-    
+
             $report = Report::find($id);
 
             if (!$report) {
@@ -119,17 +121,18 @@ class ReportController extends Controller
             $report->report = $data['report'];
             $report->humor = $data['humor'];
             $report->save();
-    
+
             return response()->json($report);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json([
                 'message' => $e->getMessage()
             ], 500);
         }
     }
 
-    public function delete($id) {
+    public function delete($id): JsonResponse
+    {
         try {
             $report = Report::find($id);
 
@@ -142,9 +145,9 @@ class ReportController extends Controller
             $report->delete();
             return response()->json([
                 'message' => 'Report deleted'
-            ], 200);
+            ]);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json([
                 'message' => $e->getMessage()
             ], 500);

@@ -3,130 +3,120 @@
 namespace App\Http\Controllers;
 
 use App\Models\Person;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Http\JsonResponse;
 
 class PersonController extends Controller
 {
-    public function getAll() {
+    public function getAll(): JsonResponse
+    {
         try {
-            $people = Person::all()
-            ->sortBy('name');
-    
-            return response()->json($people, 200);
-        } catch (\Exception $e) {
+            $people = Person::all()->sortBy('name');
+            return response()->json($people);
+        } catch (Exception $e) {
             return response()->json([
                 'message' => $e->getMessage()
             ], 500);
         }
     }
 
-    public function search() {
+    public function search(): JsonResponse
+    {
         try {
             if (request('q') == null) {
-                return response()->json('', 200);
+                return response()->json('');
             }
 
             $people = Person::select('id', 'name')
             ->where('name', 'like', '%' . request('q') . '%')
             ->take(5)
             ->get();
-            
-            return response()->json($people, 200);
 
-        } catch (\Exception $e) {
+            return response()->json($people);
+
+        } catch (Exception $e) {
             return response()->json([
                 'message' => $e->getMessage()
             ], 500);
         }
     }
 
-    public function getById($id) {
-        $person = Person::find($id);
-        return response()->json($person);
+    public function getById($id): JsonResponse
+    {
+        try {
+            $person = Person::find($id);
+            return response()->json($person);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 
-    public function create(Request $request) {
-        $this->validate($request, [
-            'name' => 'required|string',
-            'email' => 'email',
-            'phone' => 'numeric',
-            'birthday' => 'date'
-        ]);
+    /**
+     * @throws ValidationException
+     */
+    public function create(Request $request): JsonResponse
+    {
+        try {
+            $this->validate($request, [
+                'name' => 'required|string',
+                'email' => 'email',
+                'phone' => 'numeric',
+                'birthday' => 'date'
+            ]);
 
-        $data = $request->all();
+            $data = $request->all();
 
-        $person = new Person();
-        $person->name = $data['name'];
+            $person = Person::create($data);
 
-        if (isset($data['birthday'])) {
-            $person->birthday = $data['birthday'];
+            return response()->json($person);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 500);
         }
-
-        if (isset($data['email'])) {
-            $person->email = $data['email'];
-        }
-
-        if (isset($data['phone'])) {
-            $person->phone = $data['phone'];
-        }
-
-        if (isset($data['address'])) {
-            $person->address = $data['address'];
-        }
-
-        if (isset($data['description'])) {
-            $person->description = $data['description'];
-        }
-
-        $person->save();
-
-        return response()->json($person);
     }
 
-    public function delete($id) {
-        $person = Person::find($id);
-        $person->delete();
+    public function delete($id): JsonResponse
+    {
+        try {
+            $person = Person::find($id);
+            $person->delete();
 
-        return response()->json('Person deleted successfully');
+            return response()->json('Person deleted successfully');
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 
-    public function update(Request $request, $id) {
-        $this->validate($request, [
-            'email' => 'email',
-            'phone' => 'numeric',
-            'birthday' => 'date'
-        ]);
+    /**
+     * @throws ValidationException
+     */
+    public function update(Request $request, $id): JsonResponse
+    {
+        try {
+            $this->validate($request, [
+                'email' => 'email',
+                'phone' => 'numeric',
+                'birthday' => 'date'
+            ]);
 
-        $data = $request->all();
+            $data = $request->all();
 
-        $person = Person::find($id);
+            $person = Person::find($id);
 
-        if (isset($data['name'])) {
-            $person->name = $data['name'];
+            $person->update($data);
+
+            return response()->json($person);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 500);
         }
-
-        if (isset($data['birthday'])) {
-            $person->birthday = $data['birthday'];
-        }
-
-        if (isset($data['email'])) {
-            $person->email = $data['email'];
-        }
-
-        if (isset($data['phone'])) {
-            $person->phone = $data['phone'];
-        }
-
-        if (isset($data['address'])) {
-            $person->address = $data['address'];
-        }
-
-        if (isset($data['description'])) {
-            $person->description = $data['description'];
-        }
-
-        $person->save();
-
-        return response()->json($person);
     }
 }
