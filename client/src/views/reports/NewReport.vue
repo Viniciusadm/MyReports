@@ -4,41 +4,38 @@
         <div class="form_report">
             <div class="form_group">
                 <label class="form_label" for="title">Título</label>
-                <input class="input_text" type="text" id="title" placeholder="Título do relatório">
+                <input v-model="report.title" class="input_text" type="text" id="title" placeholder="Título do relatório">
             </div>
             <div class="form_group">
                 <label class="form_label" for="report">Relatório</label>
-                <textarea class="input_text" id="report" placeholder="Relatório"></textarea>
+                <textarea v-model="report.report" class="input_text" id="report" placeholder="Relatório"></textarea>
             </div>
             <div class="form_group">
                 <label class="form_label" for="humor">Humor</label>
-                <select id="humor">
+                <select v-model="report.humor" id="humor">
                     <option value="">Selecione um humor</option>
-                    <option value="Feliz">Feliz</option>
-                    <option value="Triste">Triste</option>
-                    <option value="Neutro">Neutro</option>
-                    <option value="Raivoso">Raivoso</option>
+                    <option v-for="humor in humors" :key="humor[0]" :value="humor[0]">{{ humor[1] }}</option>
                 </select>
             </div>
             <div class="form_group">
                 <label class="form_label">Tipo</label>
                 <div class="radios_type">
-                    <input name="type" type="radio" id="type_personal" value="personal">
+                    <input v-model="report.type" name="type" type="radio" id="type_personal" value="personal">
                     <label for="type_personal">Pessoal</label>
                 </div>
                 <div class="radios_type">
-                    <input name="type" type="radio" id="type_daily" value="daily">
+                    <input v-model="report.type" name="type" type="radio" id="type_daily" value="daily">
                     <label for="type_daily">Diário</label>
                 </div>
             </div>
             <div class="form_group" id="people_group">
                 <label class="form_label" for="people">Pessoas</label>
-                <input @input="searchPerson()" :v-bind="query" class="input_text" type="text" id="people" placeholder="Pessoas">
+                <input @input="searchPerson()" v-model="query" class="input_text" type="text" id="people" placeholder="Pessoas">
                 <div class="list_people">
-                    <button class="person" @click="addPerson($event)" :value="person.id" :name="person.name" v-for="person in people" :key="person.id">{{ person.name }}</button>
+                    <button class="person" @click="addPerson($event)" :value="person.id" :name="person.name" v-for="person in people_search" :key="person.id">{{ person.name }}</button>
                 </div>
                 <div class="list_people_selected">
-                    <button class="person" @click="removePerson($event)" :value="person.id" :name="person.name" v-for="person in people_selected" :key="person.id">{{ person.name }}</button>
+                    <button class="person" @click="removePerson($event)" :value="person.id" :name="person.name" v-for="person in people" :key="person.id">{{ person.name }}</button>
                 </div>
             </div>
             <div class="form_group">
@@ -54,124 +51,136 @@
         flex-direction: column;
         align-items: center;
         width: 100%;
+        margin-bottom: 1.5rem;
 
-        * {
-            outline: none;
+        .title_page {
+            font-size: 2rem;
+            margin: 1rem 0;
+            font-weight: bold;
         }
+        .form_report {
+            width: 80%;
+            max-width: 600px;
 
-        .form_group {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-
-            .form_label {
-                font-size: 1.2rem;
-                margin-bottom: 0.5rem;
-            }
-
-            .input_text {
-                width: 100%;
-                padding: 0.5rem;
-                border: 1px solid #ccc;
-                border-radius: 0.5rem;
-                margin-bottom: 0.5rem;
-                
-                &#report {
-                    resize: none;
-                    height: 10rem;
-                }
-            }
-
-            #humor {
-                width: 100%;
-                padding: 0.5rem;
-                border: 1px solid #ccc;
-                border-radius: 0.5rem;
-                margin-bottom: 0.5rem;
-                background: transparent;
-                cursor: pointer;
-
-                option {
-                    background-color: #f5f5f5;
-                }
-            }
-
-            .radios_type {
+            .form_group {
                 display: flex;
-                flex-direction: row;
+                flex-direction: column;
+                align-items: center;
                 width: 100%;
-                margin-bottom: 0.5rem;
 
-                label {                    
-                    cursor: pointer;
+                .form_label {
+                    font-size: 1.6rem;
+                    margin-bottom: 1rem;
                 }
 
-                input {
-                    margin-right: 0.5rem;
-                    cursor: pointer;
+                .input_text {
+                    width: 100%;
+                    padding: 1rem;
+                    border: 1px solid #ccc;
+                    border-radius: 0.5rem;
+                    margin-bottom: 0.8rem;
+                    font-size: 1.1rem;
+
+                    &#report {
+                        resize: none;
+                        height: 12rem;
+                    }
                 }
-            }
 
-            &#people_group {
-                position: relative;
+                #humor {
+                    width: 100%;
+                    padding: 1rem;
+                    border: 1px solid #ccc;
+                    border-radius: 0.5rem;
+                    margin-bottom: 0.8rem;
+                    background: transparent;
+                    cursor: pointer;
+                    font-size: 1.1rem;
 
-                .list_people {
+                    option {
+                        background-color: #f5f5f5;
+                    }
+                }
+
+                .radios_type {
                     display: flex;
-                    flex-direction: column;
+                    flex-direction: row;
+                    align-items: center;
                     width: 100%;
                     margin-bottom: 0.5rem;
-                    position: absolute;
-                    top: 4rem;
-                    background-color: white;
-                    
-                    .person {
-                        padding: 0.5rem;
-                        width: 100%;
-                        border-left: 1px solid #ccc;
-                        border-right: 1px solid #ccc;
-                        border-top: 1px solid #ccc;
-                        border-bottom: none;
-                        background: transparent;
-                        cursor: pointer;
 
-                        &:last-child {
-                            border-bottom: 1px solid #ccc;
+                    label {
+                        cursor: pointer;
+                        font-size: 1.2rem;
+                    }
+
+                    input {
+                        margin-right: 0.5rem;
+                        padding: 0.5rem;
+                        cursor: pointer;
+                    }
+                }
+
+                &#people_group {
+                    position: relative;
+
+                    .list_people {
+                        display: flex;
+                        flex-direction: column;
+                        width: 100%;
+                        margin-bottom: 0.5rem;
+                        position: absolute;
+                        top: 4rem;
+                        background-color: white;
+
+                        .person {
+                            padding: 0.5rem;
+                            width: 100%;
+                            border-left: 1px solid #ccc;
+                            border-right: 1px solid #ccc;
+                            border-top: 1px solid #ccc;
+                            border-bottom: none;
+                            background: transparent;
+                            cursor: pointer;
+
+                            &:last-child {
+                                border-bottom: 1px solid #ccc;
+                            }
+                        }
+                    }
+
+                    .list_people_selected {
+                        display: flex;
+                        width: 100%;
+                        margin-bottom: 0.5rem;
+                        background-color: white;
+                        border-bottom: none;
+
+                        .person {
+                            background: transparent;
+                            border: none;
+                            cursor: pointer;
+                            margin-right: 0.5rem;
                         }
                     }
                 }
-
-                .list_people_selected {
-                    display: flex;
-                    width: 100%;
-                    margin-bottom: 0.5rem;
-                    background-color: white;
-                    border-bottom: none;
-
-                    .person {
-                        background: transparent;
-                        border: none;
-                        cursor: pointer;
-                    }
-                }
             }
-        }
-        
-        .send_report {
+            .send_report {
                 width: 100%;
-                padding: 0.5rem;
+                padding: 1rem;
                 border: 1px solid #ccc;
                 border-radius: 0.5rem;
-                margin-bottom: 0.5rem;
                 background-color: #00a680;
                 color: #fff;
                 font-weight: bold;
                 cursor: pointer;
+                font-size: 1.1rem;
 
                 &:hover {
                     background-color: #00a680;
                 }
             }
+        }
     }
 </style>
 
@@ -181,34 +190,60 @@ import api from '../../services/api';
 export default {    
     data() {
         return {
+            humors: Object.entries(this.$store.state.humors),
             query: '',
+            people_search: [],
             people: [],
-            people_selected: []
+            report: {
+                title: '',
+                humor: '',
+                type: '',
+                persons_ids: [],
+                report: ''
+            }
         }
     },
     methods: {
         sendReport() {
-            console.log('sendReport');
+            this.report.persons_ids = this.people.map(person => person.id);
+
+            if (this.validateForm()) {
+                api.post('/reports', this.report)
+                    .then(response => {
+                        if (response.status === 201) {
+                            this.$toast.success('Relato enviado com sucesso!');
+                            this.$router.push('/reports');
+                        }
+                    })
+            } else {
+                this.$toast.error('Preencha todos os campos corretamente.');
+            }
         },
         searchPerson() {
-            api.get(`people/search/?q=${this.query}`)
-            .then((response) => {
-                if (response.status === 200) {
-                    this.people = response.data;
-                } else {
-                    console.log(response.data.message);
-                }
-            })
+            const exclude = JSON.stringify(this.people.map(person => person.id));
+
+            api.get(`people/search/?q=${this.query}&exclude=${exclude}`)
+                .then(response => {
+                    if (response.status === 200) {
+                        this.people_search = response.data;
+                    }
+                })
         },
         addPerson($event) {
-            this.people_selected.push({
+            this.people.push({
                 id: $event.target.value,
                 name: $event.target.name
             });
 
-            this.people = [];
+            this.people_search = [];
             this.query = '';
-        }
+        },
+        removePerson($event) {
+            this.people = this.people.filter(person => person.id !== $event.target.value);
+        },
+        validateForm() {
+            return this.report.title && this.report.humor && this.report.type && this.report.persons_ids.length > 0 && this.report.report;
+        },
     }
 }
 

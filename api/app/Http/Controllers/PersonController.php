@@ -29,8 +29,11 @@ class PersonController extends Controller
                 return response()->json('');
             }
 
+            $exclude = json_decode(request('exclude'));
+
             $people = Person::select('id', 'name')
             ->where('name', 'like', '%' . request('q') . '%')
+            ->whereNotIn('id', $exclude)
             ->take(5)
             ->get();
 

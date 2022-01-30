@@ -85,9 +85,15 @@ class ReportController extends Controller
 
             $data = $request->all();
 
-            $data['persons_ids'] = json_encode($data['persons_ids']);
+            $report = new Report();
 
-            $report = Report::create($data);
+            $report->title = $data['title'];
+            $report->report = $data['report'];
+            $report->humor = $data['humor'];
+            $report->type = $data['type'];
+            $report->persons_ids = json_encode($data['persons_ids']);
+
+            $report->save();
 
             return response()->json($report, 201);
 
