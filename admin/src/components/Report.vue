@@ -12,12 +12,15 @@
         <div class="report_body report_collumn">
             <p>{{ report }}</p>
         </div>
-        <div class="report_people report_collumn">
+        <div v-if="people.length > 0" class="report_people report_collumn">
             <p class="title">Pessoas:</p>
             <p class="person" v-for="(person, index) in people" :key="person.id">
                 <template v-if="index !== people.length - 1">{{ person.name }}, </template>
                 <template v-else>{{ person.name }}</template>
             </p>
+        </div>
+        <div v-else class="report_people report_collumn">
+            <p class="title">Sozinho</p>
         </div>
     </div>
 </template>

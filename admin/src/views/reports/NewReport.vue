@@ -39,7 +39,7 @@
                 </div>
             </div>
             <div class="form_group">
-                <button @click="sendReport()" class="send_report">Cadastrar</button>
+                <button @click="sendReport()" class="btn send_report">Cadastrar</button>
             </div>
         </div>
     </div>
@@ -168,17 +168,6 @@
             .send_report {
                 width: 100%;
                 padding: 1rem;
-                border: 1px solid #ccc;
-                border-radius: 0.5rem;
-                background-color: #00a680;
-                color: #fff;
-                font-weight: bold;
-                cursor: pointer;
-                font-size: 1.1rem;
-
-                &:hover {
-                    background-color: #00a680;
-                }
             }
         }
     }
@@ -212,11 +201,11 @@ export default {
                     .then(response => {
                         if (response.status === 201) {
                             this.$toast.success('Relato enviado com sucesso!');
-                            this.$router.push('/reports');
+                            setTimeout(() => {
+                                this.$router.push('/reports');
+                            }, 1600);
                         }
                     })
-            } else {
-                this.$toast.error('Preencha todos os campos corretamente.');
             }
         },
         searchPerson() {
@@ -242,7 +231,32 @@ export default {
             this.people = this.people.filter(person => person.id !== $event.target.value);
         },
         validateForm() {
-            return this.report.title && this.report.humor && this.report.type && this.report.persons_ids.length > 0 && this.report.report;
+            if (this.report.title === '') {
+                this.$toast.error('Preencha o título do relato!');
+                return false;
+            }
+
+            if (this.report.report === '') {
+                this.$toast.error('Preencha o relato!');
+                return false;
+            }
+
+            if (this.report.humor === '') {
+                this.$toast.error('Selecione o humor do relato!');
+                return false;
+            }
+
+            if (this.report.type === '') {
+                this.$toast.error('Preencha o tipo do relato!');
+                return false;
+            }
+
+            if (this.report.persons_ids.length === 0 && this.report.type === 'personal') {
+                this.$toast.error('Selecione pelo menos uma pessoa!');
+                return false;
+            }
+
+            return true;
         },
     }
 }

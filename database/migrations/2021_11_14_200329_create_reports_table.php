@@ -19,7 +19,7 @@ class CreateReportsTable extends Migration
             $table->text('report');
             $table->string('humor');
             $table->enum('type', ['personal', 'daily']);
-            $table->string('persons_ids');
+            $table->string('persons_ids')->default('[]');
             $table->timestamps();
         });
     }

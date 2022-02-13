@@ -16,6 +16,23 @@
         font-size: 1rem;
         outline: none;
     }
+
+    .btn {
+        background: #00bcd4;
+        color: #fff;
+        border: none;
+        padding: 0.62rem 1.25rem;
+        border-radius: 0.3rem;
+        font-size: 1.3rem;
+        font-weight: bold;
+        cursor: pointer;
+        text-decoration: none;
+
+        &:hover {
+            background: #00acc1;
+        }
+    }
+
 </style>
 
 <script>

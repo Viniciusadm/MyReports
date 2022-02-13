@@ -10,21 +10,24 @@ use Illuminate\Http\Request;
 
 class ReportController extends Controller
 {
-    public function getAll(): JsonResponse
+    public function get(): JsonResponse
     {
         try {
-            $reports = Report::get();
+            $q = request('q');
+            $page = request('current_page');
+            $limit = request('limit');
+            $column = request('column');
+            $order = request('order');
+            $fields = explode(',', request('fields'));
 
-            foreach($reports as $report) {
-                $report->people = Person::whereIn('id', json_decode($report->persons_ids))->get();
-            }
+            $reports = Report::query()->select($fields)
+                ->where('title', 'like', "%$q%")
+                ->orderBy($column, $order)
+                ->paginate($limit, ['*'], 'current_page', $page);
 
-            return response()->json($reports);
-
+            return response()->json(['success' => true, 'data' => $reports]);
         } catch (Exception $e) {
-            return response()->json([
-                'message' => $e->getMessage()
-            ], 500);
+            return response()->json(['success' => false, 'message' => $e->getMessage()]);
         }
     }
 
@@ -80,7 +83,7 @@ class ReportController extends Controller
                 'report' => 'required',
                 'humor' => 'required',
                 'type' => 'required|in:personal,daily',
-                'persons_ids' => 'required|array'
+                'persons_ids' => 'array'
             ]);
 
             $data = $request->all();
