@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Person;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
 use Illuminate\Http\JsonResponse;
 
 class PersonController extends Controller
@@ -13,10 +12,14 @@ class PersonController extends Controller
     public function getAll(): JsonResponse
     {
         try {
-            $people = Person::all()->sortBy('name');
-            return response()->json($people);
+            $people = Person::all();
+            return response()->json([
+                'success' => true,
+                'data' => $people
+            ]);
         } catch (Exception $e) {
             return response()->json([
+                'success' => false,
                 'message' => $e->getMessage()
             ], 500);
         }
@@ -31,7 +34,7 @@ class PersonController extends Controller
 
             $exclude = json_decode(request('exclude'));
 
-            $people = Person::select('id', 'name')
+            $people = Person::query()->select('id', 'name')
             ->where('name', 'like', '%' . request('q') . '%')
             ->whereNotIn('id', $exclude)
             ->take(5)
@@ -49,7 +52,7 @@ class PersonController extends Controller
     public function getById($id): JsonResponse
     {
         try {
-            $person = Person::find($id);
+            $person = Person::query()->find($id);
             return response()->json($person);
         } catch (Exception $e) {
             return response()->json([
@@ -58,9 +61,6 @@ class PersonController extends Controller
         }
     }
 
-    /**
-     * @throws ValidationException
-     */
     public function create(Request $request): JsonResponse
     {
         try {
@@ -73,7 +73,7 @@ class PersonController extends Controller
 
             $data = $request->all();
 
-            $person = Person::create($data);
+            $person = Person::query()->create($data);
 
             return response()->json($person);
         } catch (Exception $e) {
@@ -86,7 +86,7 @@ class PersonController extends Controller
     public function delete($id): JsonResponse
     {
         try {
-            $person = Person::find($id);
+            $person = Person::query()->find($id);
             $person->delete();
 
             return response()->json('Person deleted successfully');
@@ -97,9 +97,6 @@ class PersonController extends Controller
         }
     }
 
-    /**
-     * @throws ValidationException
-     */
     public function update(Request $request, $id): JsonResponse
     {
         try {
@@ -111,7 +108,7 @@ class PersonController extends Controller
 
             $data = $request->all();
 
-            $person = Person::find($id);
+            $person = Person::query()->find($id);
 
             $person->update($data);
 

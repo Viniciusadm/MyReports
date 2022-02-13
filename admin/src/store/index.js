@@ -15,8 +15,13 @@ export default createStore({
             surprised: "Surpreso",
             sad: "Triste",
         },
+        people: []
     },
-    mutations: {},
+    mutations: {
+        setPeople(state, people) {
+            state.people = people;
+        }
+    },
     actions: {},
     modules: {},
 });
