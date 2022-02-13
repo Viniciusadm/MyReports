@@ -28,16 +28,10 @@
                         <template v-if="getColumn(index).type === 'link'">
                             <a :href="getColumn(index).link(item)"
                                 target="_blank">
-                                {{ item }}</a>
-                        </template>
-                        <template v-else-if="getColumn(index).type === 'money'">
-                            R$ {{ item }}
-                        </template>
-                        <template v-else-if="getColumn(index).type === 'date'">
-                            {{ item }}
+                                {{ getFormat(index, item) }}</a>
                         </template>
                         <template v-else>
-                            {{ item }}
+                            {{ getFormat(index, item) }}
                         </template>
                     </td>
                 </tr>
@@ -89,8 +83,8 @@ export default {
             total: 0,
             to: 0,
             from: 0,
-            column: this.table.columns[0].field,
-            order: "asc",
+            column: this.table.column_default ?? this.table.columns[0].field,
+            order: this.table.order ?? 'asc',
             data: [],
         };
     },
@@ -115,12 +109,16 @@ export default {
             type: Object,
             default: () => ({
                 name: "",
-                name_singular: null,
+                name_singular: "",
+                column_default: "",
+                order: "asc",
                 columns: [
                     {
                         name: "",
                         field: "",
                         type: "text",
+                        link: () => "",
+                        format: () => "",
                     },
                 ],
             }),
@@ -177,12 +175,28 @@ export default {
             }&current_page=${this.current_page}&limit=${this.limit}&column=${
                 this.column
             }&order=${this.order}`;
+
             if (this.search) {
                 url += `&q=${this.search}`;
             } else if (this.date.start && this.date.end) {
                 url += `&start=${this.date.start}&end=${this.date.end}`;
             }
             return url;
+        },
+        getFormat(column, value) {
+            const column_format = this.getColumn(column);
+
+            if (column_format.maxLength) {
+                value = value.length > column_format.maxLength
+                    ? value.substring(0, column_format.maxLength) + '...'
+                    : value;
+            }
+
+            if (column_format.format) {
+                value = column_format.format(value);
+            }
+
+            return value;
         },
     },
     watch: {

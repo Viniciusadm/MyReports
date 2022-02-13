@@ -174,9 +174,12 @@
 </style>
 
 <script>
-import api from '../../services/api';
+import api from '../../services/api'
+import { useToast } from "vue-toastification";
 
-export default {    
+const toast = useToast();
+
+export default {
     data() {
         return {
             humors: Object.entries(this.$store.state.humors),
@@ -200,7 +203,7 @@ export default {
                 api.post('/reports', this.report)
                     .then(response => {
                         if (response.status === 201) {
-                            this.$toast.success('Relato enviado com sucesso!');
+                            toast.success('Relato enviado com sucesso!');
                             setTimeout(() => {
                                 this.$router.push('/reports');
                             }, 1600);
@@ -232,27 +235,27 @@ export default {
         },
         validateForm() {
             if (this.report.title === '') {
-                this.$toast.error('Preencha o título do relato!');
+                toast.error('Preencha o título do relato!');
                 return false;
             }
 
             if (this.report.report === '') {
-                this.$toast.error('Preencha o relato!');
+                toast.error('Preencha o relato!');
                 return false;
             }
 
             if (this.report.humor === '') {
-                this.$toast.error('Selecione o humor do relato!');
+                toast.error('Selecione o humor do relato!');
                 return false;
             }
 
             if (this.report.type === '') {
-                this.$toast.error('Preencha o tipo do relato!');
+                toast.error('Preencha o tipo do relato!');
                 return false;
             }
 
             if (this.report.persons_ids.length === 0 && this.report.type === 'personal') {
-                this.$toast.error('Selecione pelo menos uma pessoa!');
+                toast.error('Selecione pelo menos uma pessoa!');
                 return false;
             }
 

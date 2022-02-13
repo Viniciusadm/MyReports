@@ -17,7 +17,8 @@ export default {
             search: "",
             table: {
                 name: "Reports",
-                search: "",
+                column_default: 'created_at',
+                order: 'desc',
                 columns: [
                     {
                         name: "Título",
@@ -26,17 +27,51 @@ export default {
                     {
                         name: "Relatório",
                         field: "report",
+                        maxLength: Math.ceil(window.innerWidth / 70),
                     },
                     {
                         name: "Humor",
                         field: "humor",
+                        format: (humor) => {
+                            return this.$store.state.humors[humor];
+                        },
                     },
+                    {
+                        name: 'Tipo',
+                        field: 'type',
+                        format: (type) => {
+                            return type === 'daily' ? 'Diário' : 'Pessoal';
+                        },
+                    },
+                    {
+                        name: 'Pessoas',
+                        field: 'persons_ids',
+                        format: (persons_ids) => {
+                            return this.getPeople(persons_ids);
+                        },
+                    },
+                    {
+                        name: 'Data',
+                        field: 'created_at',
+                        format: (created_at) => {
+                            return created_at.split('T')[0].split('-').reverse().join('/')
+                        },
+                    }
                 ],
             },
         };
     },
     components: {
         Tabela,
+    },
+    methods: {
+        getPeople(persons_ids) {
+            let people = [];
+            JSON.parse(persons_ids).forEach(id => {
+                people.push(this.$store.state.people[id - 1].name);
+            });
+            return people.length > 0 ? people.join(', ') : 'Nenhum';
+        },
     },
 };
 </script>
