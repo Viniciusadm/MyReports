@@ -1,20 +1,35 @@
 <template>
     <div class="reports">
+        <ReportModal
+            v-if="modal"
+            @fecharModal="modal = false"
+            @save="save()"/>
+
+        <Report
+            v-if="reportModal"
+            :report="report"
+            @close="reportModal = false;"/>
+
         <div class="header">
-            <h1>Relatórios</h1>
-            <router-link to="/reports/new" class="btn">Novo relatório</router-link>
+            <h1 @click="this.$emit('reportModal')">Relatos</h1>
+            <button @click="modal = true;" class="btn">Novo relato</button>
         </div>
-        <Tabela class="table" :search="search" :table="table" />
+        <Tabela class="table" :search="search" :table="table" @reportModal="openDetails($event)" />
     </div>
 </template>
 
 <script>
+import ReportModal from "@/components/Reports/NewReportModal";
+import Report from "@/components/Reports/ReportModal";
 import Tabela from "@/components/Tabela";
 
 export default {
     data() {
         return {
+            modal: false,
+            reportModal: false,
             search: "",
+            report: {},
             table: {
                 name: "Reports",
                 column_default: 'created_at',
@@ -23,11 +38,14 @@ export default {
                     {
                         name: "Título",
                         field: "title",
+                        maxLength: Math.ceil(window.innerWidth / 40),
+                        type: 'emit',
+                        emit: 'reportModal',
                     },
                     {
-                        name: "Relatório",
+                        name: "Relato",
                         field: "report",
-                        maxLength: Math.ceil(window.innerWidth / 70),
+                        maxLength: Math.ceil(window.innerWidth / 40),
                     },
                     {
                         name: "Humor",
@@ -49,6 +67,7 @@ export default {
                         format: (persons_ids) => {
                             return this.getPeople(persons_ids);
                         },
+                        maxLength: Math.ceil(window.innerWidth / 40),
                     },
                     {
                         name: 'Data',
@@ -63,6 +82,8 @@ export default {
     },
     components: {
         Tabela,
+        ReportModal,
+        Report,
     },
     methods: {
         getPeople(persons_ids) {
@@ -71,6 +92,14 @@ export default {
                 people.push(this.$store.state.people[id - 1].name);
             });
             return people.length > 0 ? people.join(', ') : 'Nenhum';
+        },
+        save() {
+            this.modal = false;
+            window.location.reload();
+        },
+        openDetails(report) {
+            this.reportModal = true;
+            this.report = report;
         },
     },
 };

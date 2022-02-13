@@ -30,6 +30,10 @@
                                 target="_blank">
                                 {{ getFormat(index, item) }}</a>
                         </template>
+                        <template v-else-if="getColumn(index).type === 'emit'">
+                            <a @click="this.$emit(getColumn(index).emit, value)">
+                                {{ getFormat(index, item) }}</a>
+                        </template>
                         <template v-else>
                             {{ getFormat(index, item) }}
                         </template>
@@ -186,14 +190,14 @@ export default {
         getFormat(column, value) {
             const column_format = this.getColumn(column);
 
+            if (column_format.format) {
+                value = column_format.format(value);
+            }
+
             if (column_format.maxLength) {
                 value = value.length > column_format.maxLength
                     ? value.substring(0, column_format.maxLength) + '...'
                     : value;
-            }
-
-            if (column_format.format) {
-                value = column_format.format(value);
             }
 
             return value;
@@ -305,11 +309,19 @@ export default {
 
     #table_pagination {
         display: flex;
-        justify-content: space-between;
         align-items: center;
+        justify-content: space-between;
         padding: 1rem 0.15rem;
         font-size: 0.8rem;
         color: #565656;
+
+        @media screen and (max-width: 650px) {
+            flex-direction: column;
+
+            .entradas {
+                margin-bottom: 0.6rem;
+            }
+        }
 
         .paginas {
             display: flex;
