@@ -13,40 +13,62 @@
         </label>
         <table id="table">
             <thead>
-            <tr>
-                <th :class="{ active: column === column_loop.field }" @click="reordernarTabela(`${ column_loop.field }`)" v-for="(column_loop, index) in table.columns" :key="index">{{ column_loop.name }}</th>
-            </tr>
+                <tr>
+                    <th :class="{ active: column === column_loop.field }"
+                        @click="reordernarTabela(`${column_loop.field}`)"
+                        v-for="(column_loop, index) in table.columns"
+                        :key="index">
+                        {{ column_loop.name }}
+                    </th>
+                </tr>
             </thead>
             <tbody v-if="data.length > 0">
-            <tr v-for="value in data" :key="value.id">
-                <td v-for="(item, index) in value" :key="index">
-                    <template v-if="getColumn(index).type === 'link'">
-                        <a :href="getColumn(index).link(item)" target="_blank">{{ item }}</a>
-                    </template>
-                    <template v-else-if="getColumn(index).type === 'money'">
-                        R$ {{ item }}
-                    </template>
-                    <template v-else-if="getColumn(index).type === 'date'">
-                        {{ item }}
-                    </template>
-                    <template v-else>
-                        {{ item }}
-                    </template>
-                </td>
-            </tr>
+                <tr v-for="value in data" :key="value.id">
+                    <td v-for="(item, index) in value" :key="index">
+                        <template v-if="getColumn(index).type === 'link'">
+                            <a :href="getColumn(index).link(item)"
+                                target="_blank">
+                                {{ item }}</a>
+                        </template>
+                        <template v-else-if="getColumn(index).type === 'money'">
+                            R$ {{ item }}
+                        </template>
+                        <template v-else-if="getColumn(index).type === 'date'">
+                            {{ item }}
+                        </template>
+                        <template v-else>
+                            {{ item }}
+                        </template>
+                    </td>
+                </tr>
             </tbody>
             <tbody v-else>
-            <tr>
-                <td class="no_data" :colspan="table.columns.length">Nenhum {{ table.name_singular ?? table.name.toLowerCase().slice(0, -1) }} encontrado</td>
-            </tr>
+                <tr>
+                    <td class="no_data" :colspan="table.columns.length">
+                        Nenhum
+                        {{
+                            table.name_singular ??
+                            table.name.toLowerCase().slice(0, -1)
+                        }}
+                        encontrado
+                    </td>
+                </tr>
             </tbody>
         </table>
         <div id="table_pagination">
-            <p class="entradas">Mostrando de {{ from }} a {{ to }} de {{ total }} entradas</p>
+            <p class="entradas">
+                Mostrando de {{ from }} a {{ to }} de {{ total }} entradas
+            </p>
             <p class="paginas">
-                <button @click="backPage()" :disabled="current_page === 1">Anterior</button>
+                <button @click="backPage()" :disabled="current_page === 1">
+                    Anterior
+                </button>
                 <span>Página {{ current_page }} de {{ last_page }}</span>
-                <button @click="nextPage()" :disabled="current_page === last_page">Próxima</button>
+                <button
+                    @click="nextPage()"
+                    :disabled="current_page === last_page">
+                    Próxima
+                </button>
             </p>
         </div>
     </div>
@@ -54,9 +76,9 @@
 
 <script>
 import api from "@/services/api";
-// import { useToast } from "vue-toastification";
-//
-// const toast = useToast();
+import { useToast } from "vue-toastification";
+
+const toast = useToast();
 
 export default {
     data() {
@@ -68,53 +90,55 @@ export default {
             to: 0,
             from: 0,
             column: this.table.columns[0].field,
-            order: 'asc',
+            order: "asc",
             data: [],
-        }
+        };
     },
     computed: {
         fields() {
-            return this.table.columns.map(column => column.field);
+            return this.table.columns.map((column) => column.field);
         },
     },
     props: {
         search: {
             type: String,
-            default: ""
+            default: "",
         },
         date: {
             type: Object,
             default: () => ({
-                start: '',
-                end: '',
-            })
+                start: "",
+                end: "",
+            }),
         },
         table: {
             type: Object,
             default: () => ({
-                name: '',
+                name: "",
                 name_singular: null,
-                columns: [{
-                    name: '',
-                    field: '',
-                    type: 'text',
-                }],
-            })
-        }
+                columns: [
+                    {
+                        name: "",
+                        field: "",
+                        type: "text",
+                    },
+                ],
+            }),
+        },
     },
     methods: {
         searchInDatabase() {
             const url = this.montarUrl();
             api.get(url)
-                .then(response => {
+                .then((response) => {
                     this.data = response.data.data.data;
                     this.last_page = response.data.data.last_page;
                     this.total = response.data.data.total;
                     this.from = response.data.data.from;
                     this.to = response.data.data.to;
                 })
-                .catch(error => {
-                    console.log(error);
+                .catch((error) => {
+                    toast.error(error.response.data.message);
                 });
         },
         backPage() {
@@ -131,31 +155,35 @@ export default {
         },
         reordernarTabela(column) {
             if (this.column === column) {
-                this.order = this.order === 'asc' ? 'desc' : 'asc';
+                this.order = this.order === "asc" ? "desc" : "asc";
             } else {
                 this.column = column;
-                this.order = 'asc';
+                this.order = "asc";
             }
             this.searchInDatabase();
         },
         getColumn(column) {
-            return this.table.columns.find(column_loop => {
-                if (column_loop.field.indexOf('.') !== -1) {
-                    return column_loop.field.split('.')[1] === column;
+            return this.table.columns.find((column_loop) => {
+                if (column_loop.field.indexOf(".") !== -1) {
+                    return column_loop.field.split(".")[1] === column;
                 } else {
                     return column_loop.field === column;
                 }
             });
         },
         montarUrl() {
-            let url = `/${this.table.name.toLowerCase()}/search?fields=${this.fields}&current_page=${this.current_page}&limit=${this.limit}&column=${this.column}&order=${this.order}`;
+            let url = `/${this.table.name.toLowerCase()}/search?fields=${
+                this.fields
+            }&current_page=${this.current_page}&limit=${this.limit}&column=${
+                this.column
+            }&order=${this.order}`;
             if (this.search) {
                 url += `&q=${this.search}`;
             } else if (this.date.start && this.date.end) {
                 url += `&start=${this.date.start}&end=${this.date.end}`;
             }
             return url;
-        }
+        },
     },
     watch: {
         search() {
@@ -171,13 +199,13 @@ export default {
                 this.current_page = 1;
                 this.searchInDatabase();
             },
-            deep: true
-        }
+            deep: true,
+        },
     },
     mounted() {
         this.searchInDatabase();
     },
-}
+};
 </script>
 
 <style scoped lang="scss">
@@ -205,7 +233,8 @@ export default {
         border-collapse: collapse;
         border-spacing: 0;
 
-        th, td {
+        th,
+        td {
             padding: 1rem;
             border: 1px solid #ddd;
             color: #565656;

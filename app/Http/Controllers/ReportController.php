@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 
 class ReportController extends Controller
 {
-    public function get(): JsonResponse
+    public function search(): JsonResponse
     {
         try {
             $q = request('q');

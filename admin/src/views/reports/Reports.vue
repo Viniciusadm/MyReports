@@ -4,7 +4,7 @@
             <h1>Relatórios</h1>
             <router-link to="/reports/new" class="btn">Novo relatório</router-link>
         </div>
-        <Tabela />
+        <Tabela class="table" :search="search" :table="table" />
     </div>
 </template>
 
@@ -14,43 +14,57 @@ import Tabela from "@/components/Tabela";
 export default {
     data() {
         return {
-            search: '',
+            search: "",
             table: {
-                name: 'Reports',
-                search: '',
-                columns: [{
-                    name: 'Título',
-                    field: 'title',
-                }],
+                name: "Reports",
+                search: "",
+                columns: [
+                    {
+                        name: "Título",
+                        field: "title",
+                    },
+                    {
+                        name: "Relatório",
+                        field: "report",
+                    },
+                    {
+                        name: "Humor",
+                        field: "humor",
+                    },
+                ],
             },
-        }
+        };
     },
     components: {
-        Tabela
-    }
-}
+        Tabela,
+    },
+};
 </script>
 
 <style lang="scss" scoped>
-    .reports {
+.reports {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+
+    .header {
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
         align-items: center;
-        width: 100%;
+        justify-content: space-between;
+        width: 90%;
+        margin-bottom: 1.25rem;
 
-        .header {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: space-between;
-            width: 90%;
-            margin-bottom: 1.25rem;
-
-            h1 {
-                font-size: 2em;
-                font-weight: bold;
-                color: #333;
-            }
+        h1 {
+            font-size: 2em;
+            font-weight: bold;
+            color: #333;
         }
     }
+
+    .table {
+        width: 90%;
+    }
+}
 </style>
