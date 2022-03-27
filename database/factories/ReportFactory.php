@@ -15,7 +15,7 @@ class ReportFactory extends Factory
     {
         return [
             'title' => $this->faker->sentence,
-            'report' => $this->faker->paragraph,
+            'report' => $this->faker->paragraph(200),
             'humor' => $this->faker->randomElement(['anxious', 'afraid', 'excited', 'happy', 'scared', 'nervous', 'neutral', 'thoughtful', 'angry', 'surprised', 'sad']),
             'type' => $this->faker->randomElement(['daily']),
         ];
