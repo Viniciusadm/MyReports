@@ -21,6 +21,9 @@ class CreatePeopleTable extends Migration
             $table->string('phone')->unique()->nullable();
             $table->string('address')->nullable();
             $table->text('description')->nullable();
+            $table->string('image')->nullable();
+            $table->string('twitter')->nullable();
+            $table->string('instagram')->nullable();
             $table->timestamps();
         });
     }
