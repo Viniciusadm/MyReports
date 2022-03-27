@@ -19,8 +19,8 @@ class CreateParticipantsTable extends Migration
             $table->unsignedBigInteger('report_id');
             $table->timestamps();
 
-            $table->foreign('person_id')->references('id')->on('people');
-            $table->foreign('report_id')->references('id')->on('reports');
+            $table->foreign('person_id')->references('id')->on('people')->onDelete('cascade');
+            $table->foreign('report_id')->references('id')->on('reports')->onDelete('cascade');
         });
     }
 
