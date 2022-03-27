@@ -30,7 +30,7 @@ class ReportController extends Controller
     {
         try {
             $report = Report::query()
-                ->with('participants')
+                ->with('participants.person')
                 ->find($id);
 
             if (!$report) {

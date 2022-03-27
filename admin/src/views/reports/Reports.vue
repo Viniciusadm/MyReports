@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import ReportModal from "@/components/Reports/NewReportModal";
+import ReportModal from "@/components/Reports/ReportModal";
 import api from "@/services/api";
 import Report from "@/components/Reports/Report";
 
@@ -39,10 +39,7 @@ export default {
             reports: [],
             page: 1,
             last_page: 1,
-            limit: 10,
             total: 0,
-            to: 0,
-            from: 0,
         };
     },
     components: {
@@ -55,14 +52,12 @@ export default {
             this.getReports();
         },
         getReports() {
-            api.get(`/reports/`)
+            api.get(`/reports?page=${this.page}`)
                 .then(response => {
                     if (response.data.success) {
                         this.reports = response.data.data.data;
                         this.last_page = response.data.data.last_page;
                         this.total = response.data.data.total;
-                        this.from = response.data.data.from;
-                        this.to = response.data.data.to;
                     }
                 });
         },
