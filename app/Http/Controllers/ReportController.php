@@ -13,11 +13,9 @@ class ReportController extends Controller
     public function index(): JsonResponse
     {
         try {
-            $q = request('q');
             $page = request('page');
 
             $reports = Report::query()
-                ->where('title', 'like', "%$q%")
                 ->with('participants.person')
                 ->orderBy('created_at', 'desc')
                 ->paginate(12, ['*'], 'current_page', $page);

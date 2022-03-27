@@ -52,10 +52,10 @@ export default {
     methods: {
         save() {
             this.modal = false;
-            window.location.reload();
+            this.getReports();
         },
         getReports() {
-            api.get(`/reports/?page=${this.page}`)
+            api.get(`/reports/`)
                 .then(response => {
                     if (response.data.success) {
                         this.reports = response.data.data.data;
