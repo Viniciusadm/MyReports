@@ -41,7 +41,7 @@
                 </div>
                 <div class="form_group buttons">
                     <button @click="$emit('close')" class="btn close_report">Fechar</button>
-                    <button @click="sendReport()" class="btn send_report">Criar</button>
+                    <button @click="sendReport()" class="btn send_report">{{ button_text }}</button>
                 </div>
             </div>
         </div>
@@ -57,8 +57,18 @@ const toast = useToast();
 
 export default {
     emits: ['close', 'save'],
+    props: {
+      id: {
+          required: false,
+      },
+    },
     components: {
         BaseModal
+    },
+    computed: {
+      button_text() {
+          return this.id ? 'Editar' : 'Criar';
+      },
     },
     data() {
         return {
@@ -80,16 +90,40 @@ export default {
             this.report.participants = this.people.map(person => person.id);
 
             if (this.validateForm()) {
-                api.post('/reports', this.report)
-                    .then(response => {
-                        if (response.data.success) {
-                            toast.success('Relato enviado com sucesso!');
-                            this.$emit('save');
-                        } else {
-                            toast.error(response.data.message);
-                        }
-                    })
+                if (this.id) {
+                    this.updateReport();
+                } else {
+                    this.createReport();
+                }
             }
+        },
+        createReport() {
+            api.post('/reports', this.report)
+                .then(response => {
+                    if (response.data.success) {
+                        toast.success('Relato enviado com sucesso!');
+                        this.$emit('save');
+                    } else {
+                        toast.error(response.data.message);
+                    }
+                })
+                .catch(error => {
+                    toast.error(error.message);
+                });
+        },
+        updateReport() {
+            api.put('/reports/' + this.id, this.report)
+                .then(response => {
+                    if (response.data.success) {
+                        toast.success('Relato atualizado com sucesso!');
+                        this.$emit('save');
+                    } else {
+                        toast.error(response.data.message);
+                    }
+                })
+                .catch(error => {
+                    toast.error(error.message);
+                });
         },
         searchPerson() {
             const exclude = JSON.stringify(this.people.map(person => person.id));
@@ -143,6 +177,36 @@ export default {
 
             return true;
         },
+        getReport() {
+            api.get(`/reports/${this.id}`)
+                .then(response => {
+                    if (response.data.success) {
+                        this.setReport(response.data.data);
+                    } else {
+                        toast.error(response.data.message);
+                    }
+                })
+        },
+        setReport(report) {
+            this.report = {
+                title: report.title,
+                humor: report.humor,
+                type: report.type,
+                report: report.report
+            }
+
+            this.people = report.participants.map(participant => {
+                return {
+                    id: participant.id,
+                    name: participant.person.name
+                }
+            });
+        },
+    },
+    created() {
+        if (this.id) {
+            this.getReport();
+        }
     }
 }
 </script>
@@ -185,7 +249,7 @@ export default {
 
                     &#report {
                         resize: none;
-                        height: 12rem;
+                        height: 20rem;
                     }
                 }
 
@@ -253,6 +317,7 @@ export default {
 
                     .list_people_selected {
                         display: flex;
+                        flex-wrap: wrap;
                         width: 100%;
                         margin-bottom: 0.5rem;
                         background-color: white;

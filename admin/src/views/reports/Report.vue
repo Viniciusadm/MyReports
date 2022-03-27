@@ -3,7 +3,8 @@
         <ReportModal
             v-if="modal"
             @close="modal = false"
-            @save="modal = false"/>
+            @save="save()"
+            :id="id"/>
 
         <div class="total">
             <div class="menu_report">
@@ -77,7 +78,7 @@ export default {
         },
         participants() {
             if (this.report.participants.length > 0) {
-                return this.report.participants.map(participant => participant.name).join(', ');
+                return this.report.participants.map(participant => participant.person.name).join(', ');
             } else {
                 return 'Nenhum participante';
             }
@@ -90,6 +91,10 @@ export default {
                     this.report = response.data.data;
                 });
         },
+        save() {
+            this.modal = false;
+            this.getReport();
+        }
     },
     mounted() {
         this.getReport();
@@ -166,6 +171,7 @@ export default {
                     margin-bottom: 2rem;
                     text-align: justify;
                     text-indent: 2rem;
+                    word-break: break-word;
 
                     @media (max-width: 576px) {
                         font-size: 1.2rem;
