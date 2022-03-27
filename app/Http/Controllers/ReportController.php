@@ -13,12 +13,12 @@ class ReportController extends Controller
     public function index(): JsonResponse
     {
         try {
-//            $page = request('page');
+            $page = request('page');
 
             $reports = Report::query()
                 ->with('participants.person')
                 ->orderBy('created_at', 'desc')
-                ->get();
+                ->paginate(12, ['*'], 'current_page', $page);
 
             return response()->json(['success' => true, 'data' => $reports]);
         } catch (Exception $e) {
