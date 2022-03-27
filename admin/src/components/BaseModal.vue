@@ -26,10 +26,10 @@
         width: 90%;
         background-color: #fff;
         border: 1px solid #ccc;
-        margin: 1rem 0;
+        margin: 1.5rem 0;
 
         &.scroll {
-            overflow-y: scroll;
+            overflow-y: auto;
         }
     }
 }

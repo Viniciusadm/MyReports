@@ -40,8 +40,8 @@
                     </div>
                 </div>
                 <div class="form_group buttons">
-                    <button @click="sendReport()" class="btn send_report">Cadastrar</button>
-                    <button @click="$emit('fecharModal')" class="btn close_report">Fechar</button>
+                    <button @click="$emit('close')" class="btn close_report">Fechar</button>
+                    <button @click="sendReport()" class="btn send_report">Criar</button>
                 </div>
             </div>
         </div>
@@ -56,7 +56,7 @@ import BaseModal from "@/components/BaseModal";
 const toast = useToast();
 
 export default {
-    emits: ['fecharModal', 'save'],
+    emits: ['close', 'save'],
     components: {
         BaseModal
     },
@@ -70,23 +70,23 @@ export default {
                 title: '',
                 humor: '',
                 type: '',
-                persons_ids: [],
+                participants: [],
                 report: ''
             }
         }
     },
     methods: {
         sendReport() {
-            this.report.persons_ids = this.people.map(person => person.id);
+            this.report.participants = this.people.map(person => person.id);
 
             if (this.validateForm()) {
                 api.post('/reports', this.report)
                     .then(response => {
-                        if (response.status === 201) {
+                        if (response.data.success) {
                             toast.success('Relato enviado com sucesso!');
-                            setTimeout(() => {
-                                this.$emit('save');
-                            }, 1600);
+                            this.$emit('save');
+                        } else {
+                            toast.error(response.data.message);
                         }
                     })
             }
@@ -96,8 +96,10 @@ export default {
 
             api.get(`people/search/?q=${this.query}&exclude=${exclude}`)
                 .then(response => {
-                    if (response.status === 200) {
-                        this.people_search = response.data;
+                    if (response.data.success) {
+                        this.people_search = response.data.data;
+                    } else {
+                        toast.error(response.data.message);
                     }
                 })
         },
@@ -134,8 +136,8 @@ export default {
                 return false;
             }
 
-            if (this.report.persons_ids.length === 0 && this.report.type === 'personal') {
-                toast.error('Selecione pelo menos uma pessoa!');
+            if (this.report.participants.length === 0 && this.report.type === 'personal') {
+                toast.error('Selecione pelo menos um participante!');
                 return false;
             }
 
@@ -146,144 +148,143 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.new_report {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    margin-bottom: 1.5rem;
+    .new_report {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        margin-bottom: 1.5rem;
 
-    .title_page {
-        font-size: 2rem;
-        margin: 1rem 0;
-        font-weight: bold;
-    }
-    .form_report {
-        width: 80%;
-        max-width: 600px;
+        .title_page {
+            font-size: 2rem;
+            margin: 1rem 0;
+            font-weight: bold;
+        }
+        .form_report {
+            width: 80%;
+            max-width: 600px;
 
-        .form_group {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-
-            .form_label {
-                font-size: 1.6rem;
-                margin-bottom: 1rem;
-            }
-
-            .input_text {
-                width: 100%;
-                padding: 1rem;
-                border: 1px solid #ccc;
-                border-radius: 0.5rem;
-                margin-bottom: 0.8rem;
-                font-size: 1.1rem;
-
-                &#report {
-                    resize: none;
-                    height: 12rem;
-                }
-            }
-
-            #humor {
-                width: 100%;
-                padding: 1rem;
-                border: 1px solid #ccc;
-                border-radius: 0.5rem;
-                margin-bottom: 0.8rem;
-                background: transparent;
-                cursor: pointer;
-                font-size: 1.1rem;
-
-                option {
-                    background-color: #f5f5f5;
-                }
-            }
-
-            .radios_type {
+            .form_group {
                 display: flex;
-                flex-direction: row;
+                flex-direction: column;
                 align-items: center;
                 width: 100%;
-                margin-bottom: 0.5rem;
 
-                label {
-                    cursor: pointer;
-                    font-size: 1.2rem;
+                .form_label {
+                    font-size: 1.6rem;
+                    margin-bottom: 1rem;
                 }
 
-                input {
-                    margin-right: 0.5rem;
-                    padding: 0.5rem;
-                    cursor: pointer;
+                .input_text {
+                    width: 100%;
+                    padding: 1rem;
+                    border: 1px solid #ccc;
+                    border-radius: 0.5rem;
+                    margin-bottom: 0.8rem;
+                    font-size: 1.1rem;
+
+                    &#report {
+                        resize: none;
+                        height: 12rem;
+                    }
                 }
-            }
 
-            &#people_group {
-                position: relative;
+                #humor {
+                    width: 100%;
+                    padding: 1rem;
+                    border: 1px solid #ccc;
+                    border-radius: 0.5rem;
+                    margin-bottom: 0.8rem;
+                    background: transparent;
+                    cursor: pointer;
+                    font-size: 1.1rem;
 
-                .list_people {
+                    option {
+                        background-color: #f5f5f5;
+                    }
+                }
+
+                .radios_type {
                     display: flex;
-                    flex-direction: column;
+                    flex-direction: row;
+                    align-items: center;
                     width: 100%;
                     margin-bottom: 0.5rem;
-                    position: absolute;
-                    top: 4rem;
-                    background-color: white;
 
-                    .person {
-                        padding: 0.5rem;
-                        width: 100%;
-                        border-left: 1px solid #ccc;
-                        border-right: 1px solid #ccc;
-                        border-top: 1px solid #ccc;
-                        border-bottom: none;
-                        background: transparent;
+                    label {
                         cursor: pointer;
+                        font-size: 1.2rem;
+                    }
 
-                        &:last-child {
-                            border-bottom: 1px solid #ccc;
+                    input {
+                        margin-right: 0.5rem;
+                        padding: 0.5rem;
+                        cursor: pointer;
+                    }
+                }
+
+                &#people_group {
+                    position: relative;
+
+                    .list_people {
+                        display: flex;
+                        flex-direction: column;
+                        width: 100%;
+                        margin-bottom: 0.5rem;
+                        position: absolute;
+                        top: 4rem;
+                        background-color: white;
+
+                        .person {
+                            padding: 0.5rem;
+                            width: 100%;
+                            border-left: 1px solid #ccc;
+                            border-right: 1px solid #ccc;
+                            border-top: 1px solid #ccc;
+                            border-bottom: none;
+                            background: transparent;
+                            cursor: pointer;
+
+                            &:last-child {
+                                border-bottom: 1px solid #ccc;
+                            }
+                        }
+                    }
+
+                    .list_people_selected {
+                        display: flex;
+                        width: 100%;
+                        margin-bottom: 0.5rem;
+                        background-color: white;
+                        border-bottom: none;
+
+                        .person {
+                            background: transparent;
+                            border: none;
+                            cursor: pointer;
+                            margin-right: 0.5rem;
                         }
                     }
                 }
 
-                .list_people_selected {
+                &.buttons {
                     display: flex;
-                    width: 100%;
-                    margin-bottom: 0.5rem;
-                    background-color: white;
-                    border-bottom: none;
+                    flex-direction: row;
 
-                    .person {
-                        background: transparent;
-                        border: none;
-                        cursor: pointer;
+                    button {
+                        flex: 1;
                         margin-right: 0.5rem;
-                    }
-                }
-            }
 
-            &.buttons {
-                display: flex;
-                flex-direction: row;
+                        &:nth-child(1) {
+                            background-color: #b6b6b6;
 
-                button {
-                    flex: 1;
-                    margin-right: 0.5rem;
-
-                    &:nth-child(2) {
-                        background-color: #b6b6b6;
-
-                        &:hover {
-                            background-color: #ccc;
+                            &:hover {
+                                background-color: #ccc;
+                            }
                         }
                     }
                 }
             }
         }
-
     }
-}
 </style>

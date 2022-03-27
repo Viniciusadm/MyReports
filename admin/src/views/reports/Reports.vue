@@ -2,133 +2,151 @@
     <div class="reports">
         <ReportModal
             v-if="modal"
-            @fecharModal="modal = false"
+            @close="modal = false"
             @save="save()"/>
 
-        <Report
-            v-if="reportModal"
-            :report="report"
-            @close="reportModal = false;"/>
-
         <div class="header">
-            <h1 @click="this.$emit('reportModal')">Relatos</h1>
+            <h1>Relatos</h1>
             <button @click="modal = true;" class="btn">Novo relato</button>
         </div>
-        <Tabela class="table" :search="search" :table="table" @reportModal="openDetails($event)" />
+
+        <div class="reports-list">
+            <Report v-for="report in reports" :report="report" :key="report.id" />
+        </div>
+        <p class="paginas">
+            <button @click="backPage()" :disabled="page === 1">
+                Anterior
+            </button>
+            <span>Página {{ page }} de {{ last_page }}</span>
+            <button
+                @click="nextPage()"
+                :disabled="page === last_page">
+                Próxima
+            </button>
+        </p>
     </div>
 </template>
 
 <script>
 import ReportModal from "@/components/Reports/NewReportModal";
-import Report from "@/components/Reports/ReportModal";
-import Tabela from "@/components/Tabela";
+import api from "@/services/api";
+import Report from "@/components/Reports/Report";
 
 export default {
     data() {
         return {
             modal: false,
-            reportModal: false,
-            search: "",
-            report: {},
-            table: {
-                name: "Reports",
-                column_default: 'created_at',
-                order: 'desc',
-                columns: [
-                    {
-                        name: "Título",
-                        field: "title",
-                        maxLength: Math.ceil(window.innerWidth / 40),
-                        type: 'emit',
-                        emit: 'reportModal',
-                    },
-                    {
-                        name: "Relato",
-                        field: "report",
-                        maxLength: Math.ceil(window.innerWidth / 40),
-                    },
-                    {
-                        name: "Humor",
-                        field: "humor",
-                        format: (humor) => {
-                            return this.$store.state.humors[humor];
-                        },
-                    },
-                    {
-                        name: 'Tipo',
-                        field: 'type',
-                        format: (type) => {
-                            return type === 'daily' ? 'Diário' : 'Pessoal';
-                        },
-                    },
-                    {
-                        name: 'Pessoas',
-                        field: 'persons_ids',
-                        format: (persons_ids) => {
-                            return this.getPeople(persons_ids);
-                        },
-                        maxLength: Math.ceil(window.innerWidth / 40),
-                    },
-                    {
-                        name: 'Data',
-                        field: 'created_at',
-                        format: (created_at) => {
-                            return created_at.split('T')[0].split('-').reverse().join('/')
-                        },
-                    }
-                ],
-            },
+            reports: [],
+            page: 1,
+            last_page: 1,
+            limit: 10,
+            total: 0,
+            to: 0,
+            from: 0,
         };
     },
     components: {
-        Tabela,
         ReportModal,
         Report,
     },
     methods: {
-        getPeople(persons_ids) {
-            let people = [];
-            JSON.parse(persons_ids).forEach(id => {
-                people.push(this.$store.state.people[id - 1].name);
-            });
-            return people.length > 0 ? people.join(', ') : 'Nenhum';
-        },
         save() {
             this.modal = false;
             window.location.reload();
         },
-        openDetails(report) {
-            this.reportModal = true;
-            this.report = report;
+        getReports() {
+            api.get(`/reports/?page=${this.page}`)
+                .then(response => {
+                    if (response.data.success) {
+                        this.reports = response.data.data.data;
+                        this.last_page = response.data.data.last_page;
+                        this.total = response.data.data.total;
+                        this.from = response.data.data.from;
+                        this.to = response.data.data.to;
+                    }
+                });
         },
+        backPage() {
+            if (this.page > 1) {
+                this.page--;
+                this.getReports();
+            }
+        },
+        nextPage() {
+            if (this.page < this.last_page) {
+                this.page++;
+                this.getReports();
+            }
+        },
+    },
+    mounted() {
+        this.getReports();
     },
 };
 </script>
 
 <style lang="scss" scoped>
-.reports {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-
-    .header {
+    .reports {
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         align-items: center;
-        justify-content: space-between;
-        width: 90%;
-        margin-bottom: 1.25rem;
+        width: 100%;
 
-        h1 {
-            font-size: 2em;
-            font-weight: bold;
-            color: #333;
+        .header {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            width: 90%;
+            margin-bottom: 1.25rem;
+
+            .btn {
+                @media screen and (max-width: 570px) {
+                    font-size: 1rem;
+                }
+            }
+
+            h1 {
+                font-size: 2em;
+                font-weight: bold;
+                color: #333;
+            }
+        }
+
+        .reports-list {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: space-evenly;
+            width: 90%;
+        }
+
+        .paginas {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+            width: 80%;
+
+            span {
+                width: 8rem;
+                text-align: center;
+            }
+
+            button {
+                padding: 0.5rem 0.8rem;
+                border: 1px solid #ccc;
+                border-radius: 0.25rem;
+                background: #4e73df;
+                color: #fff;
+                cursor: pointer;
+
+                &:disabled {
+                    background: #ccc;
+                    color: #fff;
+                    cursor: not-allowed;
+                }
+            }
         }
     }
-
-    .table {
-        width: 90%;
-    }
-}
 </style>

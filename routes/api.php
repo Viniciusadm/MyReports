@@ -21,7 +21,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::prefix('reports')->group(function () {
-    Route::get('/search', [ReportController::class, 'search']);
+    Route::get('/', [ReportController::class, 'index']);
     Route::get('{id}', [ReportController::class, 'show']);
     Route::post('/', [ReportController::class, 'store']);
     Route::delete('{id}', [ReportController::class, 'delete']);

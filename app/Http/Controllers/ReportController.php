@@ -10,21 +10,17 @@ use Illuminate\Http\Request;
 
 class ReportController extends Controller
 {
-    public function search(): JsonResponse
+    public function index(): JsonResponse
     {
         try {
             $q = request('q');
-            $page = request('current_page');
-            $limit = request('limit');
-            $column = request('column');
-            $order = request('order');
-            $fields = explode(',', request('fields'));
+            $page = request('page');
 
-            $reports = Report::query()->select($fields)
+            $reports = Report::query()
                 ->where('title', 'like', "%$q%")
-                ->with('participants')
-                ->orderBy($column, $order)
-                ->paginate($limit, ['*'], 'current_page', $page);
+                ->with('participants.person')
+                ->orderBy('created_at', 'desc')
+                ->paginate(12, ['*'], 'current_page', $page);
 
             return response()->json(['success' => true, 'data' => $reports]);
         } catch (Exception $e) {
@@ -40,7 +36,7 @@ class ReportController extends Controller
                 ->find($id);
 
             if (!$report) {
-                return response()->json(['message' => 'Relatório não encontrado.'], 404);
+                return response()->json(['message' => 'Relato não encontrado.'], 404);
             }
 
             return response()->json(['success' => true, 'data' => $report]);
@@ -78,7 +74,7 @@ class ReportController extends Controller
                 'type' => $data['type'],
             ]);
 
-            $participants = json_decode($data['participants']);
+            $participants = $data['participants'];
 
             foreach ($participants as $participant) {
                 Participant::query()->create([
@@ -101,7 +97,7 @@ class ReportController extends Controller
             $report = Report::query()->find($id);
 
             if (!$report) {
-                return response()->json(['message' => 'Relatório não encontrado.'], 404);
+                return response()->json(['message' => 'Relato não encontrado.'], 404);
             }
 
             $report->update([
@@ -122,12 +118,12 @@ class ReportController extends Controller
             $report = Report::query()->find($id);
 
             if (!$report) {
-                return response()->json(['message' => 'Relatório não encontrado.'], 404);
+                return response()->json(['message' => 'Relato não encontrado.'], 404);
             }
 
             $report->delete();
 
-            return response()->json(['message' => 'Relatório deletado com sucesso!']);
+            return response()->json(['message' => 'Relato deletado com sucesso!']);
 
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 500);
