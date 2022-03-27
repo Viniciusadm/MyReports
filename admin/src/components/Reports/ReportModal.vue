@@ -80,7 +80,11 @@ export default {
                 title: '',
                 humor: '',
                 type: '',
-                participants: [],
+                participants: [{
+                    id: '',
+                    name: '',
+                    person_id: '',
+                }],
                 report: ''
             }
         }
@@ -147,7 +151,7 @@ export default {
             this.query = '';
         },
         removePerson($event) {
-            this.people = this.people.filter(person => person.id !== $event.target.value);
+            this.people = this.people.filter(person => person.id !== Number($event.target.value));
         },
         validateForm() {
             if (this.report.title === '') {
@@ -197,7 +201,7 @@ export default {
 
             this.people = report.participants.map(participant => {
                 return {
-                    id: participant.id,
+                    id: participant.person_id,
                     name: participant.person.name
                 }
             });

@@ -104,7 +104,19 @@ class ReportController extends Controller
                 'title' => $data['title'],
                 'report' => $data['report'],
                 'humor' => $data['humor'],
+                'type' => $data['type'],
             ]);
+
+            $participants = $data['participants'];
+
+            Participant::query()->where('report_id', $id)->delete();
+
+            foreach ($participants as $participant) {
+                Participant::query()->create([
+                    'report_id' => $report['id'],
+                    'person_id' => $participant,
+                ]);
+            }
 
             return response()->json(['success' => true, 'data' => $report]);
         } catch (Exception $e) {
