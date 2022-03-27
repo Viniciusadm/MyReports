@@ -22,19 +22,19 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::prefix('reports')->group(function () {
     Route::get('/search', [ReportController::class, 'search']);
-    Route::get('{id}', [ReportController::class, 'getById']);
-    Route::post('/', [ReportController::class, 'create']);
+    Route::get('{id}', [ReportController::class, 'show']);
+    Route::post('/', [ReportController::class, 'store']);
     Route::delete('{id}', [ReportController::class, 'delete']);
-    Route::patch('{id}', [ReportController::class, 'updateReport']);
+    Route::patch('{id}', [ReportController::class, 'update']);
 
     Route::get('person/{id}', [ReportController::class, 'getByPersonId']);
 });
 
 Route::prefix('people')->group(function () {
-    Route::get('/', [PersonController::class, 'getAll']);
+    Route::get('/', [PersonController::class, 'index']);
     Route::get('/search', [PersonController::class, 'search']);
-    Route::get('{id}', [PersonController::class, 'getById']);
-    Route::post('/', [PersonController::class, 'create']);
+    Route::get('{id}', [PersonController::class, 'show']);
+    Route::post('/', [PersonController::class, 'store']);
     Route::delete('{id}', [PersonController::class, 'delete']);
     Route::put('{id}', [PersonController::class, 'update']);
 });

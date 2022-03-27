@@ -9,19 +9,13 @@ use Illuminate\Http\JsonResponse;
 
 class PersonController extends Controller
 {
-    public function getAll(): JsonResponse
+    public function index(): JsonResponse
     {
         try {
             $people = Person::all();
-            return response()->json([
-                'success' => true,
-                'data' => $people
-            ]);
+            return response()->json(['success' => true, 'data' => $people]);
         } catch (Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage()
-            ], 500);
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }
 
@@ -35,88 +29,93 @@ class PersonController extends Controller
             $exclude = json_decode(request('exclude'));
 
             $people = Person::query()->select('id', 'name')
-            ->where('name', 'like', '%' . request('q') . '%')
-            ->whereNotIn('id', $exclude)
-            ->take(5)
-            ->get();
+                ->where('name', 'like', '%' . request('q') . '%')
+                ->whereNotIn('id', $exclude)
+                ->take(5)
+                ->get();
 
-            return response()->json($people);
+            return response()->json(['success' => true, 'data' => $people]);
 
         } catch (Exception $e) {
-            return response()->json([
-                'message' => $e->getMessage()
-            ], 500);
+            return response()->json(['message' => $e->getMessage()], 500);
         }
     }
 
-    public function getById($id): JsonResponse
+    public function show(int $id): JsonResponse
     {
         try {
             $person = Person::query()->find($id);
-            return response()->json($person);
+
+            if (!$person) {
+                return response()->json(['success' => false, 'message' => 'Pessoa não encontrada!'], 404);
+            }
+
+            return response()->json(['success' => true, 'data' => $person]);
         } catch (Exception $e) {
-            return response()->json([
-                'message' => $e->getMessage()
-            ], 500);
+            return response()->json(['message' => $e->getMessage()], 500);
         }
     }
 
-    public function create(Request $request): JsonResponse
+    public function store(Request $request): JsonResponse
     {
         try {
-            $this->validate($request, [
-                'name' => 'required|string',
-                'email' => 'email',
-                'phone' => 'numeric',
-                'birthday' => 'date'
-            ]);
-
             $data = $request->all();
 
-            $person = Person::query()->create($data);
+            $person = Person::query()->create([
+                'name' => $data['name'],
+                'birth_date' => $data['birth_date'],
+                'email' => $data['email'],
+                'phone' => $data['phone'],
+                'address' => $data['address'],
+                'description' => $data['description'],
+            ]);
 
-            return response()->json($person);
+            return response()->json(['success' => true, 'data' => $person]);
         } catch (Exception $e) {
-            return response()->json([
-                'message' => $e->getMessage()
-            ], 500);
+            return response()->json(['message' => $e->getMessage()], 500);
         }
     }
 
-    public function delete($id): JsonResponse
+    public function delete(int $id): JsonResponse
     {
         try {
             $person = Person::query()->find($id);
+
+            if (!$person) {
+                return response()->json(['success' => false, 'message' => 'Pessoa não encontrada!'], 404);
+            }
+
             $person->delete();
 
-            return response()->json('Person deleted successfully');
+            return response()->json(['success' => true, 'message' => 'Pessoa deletada com sucesso!']);
         } catch (Exception $e) {
-            return response()->json([
-                'message' => $e->getMessage()
-            ], 500);
+            return response()->json(['message' => $e->getMessage()], 500);
         }
     }
 
-    public function update(Request $request, $id): JsonResponse
+    public function update(Request $request, int $id): JsonResponse
     {
         try {
-            $this->validate($request, [
-                'email' => 'email',
-                'phone' => 'numeric',
-                'birthday' => 'date'
-            ]);
-
             $data = $request->all();
 
             $person = Person::query()->find($id);
 
-            $person->update($data);
+            if (!$person) {
+                return response()->json(['success' => false, 'message' => 'Pessoa não encontrada!'], 404);
+            }
 
-            return response()->json($person);
+            $person->update([
+                'name' => $data['name'],
+                'birth_date' => $data['birth_date'],
+                'email' => $data['email'],
+                'phone' => $data['phone'],
+                'address' => $data['address'],
+                'description' => $data['description'],
+            ]);
+
+            return response()->json(['success' => true, 'data' => $person]);
         } catch (Exception $e) {
-            return response()->json([
-                'message' => $e->getMessage()
-            ], 500);
+            return response()->json(['message' => $e->getMessage()], 500);
         }
     }
 }

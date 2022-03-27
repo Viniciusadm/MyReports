@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Person;
+use App\Models\Participant;
 use App\Models\Report;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -22,6 +22,7 @@ class ReportController extends Controller
 
             $reports = Report::query()->select($fields)
                 ->where('title', 'like', "%$q%")
+                ->with('participants')
                 ->orderBy($column, $order)
                 ->paginate($limit, ['*'], 'current_page', $page);
 
@@ -31,135 +32,105 @@ class ReportController extends Controller
         }
     }
 
-    public function getById($id): JsonResponse
+    public function show($id): JsonResponse
     {
         try {
-            $report = Report::find($id);
+            $report = Report::query()
+                ->with('participants')
+                ->find($id);
 
             if (!$report) {
-                return response()->json([
-                    'message' => 'Report not found'
-                ], 404);
+                return response()->json(['message' => 'Relatório não encontrado.'], 404);
             }
 
-            $report->people = Person::whereIn('id', json_decode($report->persons_ids))->get();
-
-            return response()->json($report);
+            return response()->json(['success' => true, 'data' => $report]);
 
         } catch (Exception $e) {
-            return response()->json([
-                'message' => $e->getMessage()
-            ], 500);
+            return response()->json(['message' => $e->getMessage()], 500);
         }
     }
 
     public function getByPersonId($id): JsonResponse
     {
         try {
-            $reports = Report::where('persons_ids', 'like', '%[' . $id . ']%')
-            ->orWhere('persons_ids', 'like', '%,' . $id . ']%')
-            ->orWhere('persons_ids', 'like', '%[' . $id . ',%')
-            ->orWhere('persons_ids', 'like', '%,' . $id . ',%')
-            ->get();
+            $reports = Report::query()
+                ->with('participants')
+                ->whereHas('participants', function ($query) use ($id) {
+                    $query->where('person_id', $id);
+                })
+                ->get();
 
-            foreach($reports as $report) {
-                $report->people = Person::whereIn('id', json_decode($report->persons_ids))->get();
+            return response()->json(['success' => true, 'data' => $reports]);
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function store(Request $request): JsonResponse
+    {
+        try {
+            $data = $request->all();
+
+            $report = Report::query()->create([
+                'title' => $data['title'],
+                'report' => $data['report'],
+                'humor' => $data['humor'],
+                'type' => $data['type'],
+            ]);
+
+            $participants = json_decode($data['participants']);
+
+            foreach ($participants as $participant) {
+                Participant::query()->create([
+                    'report_id' => $report['id'],
+                    'person_id' => $participant,
+                ]);
             }
 
-            return response()->json($reports);
-
+            return response()->json(['success' => true, 'data' => $report]);
         } catch (Exception $e) {
-            return response()->json([
-                'message' => $e->getMessage()
-            ], 500);
+            return response()->json(['message' => $e->getMessage()], 500);
         }
     }
 
-    public function create(Request $request): JsonResponse
+    public function update(Request $request, $id): JsonResponse
     {
         try {
-            $this->validate($request, [
-                'title' => 'required',
-                'report' => 'required',
-                'humor' => 'required',
-                'type' => 'required|in:personal,daily',
-                'persons_ids' => 'array'
-            ]);
-
             $data = $request->all();
 
-            $report = new Report();
-
-            $report->title = $data['title'];
-            $report->report = $data['report'];
-            $report->humor = $data['humor'];
-            $report->type = $data['type'];
-            $report->persons_ids = json_encode($data['persons_ids']);
-
-            $report->save();
-
-            return response()->json($report, 201);
-
-        } catch (Exception $e) {
-            return response()->json([
-                'message' => $e->getMessage()
-            ], 500);
-        }
-    }
-
-    public function updateReport(Request $request, $id): JsonResponse
-    {
-        try {
-            $this->validate($request, [
-                'title' => 'required',
-                'report' => 'required',
-                'humor' => 'required',
-            ]);
-
-            $data = $request->all();
-
-            $report = Report::find($id);
+            $report = Report::query()->find($id);
 
             if (!$report) {
-                return response()->json([
-                    'message' => 'Report not found'
-                ], 404);
+                return response()->json(['message' => 'Relatório não encontrado.'], 404);
             }
 
-            $report->title = $data['title'];
-            $report->report = $data['report'];
-            $report->humor = $data['humor'];
-            $report->save();
+            $report->update([
+                'title' => $data['title'],
+                'report' => $data['report'],
+                'humor' => $data['humor'],
+            ]);
 
-            return response()->json($report);
-
+            return response()->json(['success' => true, 'data' => $report]);
         } catch (Exception $e) {
-            return response()->json([
-                'message' => $e->getMessage()
-            ], 500);
+            return response()->json(['message' => $e->getMessage()], 500);
         }
     }
 
     public function delete($id): JsonResponse
     {
         try {
-            $report = Report::find($id);
+            $report = Report::query()->find($id);
 
             if (!$report) {
-                return response()->json([
-                    'message' => 'Report not found'
-                ], 404);
+                return response()->json(['message' => 'Relatório não encontrado.'], 404);
             }
 
             $report->delete();
-            return response()->json([
-                'message' => 'Report deleted'
-            ]);
+
+            return response()->json(['message' => 'Relatório deletado com sucesso!']);
 
         } catch (Exception $e) {
-            return response()->json([
-                'message' => $e->getMessage()
-            ], 500);
+            return response()->json(['message' => $e->getMessage()], 500);
         }
     }
 }
