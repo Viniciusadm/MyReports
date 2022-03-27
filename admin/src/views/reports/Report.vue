@@ -9,7 +9,10 @@
         <div class="total">
             <div class="menu_report">
                 <h3>Relato Nº {{ id }}</h3>
-                <button @click="modal = true;" class="btn">Editar relato</button>
+                <div class="buttons">
+                    <button @click="modal = true;" class="btn">Editar relato</button>
+                    <button @click="deleteReport()" class="btn">Excluir relato</button>
+                </div>
             </div>
 
             <div class="header">
@@ -35,6 +38,9 @@
 <script>
 import api from "@/services/api";
 import ReportModal from "@/components/Reports/ReportModal";
+import { useToast } from "vue-toastification";
+
+const toast = useToast();
 
 export default {
     data() {
@@ -88,13 +94,36 @@ export default {
         getReport() {
             api.get(`/reports/${this.id}`)
                 .then(response => {
-                    this.report = response.data.data;
+                    if (response.data.success) {
+                        this.report = response.data.data;
+                    } else {
+                        toast.error(response.data.message);
+                    }
+                })
+                .catch(error => {
+                    toast.error(error.message);
+                });
+        },
+        deleteReport() {
+            api.delete(`/reports/${this.id}`)
+                .then(response => {
+                    if (response.data.success) {
+                        toast.success('Relato excluído com sucesso!');
+                    } else {
+                        toast.error(response.data.message);
+                    }
+                })
+                .catch(error => {
+                    toast.error(error.message);
+                })
+                .finally(() => {
+                    this.$router.push('/reports');
                 });
         },
         save() {
             this.modal = false;
             this.getReport();
-        }
+        },
     },
     mounted() {
         this.getReport();
@@ -133,9 +162,32 @@ export default {
                     }
                 }
 
-                .btn {
+                .buttons {
+                    display: flex;
+                    flex-direction: row;
+
                     @media screen and (max-width: 570px) {
-                        font-size: 1rem;
+                        flex-direction: column;
+                    }
+
+                    .btn {
+                        &:first-child {
+                            margin-right: 1rem;
+                        }
+
+                        &:last-child {
+                            background-color: red;
+                        }
+
+                        @media screen and (max-width: 570px) {
+                            width: 9.5rem;
+                            display: flex;
+                            font-size: 1rem;
+                            flex-direction: column;
+                            align-items: center;
+                            margin-bottom: 0.3rem;
+                            margin-right: 0;
+                        }
                     }
                 }
             }
