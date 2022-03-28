@@ -4,26 +4,27 @@
             v-if="modal"
             @close="modal = false"
             @save="save()"/>
-
         <div class="header">
             <h1>Relatos</h1>
             <button @click="modal = true;" class="btn">Novo relato</button>
         </div>
-
-        <div class="reports-list">
-            <Report v-for="report in reports" :report="report" :key="report.id" />
-        </div>
-        <p class="paginas">
-            <button @click="backPage()" :disabled="page === 1">
-                Anterior
-            </button>
-            <span>Página {{ page }} de {{ last_page }}</span>
-            <button
-                @click="nextPage()"
-                :disabled="page === last_page">
-                Próxima
-            </button>
-        </p>
+        <template v-if="reports.length > 0">
+            <div class="reports-list">
+                <Report v-for="report in reports" :report="report" :key="report.id" />
+            </div>
+            <p class="paginas">
+                <button @click="backPage()" :disabled="page === 1">
+                    Anterior
+                </button>
+                <span>Página {{ page }} de {{ last_page }}</span>
+                <button
+                    @click="nextPage()"
+                    :disabled="page === last_page">
+                    Próxima
+                </button>
+            </p>
+        </template>
+        <p v-else class="no-reports">Não há relatórios.</p>
     </div>
 </template>
 
@@ -142,6 +143,10 @@ export default {
                     cursor: not-allowed;
                 }
             }
+        }
+
+        .no-reports {
+            font-size: 2rem;
         }
     }
 </style>

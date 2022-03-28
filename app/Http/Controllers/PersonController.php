@@ -103,6 +103,8 @@ class PersonController extends Controller
         try {
             $data = $request->all();
 
+//            return response()->json(['success' => false, 'data' => $data]);
+
             $person = Person::query()->find($id);
 
             if (!$person) {
@@ -116,6 +118,8 @@ class PersonController extends Controller
                 'phone' => $data['phone'],
                 'address' => $data['address'],
                 'description' => $data['description'],
+                'twitter' => $data['twitter'],
+                'instagram' => $data['instagram'],
             ]);
 
             return response()->json(['success' => true, 'data' => $person]);

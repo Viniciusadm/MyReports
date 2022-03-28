@@ -100,6 +100,12 @@ export default {
             }
         }
     },
+    props: {
+        id: {
+            type: Number,
+            required: false
+        },
+    },
     methods: {
         onFileChange(e) {
             let file = e.target.files[0];
@@ -128,6 +134,14 @@ export default {
             }
 
             this.setFormData();
+
+            if (this.id) {
+                this.updatePerson();
+            } else {
+                this.createPerson();
+            }
+        },
+        createPerson() {
             api.post("/people", this.formData)
                 .then(response => {
                     if (response.data.success) {
@@ -140,7 +154,54 @@ export default {
                 .catch(error => {
                     toast.error(error.message);
                 });
-        }
+        },
+        updatePerson() {
+            api.post(`/people/${this.id}`, this.formData)
+                .then(response => {
+                    if (response.data.success) {
+                        toast.success('Pessoa atualizada com sucesso!');
+                        this.$emit("save");
+                    } else {
+                        toast.error(response.data.message);
+                    }
+                })
+                .catch(error => {
+                    toast.error(error.message);
+                });
+        },
+        getPerson() {
+            api.get(`/people/${this.id}`)
+                .then(response => {
+                    if (response.data.success) {
+                        this.setPerson(response.data.data);
+                    } else {
+                        toast.error(response.data.message);
+                    }
+                })
+                .catch(error => {
+                    toast.error(error.message);
+                });
+        },
+        setPerson(person) {
+            this.person = {
+                name: person.name,
+                birth_date: {
+                    day: person.birth_date.split("/")[0],
+                    month: person.birth_date.split("/")[1],
+                    year: person.birth_date.split("/")[2]
+                },
+                email: person.email,
+                phone: person.phone,
+                address: person.address,
+                description: person.description,
+                twitter: person.twitter,
+                instagram: person.instagram,
+                image: {
+                    url: person.image,
+                    file: null
+                }
+            }
+        },
     },
     components: {
         BaseModal,
@@ -155,6 +216,11 @@ export default {
             return years;
         }
     },
+    mounted() {
+        if (this.id) {
+            this.getPerson();
+        }
+    }
 }
 </script>
 
@@ -276,6 +342,10 @@ export default {
                     justify-content: center;
                     width: 100%;
 
+                    @media screen and (max-width: 460px) {
+                        flex-direction: column;
+                    }
+
                     select {
                         flex: 1;
                         padding: 0.5rem;
@@ -287,7 +357,12 @@ export default {
                         cursor: pointer;
                         background-color: transparent;
 
-                        &:last-child {
+                        @media screen and (max-width: 460px) {
+                            width: 100%;
+                            margin-right: 0;
+                        }
+
+                            &:last-child {
                             margin-right: 0;
                         }
                     }
