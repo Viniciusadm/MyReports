@@ -228,6 +228,7 @@ export default {
             margin: 1rem 0;
             font-weight: bold;
         }
+
         .form_report {
             width: 80%;
             max-width: 600px;

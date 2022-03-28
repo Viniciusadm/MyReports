@@ -12,7 +12,10 @@ class PersonController extends Controller
     public function index(): JsonResponse
     {
         try {
-            $people = Person::all();
+            $people = Person::query()
+                ->orderBy('name')
+                ->get();
+
             return response()->json(['success' => true, 'data' => $people]);
         } catch (Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
@@ -68,6 +71,8 @@ class PersonController extends Controller
                 'phone' => $data['phone'],
                 'address' => $data['address'],
                 'description' => $data['description'],
+                'twitter' => $data['twitter'],
+                'instagram' => $data['instagram'],
             ]);
 
             return response()->json(['success' => true, 'data' => $person]);

@@ -19,6 +19,7 @@ class CreateReportsTable extends Migration
             $table->text('report');
             $table->string('humor');
             $table->enum('type', ['personal', 'daily']);
+            $table->string('image')->nullable();
             $table->timestamps();
         });
     }
