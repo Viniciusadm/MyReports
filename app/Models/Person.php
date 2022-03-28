@@ -16,7 +16,9 @@ class Person extends Model
         'email',
         'phone',
         'address',
-        'description'
+        'description',
+        'twitter',
+        'instagram',
     ];
 
     public function participants(): HasMany

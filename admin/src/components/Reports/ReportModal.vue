@@ -132,7 +132,7 @@ export default {
         searchPerson() {
             const exclude = JSON.stringify(this.people.map(person => person.id));
 
-            api.get(`people/search/?q=${this.query}&exclude=${exclude}`)
+            api.get(`people/search?q=${this.query}&exclude=${exclude}`)
                 .then(response => {
                     if (response.data.success) {
                         this.people_search = response.data.data;

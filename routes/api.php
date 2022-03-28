@@ -36,5 +36,5 @@ Route::prefix('people')->group(function () {
     Route::get('{id}', [PersonController::class, 'show']);
     Route::post('/', [PersonController::class, 'store']);
     Route::delete('{id}', [PersonController::class, 'delete']);
-    Route::put('{id}', [PersonController::class, 'update']);
+    Route::post('{id}', [PersonController::class, 'update']);
 });

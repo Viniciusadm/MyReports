@@ -3,16 +3,19 @@
         <PersonModal
             v-if="modal"
             @close="modal = false"
-            @save="save()"/>
-
+            :id="id"
+            @save="save()">
+        </PersonModal>
         <div class="header">
             <h1>Pessoas</h1>
             <button @click="modal = true;" class="btn">Nova pessoa</button>
         </div>
-
-        <div class="people-list">
-            <p v-for="person in people" :key="person.id">{{ person.name }}</p>
-        </div>
+        <template v-if="people.length > 0">
+            <div class="people-list">
+                <p @click="openModal(person.id)" v-for="person in people" :key="person.id">{{ person.name }}</p>
+            </div>
+        </template>
+        <p v-else class="no-people">Não há pessoas cadastradas.</p>
     </div>
 </template>
 
@@ -28,6 +31,7 @@ export default {
         return {
             modal: false,
             people: [],
+            id: null,
         }
     },
     components: {
@@ -50,7 +54,11 @@ export default {
         save() {
             this.modal = false;
             this.getPeople();
-        }
+        },
+        openModal(id) {
+            this.id = id;
+            this.modal = true;
+        },
     },
     mounted() {
         this.getPeople();
@@ -84,6 +92,10 @@ export default {
                 font-weight: bold;
                 color: #333;
             }
+        }
+
+        .no-people {
+            font-size: 2rem;
         }
     }
 </style>
