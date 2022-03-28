@@ -54,6 +54,7 @@ export default {
         save() {
             this.modal = false;
             this.getPeople();
+            this.id = null;
         },
         openModal(id) {
             this.id = id;
@@ -96,6 +97,7 @@ export default {
 
         .no-people {
             font-size: 2rem;
+            text-align: center;
         }
     }
 </style>
