@@ -24,7 +24,7 @@
                 </button>
             </p>
         </template>
-        <p v-else class="no-reports">Não há relatórios.</p>
+        <p v-else class="no-reports">Não há relatos.</p>
     </div>
 </template>
 
