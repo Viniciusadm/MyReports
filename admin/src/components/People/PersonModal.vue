@@ -118,7 +118,6 @@ export default {
         },
         setFormData() {
             this.formData.append("name", this.person.name);
-            this.formData.append("birth_date", this.person.birth_date.day + "/" + this.person.birth_date.month + "/" + this.person.birth_date.year);
             this.formData.append("email", this.person.email);
             this.formData.append("phone", this.person.phone);
             this.formData.append("address", this.person.address);
@@ -126,6 +125,10 @@ export default {
             this.formData.append("twitter", this.person.twitter);
             this.formData.append("instagram", this.person.instagram);
             this.formData.append("image", this.person.image.file);
+
+            if (this.person.birth_date.day && this.person.birth_date.month && this.person.birth_date.year) {
+                this.formData.append("birth_date", this.person.birth_date.year + "-" + this.person.birth_date.month + "-" + this.person.birth_date.day);
+            }
         },
         sendPerson() {
             if (this.person.name === '') {
@@ -185,11 +188,6 @@ export default {
         setPerson(person) {
             this.person = {
                 name: person.name,
-                birth_date: {
-                    day: person.birth_date.split("/")[0],
-                    month: person.birth_date.split("/")[1],
-                    year: person.birth_date.split("/")[2]
-                },
                 email: person.email,
                 phone: person.phone,
                 address: person.address,
@@ -199,6 +197,20 @@ export default {
                 image: {
                     url: person.image,
                     file: null
+                }
+            }
+
+            if (person.birth_date) {
+                this.person.birth_date = {
+                    day: person.birth_date.split("-")[2],
+                    month: person.birth_date.split("-")[1],
+                    year: person.birth_date.split("-")[0]
+                }
+            } else {
+                this.person.birth_date = {
+                    day: "",
+                    month: "",
+                    year: ""
                 }
             }
         },

@@ -64,16 +64,9 @@ class PersonController extends Controller
         try {
             $data = $request->all();
 
-            $person = Person::query()->create([
-                'name' => $data['name'],
-                'birth_date' => $data['birth_date'],
-                'email' => $data['email'],
-                'phone' => $data['phone'],
-                'address' => $data['address'],
-                'description' => $data['description'],
-                'twitter' => $data['twitter'],
-                'instagram' => $data['instagram'],
-            ]);
+            $objeto = $this->getObjeto($data);
+
+            $person = Person::query()->create($objeto);
 
             return response()->json(['success' => true, 'data' => $person]);
         } catch (Exception $e) {
@@ -103,28 +96,37 @@ class PersonController extends Controller
         try {
             $data = $request->all();
 
-//            return response()->json(['success' => false, 'data' => $data]);
-
             $person = Person::query()->find($id);
 
             if (!$person) {
                 return response()->json(['success' => false, 'message' => 'Pessoa não encontrada!'], 404);
             }
 
-            $person->update([
-                'name' => $data['name'],
-                'birth_date' => $data['birth_date'],
-                'email' => $data['email'],
-                'phone' => $data['phone'],
-                'address' => $data['address'],
-                'description' => $data['description'],
-                'twitter' => $data['twitter'],
-                'instagram' => $data['instagram'],
-            ]);
+            $objeto = $this->getObjeto($data);
+
+            $person->update($objeto);
 
             return response()->json(['success' => true, 'data' => $person]);
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 500);
         }
+    }
+
+    private function getObjeto(array $data): array
+    {
+        $objeto = [
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'phone' => $data['phone'],
+            'address' => $data['address'],
+            'description' => $data['description'],
+            'twitter' => $data['twitter'],
+            'instagram' => $data['instagram'],
+        ];
+
+        if (isset($data['birth_date'])) {
+            $objeto['birth_date'] = $data['birth_date'];
+        }
+        return $objeto;
     }
 }
