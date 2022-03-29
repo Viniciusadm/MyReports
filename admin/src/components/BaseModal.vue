@@ -28,6 +28,11 @@
         border: 1px solid #ccc;
         margin: 1.5rem 0;
 
+        @media screen and (max-width: 425px) {
+            width: 100%;
+            margin: 0;
+        }
+
         &.scroll {
             overflow-y: auto;
         }
