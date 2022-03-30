@@ -18,8 +18,8 @@ class CreatePeopleTable extends Migration
             $table->string('name');
             $table->string('nickname')->nullable();
             $table->date('birth_date')->nullable();
-            $table->string('email')->nullable();
-            $table->string('phone')->nullable();
+            $table->string('email')->unique()->nullable();
+            $table->string('phone')->unique()->nullable();
             $table->string('address')->nullable();
             $table->text('description')->nullable();
             $table->string('image')->nullable();
