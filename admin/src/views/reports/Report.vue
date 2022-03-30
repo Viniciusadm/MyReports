@@ -84,7 +84,13 @@ export default {
         },
         participants() {
             if (this.report.participants.length > 0) {
-                return this.report.participants.map(participant => participant.person.name).join(', ');
+                return this.report.participants.map(participant => {
+                    if (participant.person.nickname) {
+                        return participant.person.nickname;
+                    } else {
+                        return participant.person.name;
+                    }
+                }).join(', ');
             } else {
                 return 'Nenhum participante';
             }

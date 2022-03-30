@@ -31,7 +31,8 @@ export default {
                     created_at: '',
                     participants: [{
                         person: {
-                            name: ''
+                            name: '',
+                            nickname: '',
                         }
                     }],
                 };
@@ -43,7 +44,13 @@ export default {
             return date.split('T')[0].split('-').reverse().join('/') + ' ' + date.split('T')[1].split('.')[0];
         },
         participantsFormated(participants) {
-            return participants.map(participant => participant.person.name).join(', ');
+            return participants.map(participant => {
+                if (participant.person.nickname) {
+                    return participant.person.nickname;
+                } else {
+                    return participant.person.name;
+                }
+            }).join(', ');
         },
     },
 }

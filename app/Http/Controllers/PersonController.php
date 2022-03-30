@@ -116,6 +116,7 @@ class PersonController extends Controller
     {
         $objeto = [
             'name' => $data['name'],
+            'nickname' => $data['nickname'],
             'email' => $data['email'],
             'phone' => $data['phone'],
             'address' => $data['address'],
@@ -127,6 +128,7 @@ class PersonController extends Controller
         if (isset($data['birth_date'])) {
             $objeto['birth_date'] = $data['birth_date'];
         }
+
         return $objeto;
     }
 }

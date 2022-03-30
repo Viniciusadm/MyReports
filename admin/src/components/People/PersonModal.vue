@@ -14,6 +14,10 @@
                     <input v-model="person.name" class="input_text" type="text" id="name" placeholder="Nome">
                 </div>
                 <div class="form_group">
+                    <label class="form_label" for="nickname">Apelido</label>
+                    <input v-model="person.nickname" class="input_text" type="text" id="nickname" placeholder="Apelido">
+                </div>
+                <div class="form_group">
                     <label class="form_label" for="email">E-mail</label>
                     <input v-model="person.email" class="input_text" type="email" id="email" placeholder="E-mail">
                 </div>
@@ -82,6 +86,7 @@ export default {
             formData: new FormData(),
             person: {
                 name: "",
+                nickname: "",
                 birth_date: {
                     day: "",
                     month: "",
@@ -118,6 +123,7 @@ export default {
         },
         setFormData() {
             this.formData.append("name", this.person.name);
+            this.formData.append("nickname", this.person.nickname);
             this.formData.append("email", this.person.email);
             this.formData.append("phone", this.person.phone);
             this.formData.append("address", this.person.address);
@@ -188,6 +194,7 @@ export default {
         setPerson(person) {
             this.person = {
                 name: person.name,
+                nickname: person.nickname,
                 email: person.email,
                 phone: person.phone,
                 address: person.address,
