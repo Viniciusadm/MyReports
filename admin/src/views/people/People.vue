@@ -2,7 +2,7 @@
     <div class="people">
         <PersonModal
             v-if="modal"
-            @close="modal = false"
+            @close="modal = false; this.id = null"
             :id="id"
             @save="save()">
         </PersonModal>
