@@ -116,13 +116,13 @@ class PersonController extends Controller
     {
         $objeto = [
             'name' => $data['name'],
-            'nickname' => $data['nickname'],
-            'email' => $data['email'],
-            'phone' => $data['phone'],
-            'address' => $data['address'],
-            'description' => $data['description'],
-            'twitter' => $data['twitter'],
-            'instagram' => $data['instagram'],
+            'nickname' => $data['nickname'] ?? null,
+            'email' => $data['email'] ?? null,
+            'phone' => $data['phone'] ?? null,
+            'address' => $data['address'] ?? null,
+            'description' => $data['description'] ?? null,
+            'twitter' => $data['twitter'] ?? null,
+            'instagram' => $data['instagram'] ?? null,
         ];
 
         if (isset($data['birth_date'])) {

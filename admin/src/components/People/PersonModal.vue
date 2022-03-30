@@ -122,15 +122,15 @@ export default {
             reader.readAsDataURL(file);
         },
         setFormData() {
-            this.formData.append("name", this.person.name);
-            this.formData.append("nickname", this.person.nickname);
-            this.formData.append("email", this.person.email);
-            this.formData.append("phone", this.person.phone);
-            this.formData.append("address", this.person.address);
-            this.formData.append("description", this.person.description);
-            this.formData.append("twitter", this.person.twitter);
-            this.formData.append("instagram", this.person.instagram);
-            this.formData.append("image", this.person.image.file);
+            if (this.person.name) this.formData.append("name", this.person.name);
+            if (this.person.nickname) this.formData.append("nickname", this.person.nickname);
+            if (this.person.email) this.formData.append("email", this.person.email);
+            if (this.person.phone) this.formData.append("phone", this.person.phone);
+            if (this.person.address) this.formData.append("address", this.person.address);
+            if (this.person.description) this.formData.append("description", this.person.description);
+            if (this.person.twitter) this.formData.append("twitter", this.person.twitter);
+            if (this.person.instagram) this.formData.append("instagram", this.person.instagram);
+            if (this.person.image.file) this.formData.append("image", this.person.image.file);
 
             if (this.person.birth_date.day && this.person.birth_date.month && this.person.birth_date.year) {
                 this.formData.append("birth_date", this.person.birth_date.year + "-" + this.person.birth_date.month + "-" + this.person.birth_date.day);
