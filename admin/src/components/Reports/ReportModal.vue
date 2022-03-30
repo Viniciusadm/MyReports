@@ -1,7 +1,7 @@
 <template>
     <BaseModal :scroll="true">
         <div class="new_report">
-            <h1 class="title_page">Novo Relato</h1>
+            <h1 class="title_page">{{ title }}</h1>
             <div class="form_report">
                 <div class="form_group">
                     <label class="form_label" for="title">Título</label>
@@ -66,9 +66,12 @@ export default {
         BaseModal
     },
     computed: {
-      button_text() {
+        button_text() {
           return this.id ? 'Editar' : 'Criar';
-      },
+        },
+        title() {
+            return this.id ? 'Editar Relato' : 'Novo Relato';
+        }
     },
     data() {
         return {

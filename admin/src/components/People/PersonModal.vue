@@ -1,7 +1,7 @@
 <template>
     <BaseModal :scroll="true">
         <div class="person_modal">
-            <h1 class="title_page">Nova pessoa</h1>
+            <h1 class="title_page">{{ title }}</h1>
             <div class="form_report">
                 <div class="form_group photo">
                     <label class="form_label" for="photo">Foto</label>
@@ -61,7 +61,7 @@
                 </div>
                 <div class="form_group buttons">
                     <button @click="$emit('close')" class="btn close_report">Fechar</button>
-                    <button @click="sendPerson()" class="btn send_report">Criar</button>
+                    <button @click="sendPerson()" class="btn send_report">{{ button_text }}</button>
                 </div>
             </div>
         </div>
@@ -148,7 +148,7 @@ export default {
             api.post("/people", this.formData)
                 .then(response => {
                     if (response.data.success) {
-                        toast.success('Pessoa criada com sucesso!');
+                        toast.success('Pessoa adicionada com sucesso!');
                         this.$emit("save");
                     } else {
                         toast.error(response.data.message);
@@ -226,6 +226,12 @@ export default {
                 years.push(i);
             }
             return years;
+        },
+        title() {
+            return this.id ? "Editar pessoa" : "Adicionar pessoa";
+        },
+        button_text() {
+            return this.id ? "Editar" : "Adicionar";
         }
     },
     mounted() {
