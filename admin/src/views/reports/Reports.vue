@@ -12,7 +12,7 @@
             <div class="reports-list">
                 <Report v-for="report in reports" :report="report" :key="report.id" />
             </div>
-            <p class="paginas">
+            <p class="paginas" v-if="total > 12">
                 <button @click="backPage()" :disabled="page === 1">
                     Anterior
                 </button>
