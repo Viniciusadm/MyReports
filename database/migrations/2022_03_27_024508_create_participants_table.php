@@ -17,6 +17,7 @@ class CreateParticipantsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('person_id');
             $table->unsignedBigInteger('report_id');
+            $table->enum('type', ['main', 'secondary']);
             $table->timestamps();
 
             $table->foreign('person_id')->references('id')->on('people')->onDelete('cascade');
