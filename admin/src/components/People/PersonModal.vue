@@ -107,7 +107,6 @@ export default {
     },
     props: {
         id: {
-            type: Number,
             required: false
         },
     },

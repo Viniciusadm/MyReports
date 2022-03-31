@@ -10,8 +10,8 @@
             <div class="menu_report">
                 <h3>Relato Nº {{ id }}</h3>
                 <div class="buttons">
-                    <button @click="modal = true;" class="btn">Editar relato</button>
-                    <button @click="deleteReport()" class="btn">Excluir relato</button>
+                    <button @click="modal = true;" class="btn">Editar</button>
+                    <button @click="deleteReport()" class="btn">Excluir</button>
                 </div>
             </div>
 

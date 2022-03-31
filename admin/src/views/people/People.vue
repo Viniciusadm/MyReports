@@ -2,8 +2,7 @@
     <div class="people">
         <PersonModal
             v-if="modal"
-            @close="modal = false; this.id = null"
-            :id="id"
+            @close="modal = false;"
             @save="save()">
         </PersonModal>
         <div class="header">
@@ -12,7 +11,7 @@
         </div>
         <template v-if="people.length > 0">
             <div class="people-list">
-                <p @click="openModal(person.id)" v-for="person in people" :key="person.id">{{ person.name }}</p>
+                <router-link v-for="person in people" :key="person.id" :to="`/people/${person.id}`" class="title">{{ person.name }}</router-link>
             </div>
         </template>
         <p v-else class="no-people">Não há pessoas cadastradas.</p>
@@ -31,8 +30,7 @@ export default {
         return {
             modal: false,
             people: [],
-            id: null,
-        }
+        };
     },
     components: {
         PersonModal
@@ -54,11 +52,6 @@ export default {
         save() {
             this.modal = false;
             this.getPeople();
-            this.id = null;
-        },
-        openModal(id) {
-            this.id = id;
-            this.modal = true;
         },
     },
     mounted() {
@@ -92,6 +85,17 @@ export default {
                 font-size: 2em;
                 font-weight: bold;
                 color: #333;
+            }
+        }
+
+        .people-list {
+            display: flex;
+            flex-direction: column;
+
+            a {
+                color: black;
+                text-decoration: none;
+                font-size: 1.4rem;
             }
         }
 
