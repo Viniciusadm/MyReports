@@ -13,6 +13,7 @@ class Participant extends Model
     protected $fillable = [
         'person_id',
         'report_id',
+        'type',
     ];
 
     public function report(): BelongsTo

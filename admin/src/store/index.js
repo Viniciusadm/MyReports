@@ -1,4 +1,4 @@
-import { createStore } from "vuex";
+import {createStore} from "vuex";
 
 export default createStore({
     state: {
@@ -20,8 +20,14 @@ export default createStore({
     mutations: {
         setPeople(state, people) {
             state.people = people;
-        }
+        },
     },
-    actions: {},
     modules: {},
+    getters: {
+        searchPeople: state => (search, exclude) => {
+            return state.people.filter(person => {
+                return person.name.toLowerCase().includes(search.toLowerCase()) && exclude.indexOf(person.id) === -1;
+            });
+        },
+    }
 });

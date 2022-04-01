@@ -34,7 +34,7 @@
                         <p v-if="person.instagram" class="info">Instagram: <a target="_blank" :href="`https://instagram.com/${person.instagram}`">{{ person.instagram }}</a></p>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row" v-if="person.description">
                     <div class="column content">
                         <p class="description"><span>Descrição:</span> {{ person.description }}</p>
                     </div>

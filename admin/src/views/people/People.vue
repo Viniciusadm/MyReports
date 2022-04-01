@@ -41,6 +41,7 @@ export default {
                 .then(response => {
                     if (response.data.success) {
                         this.people = response.data.data;
+                        this.$store.commit("setPeople", response.data.data);
                     } else {
                         toast.error(response.data.message);
                     }
@@ -55,7 +56,11 @@ export default {
         },
     },
     mounted() {
-        this.getPeople();
+        if (this.$store.state.people.length === 0) {
+            this.getPeople();
+        } else {
+            this.people = this.$store.state.people;
+        }
     }
 }
 

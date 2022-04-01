@@ -77,7 +77,8 @@ class ReportController extends Controller
             foreach ($participants as $participant) {
                 Participant::query()->create([
                     'report_id' => $report['id'],
-                    'person_id' => $participant,
+                    'person_id' => $participant['person_id'],
+                    'type' => $participant['type'],
                 ]);
             }
 
@@ -112,7 +113,8 @@ class ReportController extends Controller
             foreach ($participants as $participant) {
                 Participant::query()->create([
                     'report_id' => $report['id'],
-                    'person_id' => $participant,
+                    'person_id' => $participant['person_id'],
+                    'type' => $participant['type'],
                 ]);
             }
 

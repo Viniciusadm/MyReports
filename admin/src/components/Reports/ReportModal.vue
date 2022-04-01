@@ -36,7 +36,7 @@
                         <button class="person" @click="addPerson($event)" :value="person.id" :name="person.name" v-for="person in people_search" :key="person.id">{{ person.name }}</button>
                     </div>
                     <div class="list_people_selected">
-                        <button class="person" @click="removePerson($event)" :value="person.id" :name="person.name" v-for="person in people" :key="person.id">{{ person.name }}</button>
+                        <button class="person" :class="{ main: person.type === 'main' }" @click="changeType($event)" @dblclick="removePerson($event)" :value="person.id" :name="person.name" v-for="person in people" :key="person.id">{{ person.name }}</button>
                     </div>
                 </div>
                 <div class="form_group buttons">
@@ -87,6 +87,7 @@ export default {
                     id: '',
                     name: '',
                     person_id: '',
+                    type: 'main'
                 }],
                 report: ''
             }
@@ -94,7 +95,12 @@ export default {
     },
     methods: {
         sendReport() {
-            this.report.participants = this.people.map(person => person.id);
+            this.report.participants = this.people.map(person => {
+                return {
+                    person_id: person.id,
+                    type: person.type,
+                }
+            });
 
             if (this.validateForm()) {
                 if (this.id) {
@@ -134,24 +140,21 @@ export default {
         },
         searchPerson() {
             const exclude = JSON.stringify(this.people.map(person => person.id));
-
-            api.get(`people/search?q=${this.query}&exclude=${exclude}`)
-                .then(response => {
-                    if (response.data.success) {
-                        this.people_search = response.data.data;
-                    } else {
-                        toast.error(response.data.message);
-                    }
-                })
+            this.people_search = this.$store.getters.searchPeople(this.query, exclude);
         },
         addPerson($event) {
             this.people.push({
                 id: $event.target.value,
-                name: $event.target.name
+                name: $event.target.name,
+                type: 'main',
             });
 
             this.people_search = [];
             this.query = '';
+        },
+        changeType($event) {
+            const person = this.people.find(person => Number(person.id) === Number($event.target.value));
+            person.type = person.type === 'main' ? 'secondary' : 'main';
         },
         removePerson($event) {
             this.people = this.people.filter(person => person.id !== Number($event.target.value));
@@ -205,7 +208,8 @@ export default {
             this.people = report.participants.map(participant => {
                 return {
                     id: participant.person_id,
-                    name: participant.person.name
+                    name: participant.person.name,
+                    type: participant.type,
                 }
             });
         },
@@ -304,7 +308,7 @@ export default {
                         width: 100%;
                         margin-bottom: 0.5rem;
                         position: absolute;
-                        top: 4rem;
+                        top: 6rem;
                         background-color: white;
 
                         .person {
@@ -336,6 +340,10 @@ export default {
                             border: none;
                             cursor: pointer;
                             margin-right: 0.5rem;
+
+                            &.main {
+                                color: red;
+                            }
                         }
                     }
                 }

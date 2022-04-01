@@ -86,9 +86,17 @@ export default {
             if (this.report.participants.length > 0) {
                 return this.report.participants.map(participant => {
                     if (participant.person.nickname) {
-                        return participant.person.nickname;
+                        if (participant.type === 'main') {
+                            return `${participant.person.nickname} (Principal)`;
+                        } else {
+                            return participant.person.nickname;
+                        }
                     } else {
-                        return participant.person.name;
+                        if (participant.type === 'main') {
+                            return `${participant.person.name} (Principal)`;
+                        } else {
+                            return participant.person.name;
+                        }
                     }
                 }).join(', ');
             } else {

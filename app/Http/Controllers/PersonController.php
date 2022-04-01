@@ -13,6 +13,7 @@ class PersonController extends Controller
     {
         try {
             $people = Person::query()
+                ->select('id', 'name', 'nickname')
                 ->orderBy('name')
                 ->get();
 
