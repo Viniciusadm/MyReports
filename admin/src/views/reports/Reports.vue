@@ -8,18 +8,26 @@
             <h1>Relatos</h1>
             <button @click="modal = true;" class="btn">Novo relato</button>
         </div>
+        <div class="filters">
+            <div class="filter">
+                <label>
+                    <span>Procurar</span>
+                    <input type="text" v-model="filters.q" @input="getReports()" />
+                </label>
+            </div>
+        </div>
         <template v-if="reports.length > 0">
             <div class="reports-list">
                 <Report v-for="report in reports" :report="report" :key="report.id" />
             </div>
             <p class="paginas" v-if="total > 12">
-                <button @click="backPage()" :disabled="page === 1">
+                <button @click="backPage()" :disabled="filters.page === 1">
                     Anterior
                 </button>
-                <span>Página {{ page }} de {{ last_page }}</span>
+                <span>Página {{ filters.page }} de {{ last_page }}</span>
                 <button
                     @click="nextPage()"
-                    :disabled="page === last_page">
+                    :disabled="filters.page === last_page">
                     Próxima
                 </button>
             </p>
@@ -37,10 +45,14 @@ export default {
     data() {
         return {
             modal: false,
+            debounce: null,
             reports: [],
-            page: 1,
-            last_page: 1,
             total: 0,
+            last_page: 0,
+            filters: {
+                page: 1,
+                q: ""
+            }
         };
     },
     components: {
@@ -53,24 +65,28 @@ export default {
             this.getReports();
         },
         getReports() {
-            api.get(`/reports?page=${this.page}`)
-                .then(response => {
-                    if (response.data.success) {
-                        this.reports = response.data.data.data;
-                        this.last_page = response.data.data.last_page;
-                        this.total = response.data.data.total;
-                    }
-                });
+            clearTimeout(this.debounce);
+
+            this.debounce = setTimeout(() => {
+                api.get(`/reports?page=${this.filters.page}&q=${this.filters.q}`)
+                    .then(response => {
+                        if (response.data.success) {
+                            this.reports = response.data.data.data;
+                            this.last_page = response.data.data.last_page;
+                            this.total = response.data.data.total;
+                        }
+                    });
+            }, 1000);
         },
         backPage() {
-            if (this.page > 1) {
-                this.page--;
+            if (this.filters.page > 1) {
+                this.filters.page--;
                 this.getReports();
             }
         },
         nextPage() {
-            if (this.page < this.last_page) {
-                this.page++;
+            if (this.filters.page < this.last_page) {
+                this.filters.page++;
                 this.getReports();
             }
         },
@@ -106,6 +122,51 @@ export default {
                 font-size: 2em;
                 font-weight: bold;
                 color: #333;
+            }
+        }
+
+        .filters {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            width: 90%;
+            margin-bottom: 1.25rem;
+
+            .filter {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                width: 100%;
+                margin-bottom: 1.25rem;
+
+                label {
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    justify-content: space-between;
+                    width: 100%;
+                    margin-bottom: 1.25rem;
+
+                    span {
+                        font-size: 1.25em;
+                        font-weight: bold;
+                        color: #333;
+                    }
+
+                    input {
+                        width: 100%;
+                        font-size: 1.25em;
+                        font-weight: bold;
+                        color: #333;
+                        border: none;
+                        border-bottom: 1px solid #333;
+                        outline: none;
+                        background: transparent;
+                        padding: 0.5rem;
+                    }
+                }
             }
         }
 

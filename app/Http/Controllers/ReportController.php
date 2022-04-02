@@ -14,10 +14,13 @@ class ReportController extends Controller
     {
         try {
             $page = request('page');
+            $q = request('q');
 
             $reports = Report::query()
                 ->with('participants.person')
                 ->orderBy('created_at', 'desc')
+                ->where('title', 'like', "%$q%")
+                ->orWhere('report', 'like', "%$q%")
                 ->paginate(12, ['*'], 'current_page', $page);
 
             return response()->json(['success' => true, 'data' => $reports]);
