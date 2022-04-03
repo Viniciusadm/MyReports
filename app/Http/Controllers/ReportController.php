@@ -15,13 +15,29 @@ class ReportController extends Controller
         try {
             $page = request('page');
             $q = request('q');
+            $person = request('person');
 
-            $reports = Report::query()
-                ->with('participants.person')
-                ->orderBy('created_at', 'desc')
-                ->where('title', 'like', "%$q%")
-                ->orWhere('report', 'like', "%$q%")
-                ->paginate(12, ['*'], 'current_page', $page);
+            $query = Report::query()
+                ->select('id', 'title', 'created_at')
+                ->with('participants.person', function ($query) {
+                    $query->select('id', 'name', 'nickname');
+                })
+                ->orderBy('created_at', 'desc');
+
+            if ($q) {
+                $query->where(function ($query) use ($q) {
+                    $query->where('title', 'like', "%$q%")
+                        ->orWhere('report', 'like', "%$q%");
+                });
+            }
+
+            if ($person) {
+                $query->whereHas('participants', function ($query) use ($person) {
+                    $query->where('person_id', $person);
+                });
+            }
+
+            $reports = $query->paginate(12, ['*'], 'current_page', $page);
 
             return response()->json(['success' => true, 'data' => $reports]);
         } catch (Exception $e) {
@@ -42,22 +58,6 @@ class ReportController extends Controller
 
             return response()->json(['success' => true, 'data' => $report]);
 
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 500);
-        }
-    }
-
-    public function getByPersonId($id): JsonResponse
-    {
-        try {
-            $reports = Report::query()
-                ->with('participants')
-                ->whereHas('participants', function ($query) use ($id) {
-                    $query->where('person_id', $id);
-                })
-                ->get();
-
-            return response()->json(['success' => true, 'data' => $reports]);
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 500);
         }

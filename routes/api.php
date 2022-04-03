@@ -26,8 +26,6 @@ Route::prefix('reports')->group(function () {
     Route::post('/', [ReportController::class, 'store']);
     Route::delete('{id}', [ReportController::class, 'delete']);
     Route::put('{id}', [ReportController::class, 'update']);
-
-    Route::get('person/{id}', [ReportController::class, 'getByPersonId']);
 });
 
 Route::prefix('people')->group(function () {

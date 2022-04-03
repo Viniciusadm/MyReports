@@ -23,7 +23,7 @@
                         <BIconPerson v-else class="foto" />
                     </div>
                     <div class="column infos">
-                        <p class="info">Nome: {{ person.name }}</p>
+                        <p class="info">Nome: <router-link :to="`/reports?person=${id}`">{{ person.name }}</router-link> </p>
                         <p v-if="person.nickname" class="info">Apelido: {{ person.nickname ?? 'Sem apelido' }}</p>
                         <p v-if="person.email" class="info">Email: <a target="_blank" :href="`mailto:${person.email}`">{{ person.email }}</a></p>
                         <p v-if="person.phone" class="info">Telefone: <a target="_blank" :href="`https://wa.me/55${person.phone}`">{{ person.phone }}</a></p>

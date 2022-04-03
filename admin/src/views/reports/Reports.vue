@@ -12,7 +12,7 @@
             <div class="filter">
                 <label>
                     <span>Procurar</span>
-                    <input type="text" v-model="filters.q" @input="getReports()" />
+                    <input type="text" @input="setQuery($event)" />
                 </label>
             </div>
         </div>
@@ -32,7 +32,7 @@
                 </button>
             </p>
         </template>
-        <p v-else class="no-reports">Não há relatos.</p>
+        <p v-else class="no-reports">Não há relatos com esses filtros</p>
     </div>
 </template>
 
@@ -51,7 +51,6 @@ export default {
             last_page: 0,
             filters: {
                 page: 1,
-                q: ""
             }
         };
     },
@@ -68,7 +67,7 @@ export default {
             clearTimeout(this.debounce);
 
             this.debounce = setTimeout(() => {
-                api.get(`/reports?page=${this.filters.page}&q=${this.filters.q}`)
+                api.get(this.url)
                     .then(response => {
                         if (response.data.success) {
                             this.reports = response.data.data.data;
@@ -90,6 +89,42 @@ export default {
                 this.getReports();
             }
         },
+        setQuery($event) {
+            clearTimeout(this.debounce);
+
+            this.$router.push({
+                query: {
+                    q: $event.target.value,
+                    person: this.person,
+                }
+            });
+
+            this.debounce = setTimeout(() => {
+                this.filters.page = 1;
+                this.getReports();
+            }, 1000);
+        }
+    },
+    computed: {
+        url() {
+            let url = `reports?page=${this.filters.page}`;
+
+            if (this.q) {
+                url += `&q=${this.q}`;
+            }
+
+            if (this.person) {
+                url += `&person=${this.person}`;
+            }
+
+            return url;
+        },
+        q() {
+            return this.$route.query.q;
+        },
+        person() {
+            return this.$route.query.person;
+        }
     },
     mounted() {
         this.getReports();
