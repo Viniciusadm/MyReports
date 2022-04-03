@@ -20,7 +20,6 @@
                 <div class="head">
                     <p class="label">Data do relato: {{ date }}</p>
                     <p class="label">Hora do relato: {{ hour }}</p>
-                    <p v-if="report.created_at !== report.updated_at" class="label">Última atualização: {{ report.updated_at }}</p>
                     <p class="label">Humor: {{ humor }}</p>
                     <p class="label">Tipo: {{ type }}</p>
                     <p class="label">Participantes: {{ participants }}</p>
