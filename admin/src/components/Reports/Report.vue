@@ -77,7 +77,7 @@ export default {
 
         @media screen and (max-width: 570px) {
             width: 25rem;
-            height: 7rem;
+            height: auto;
         }
 
         @media screen and (max-width: 440px) {
@@ -115,10 +115,6 @@ export default {
                     .title-participant {
                         font-size: 1.15rem;
                         font-weight: bold;
-
-                        @media screen and (max-width: 570px) {
-                            font-size: 1rem;
-                        }
                     }
 
                     .participant {

@@ -217,6 +217,11 @@ export default {
             flex-wrap: wrap;
             justify-content: space-evenly;
             width: 90%;
+
+            @media screen and (max-width: 570px) {
+                font-size: 1rem;
+                margin-bottom: 1rem;
+            }
         }
 
         .paginas {
@@ -249,6 +254,10 @@ export default {
 
         .no-reports {
             font-size: 2rem;
+
+            @media screen and (max-width: 570px) {
+                font-size: 1.5rem;
+            }
         }
     }
 </style>
