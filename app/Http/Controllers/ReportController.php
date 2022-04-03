@@ -41,7 +41,7 @@ class ReportController extends Controller
 
             return response()->json(['success' => true, 'data' => $reports]);
         } catch (Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()]);
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }
 

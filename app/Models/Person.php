@@ -20,6 +20,7 @@ class Person extends Model
         'description',
         'twitter',
         'instagram',
+        'image',
     ];
 
     public function participants(): HasMany

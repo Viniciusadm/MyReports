@@ -114,7 +114,7 @@ export default {
                     }
                 })
                 .catch(error => {
-                    toast.error(error.message);
+                    toast.error(error.response.data.message);
                 });
         },
         deleteReport() {
@@ -127,7 +127,7 @@ export default {
                     }
                 })
                 .catch(error => {
-                    toast.error(error.message);
+                    toast.error(error.response.data.message);
                 })
                 .finally(() => {
                     this.$router.push('/reports');

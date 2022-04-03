@@ -19,7 +19,7 @@
             <div class="person">
                 <div class="row">
                     <div class="column image">
-                        <img v-if="person.image" class="foto" alt="foto da pessoa" :src="person.image">
+                        <img v-if="person.image" class="foto" alt="foto da pessoa" :src="image">
                         <BIconPerson v-else class="foto" />
                     </div>
                     <div class="column infos">
@@ -82,7 +82,7 @@ export default {
                     }
                 })
                 .catch(error => {
-                    toast.error(error.message);
+                    toast.error(error.response.data.message);
                 });
         },
         setPerson(person) {
@@ -122,6 +122,9 @@ export default {
                 return null;
             }
         },
+        image() {
+            return `${process.env.VUE_APP_URL}storage/images/people/${this.person.image}`;
+        }
     },
     components: {
         PersonModal,
@@ -224,7 +227,9 @@ export default {
                                 max-height: 80%;
                                 margin-bottom: 1rem;
                                 border: 1px solid #2c3e50;
-                                border-radius: 30%;
+                                border-radius: 20%;
+                                object-fit: cover;
+                                object-position: center;
                             }
                         }
 

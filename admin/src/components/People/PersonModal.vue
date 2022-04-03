@@ -5,7 +5,7 @@
             <div class="form_report">
                 <div class="form_group photo">
                     <label class="form_label" for="photo">Foto</label>
-                    <img :src="person.image.url" alt="foto da pessoa" v-if="person.image.url" class="person_image">
+                    <img :src="image" alt="foto da pessoa" v-if="person.image.url" class="person_image">
                     <BIconFileEarmarkArrowUp class="icon_file" v-else></BIconFileEarmarkArrowUp>
                     <input @change="onFileChange" class="input_file" type="file" id="photo" placeholder="Foto">
                 </div>
@@ -160,7 +160,7 @@ export default {
                     }
                 })
                 .catch(error => {
-                    toast.error(error.message);
+                    toast.error(error.response.data.message);
                 });
         },
         updatePerson() {
@@ -174,7 +174,7 @@ export default {
                     }
                 })
                 .catch(error => {
-                    toast.error(error.message);
+                    toast.error(error.response.data.message);
                 });
         },
         getPerson() {
@@ -187,7 +187,7 @@ export default {
                     }
                 })
                 .catch(error => {
-                    toast.error(error.message);
+                    toast.error(error.response.data.message);
                 });
         },
         setPerson(person) {
@@ -238,7 +238,10 @@ export default {
         },
         button_text() {
             return this.id ? "Editar" : "Adicionar";
-        }
+        },
+        image() {
+            return `${process.env.VUE_APP_URL}storage/images/people/${this.person.image.url}`;
+        },
     },
     mounted() {
         if (this.id) {

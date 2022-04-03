@@ -40,6 +40,9 @@
 import ReportModal from "@/components/Reports/ReportModal";
 import api from "@/services/api";
 import Report from "@/components/Reports/Report";
+import { useToast } from "vue-toastification";
+
+const toast = useToast();
 
 export default {
     data() {
@@ -74,6 +77,9 @@ export default {
                             this.last_page = response.data.data.last_page;
                             this.total = response.data.data.total;
                         }
+                    })
+                    .catch(error => {
+                        toast.error(error.response.data.message);
                     });
             }, 1000);
         },

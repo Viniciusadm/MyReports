@@ -1,6 +1,5 @@
 <template>
     <div class="report">
-        <div class="image"></div>
         <div class="card">
             <div class="card-header">
                 <router-link :to="`/reports/${report.id}`" class="title">{{ report.title }}</router-link>
@@ -59,9 +58,10 @@ export default {
 <style scoped lang="scss">
     .report {
         width: 25rem;
-        height: 27rem;
-        margin-right: 1rem;
+        height: 9rem;
         margin-bottom: 1.2rem;
+        border: black 1px solid;
+        padding: 1rem;
 
         &:last-child {
             margin: 0;
@@ -77,30 +77,17 @@ export default {
 
         @media screen and (max-width: 570px) {
             width: 25rem;
-            height: 23rem;
-            margin-right: 0;
+            height: 7rem;
         }
 
         @media screen and (max-width: 440px) {
             width: 100%;
-            margin-right: 0;
-        }
-
-        .image {
-            width: 100%;
-            height: 20rem;
-            border: 1px solid #ccc;
-            margin-bottom: 0.5rem;
-
-            @media screen and (max-width: 1386px) {
-                height: 15rem;
-            }
         }
 
         .card {
             &-header {
                 .title {
-                    font-size: 1.4rem;
+                    font-size: 1.15rem;
                     font-weight: bold;
                     margin-bottom: 0.3rem;
                     text-decoration: none;
@@ -112,7 +99,7 @@ export default {
                     }
 
                     @media screen and (max-width: 570px) {
-                        font-size: 1.2rem;
+                        font-size: 1rem;
                     }
                 }
 
@@ -126,7 +113,7 @@ export default {
             &-body {
                 .participants {
                     .title-participant {
-                        font-size: 1.2rem;
+                        font-size: 1.15rem;
                         font-weight: bold;
 
                         @media screen and (max-width: 570px) {
