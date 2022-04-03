@@ -5,6 +5,7 @@ export default createStore({
         humors: {
             anxious: "Ansioso",
             afraid: "Cansado",
+            bored: "Entediado",
             excited: "Excitado",
             happy: "Feliz",
             scared: "Assustado",
