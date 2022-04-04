@@ -2,8 +2,8 @@
     <div class="report">
         <div class="card">
             <div class="card-header">
-                <p class="type">Tipo: {{ report.type === 'daily' ? 'Diario' : 'Pessoal' }}</p>
                 <router-link :to="`/report/${report.id}`" class="title">{{ report.title }}</router-link>
+                <p class="type">Tipo: {{ report.type === 'daily' ? 'Diario' : 'Pessoal' }}</p>
                 <p class="date">{{ dateFormat(report.created_at) }}</p>
             </div>
             <div class="card-body">
