@@ -18,7 +18,7 @@ class ReportController extends Controller
             $person = request('person');
 
             $query = Report::query()
-                ->select('id', 'title', 'created_at')
+                ->select('id', 'title', 'type', 'created_at')
                 ->with('participants.person', function ($query) {
                     $query->select('id', 'name', 'nickname');
                 })

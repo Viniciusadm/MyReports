@@ -2,6 +2,7 @@
     <div class="report">
         <div class="card">
             <div class="card-header">
+                <p class="type">Tipo: {{ report.type === 'daily' ? 'Diario' : 'Pessoal' }}</p>
                 <router-link :to="`/report/${report.id}`" class="title">{{ report.title }}</router-link>
                 <p class="date">{{ dateFormat(report.created_at) }}</p>
             </div>
@@ -58,7 +59,7 @@ export default {
 <style scoped lang="scss">
     .report {
         width: 25rem;
-        height: 9rem;
+        height: 10rem;
         margin-bottom: 1.2rem;
         border: black 1px solid;
         padding: 1rem;
@@ -101,6 +102,14 @@ export default {
                     @media screen and (max-width: 570px) {
                         font-size: 1rem;
                     }
+                }
+
+                .type {
+                    font-size: 1.15rem;
+                    font-weight: bold;
+                    margin-bottom: 0.3rem;
+                    color: #000;
+                    display: block;
                 }
 
                 .date {
