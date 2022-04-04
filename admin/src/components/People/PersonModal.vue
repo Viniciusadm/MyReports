@@ -129,7 +129,7 @@ export default {
             if (this.person.description) this.formData.append("description", this.person.description);
             if (this.person.twitter) this.formData.append("twitter", this.person.twitter);
             if (this.person.instagram) this.formData.append("instagram", this.person.instagram);
-            if (this.person.image.file) this.formData.append("image", this.person.image.file);
+            if (this.person.image.file) this.formData.append("image", this.person.image.url);
 
             if (this.person.birth_date.day && this.person.birth_date.month && this.person.birth_date.year) {
                 this.formData.append("birth_date", this.person.birth_date.year + "-" + this.person.birth_date.month + "-" + this.person.birth_date.day);
@@ -141,13 +141,7 @@ export default {
                 return false;
             }
 
-            this.setFormData();
-
-            if (this.id) {
-                this.updatePerson();
-            } else {
-                this.createPerson();
-            }
+            this.sendImage();
         },
         createPerson() {
             api.post("/people", this.formData)
@@ -176,6 +170,38 @@ export default {
                 .catch(error => {
                     toast.error(error.response.data.message);
                 });
+        },
+        sendImage() {
+            if (this.person.image.file) {
+                let formData = new FormData();
+                formData.append("image", this.person.image.file);
+                api.post(process.env.VUE_APP_URL_IMAGES, formData)
+                    .then(response => {
+                        if (response.data.success) {
+                            this.person.image.url = response.data.data;
+                            this.setFormData();
+
+                            if (this.id) {
+                                this.updatePerson();
+                            } else {
+                                this.createPerson();
+                            }
+                        } else {
+                            toast.error(response.data.message);
+                        }
+                    })
+                    .catch(error => {
+                        toast.error(error.response.data.message);
+                    });
+            } else {
+                this.setFormData();
+
+                if (this.id) {
+                    this.updatePerson();
+                } else {
+                    this.createPerson();
+                }
+            }
         },
         getPerson() {
             api.get(`/people/${this.id}`)
@@ -240,7 +266,11 @@ export default {
             return this.id ? "Editar" : "Adicionar";
         },
         image() {
-            return `${process.env.VUE_APP_URL}storage/images/people/${this.person.image.url}`;
+            if (this.person.image.url.substring(0, 5) === "data:") {
+                return this.person.image.url;
+            } else {
+                return `${process.env.VUE_APP_URL_IMAGES}/${this.person.image.url}`;
+            }
         },
     },
     mounted() {

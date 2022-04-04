@@ -6,12 +6,9 @@ use App\Models\Person;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Storage;
 
 class PersonController extends Controller
 {
-    private string $path = 'public/images/people';
-
     public function index(): JsonResponse
     {
         try {
@@ -68,10 +65,6 @@ class PersonController extends Controller
         try {
             $data = $request->all();
 
-            if (isset($data['image']) && $data['image']->getSize() > 500000) {
-                return response()->json(['success' => false, 'message' => 'A imagem deve ter no máximo 500KB'], 422);
-            }
-
             $objeto = $this->getObjeto($data);
 
             $person = Person::query()->create($objeto);
@@ -91,8 +84,6 @@ class PersonController extends Controller
                 return response()->json(['success' => false, 'message' => 'Pessoa não encontrada!'], 404);
             }
 
-            Storage::delete($this->path . '/' . $person['image']);
-
             $person->delete();
 
             return response()->json(['success' => true, 'message' => 'Pessoa deletada com sucesso!']);
@@ -110,16 +101,6 @@ class PersonController extends Controller
 
             if (!$person) {
                 return response()->json(['success' => false, 'message' => 'Pessoa não encontrada!'], 404);
-            }
-
-            if (isset($data['image']) && $data['image']->getSize() > 500000) {
-                return response()->json(['success' => false, 'message' => 'A imagem deve ter no máximo 500KB'], 422);
-            }
-
-            if (isset($data['image']) && gettype($data['image']) == 'object') {
-                if ($person['image']) {
-                    Storage::delete($this->path . '/' . $person['image']);
-                }
             }
 
             $objeto = $this->getObjeto($data);
@@ -143,14 +124,8 @@ class PersonController extends Controller
             'description' => $data['description'] ?? null,
             'twitter' => $data['twitter'] ?? null,
             'instagram' => $data['instagram'] ?? null,
+            'image' => $data['image'] ?? null,
         ];
-
-        if (isset($data['image'])) {
-            $extension = $data['image']->getClientOriginalExtension();
-            $nomeArquivo = md5($data['image']->getClientOriginalName() . date('Y-m-d H:i:s')) . '.' . $extension;
-            $data['image']->storeAs($this->path, $nomeArquivo);
-            $objeto['image'] = $nomeArquivo;
-        }
 
         if (isset($data['birth_date'])) {
             $objeto['birth_date'] = $data['birth_date'];

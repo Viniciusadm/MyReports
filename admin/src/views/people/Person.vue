@@ -123,7 +123,7 @@ export default {
             }
         },
         image() {
-            return `${process.env.VUE_APP_URL}storage/images/people/${this.person.image}`;
+            return `${process.env.VUE_APP_URL_IMAGES}/${this.person.image}`;
         }
     },
     components: {
