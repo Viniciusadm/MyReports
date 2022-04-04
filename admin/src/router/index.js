@@ -12,9 +12,19 @@ const routes = [
         component: () => import("../views/reports/Reports.vue"),
     },
     {
-        path: "/reports/:id",
+        path: "/report/:id",
         name: "Report",
         component: () => import("../views/reports/Report.vue"),
+    },
+    {
+        path: "/reports/new",
+        name: "NewReport",
+        component: () => import("../views/reports/ReportEdit.vue"),
+    },
+    {
+        path: "/reports/edit/:id",
+        name: "EditReport",
+        component: () => import("../views/reports/ReportEdit.vue"),
     },
     {
         path: "/people",
@@ -22,10 +32,20 @@ const routes = [
         component: () => import("../views/people/People.vue"),
     },
     {
-        path: "/people/:id",
+        path: "/person/:id",
         name: "Person",
         component: () => import("../views/people/Person.vue"),
     },
+    {
+        path: "/people/new",
+        name: "NewPerson",
+        component: () => import("../views/people/PersonEdit.vue"),
+    },
+    {
+        path: "/people/edit/:id",
+        name: "EditPerson",
+        component: () => import("../views/people/PersonEdit.vue"),
+    }
 ];
 
 const router = createRouter({

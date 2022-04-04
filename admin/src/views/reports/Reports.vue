@@ -1,12 +1,8 @@
 <template>
     <div class="reports">
-        <ReportModal
-            v-if="modal"
-            @close="modal = false"
-            @save="save()"/>
         <div class="header">
             <h1>Relatos</h1>
-            <button @click="modal = true;" class="btn">Novo relato</button>
+            <router-link to="/reports/new" class="btn">Novo relato</router-link>
         </div>
         <div class="filters">
             <div class="filter">
@@ -37,7 +33,6 @@
 </template>
 
 <script>
-import ReportModal from "@/components/Reports/ReportModal";
 import api from "@/services/api";
 import Report from "@/components/Reports/Report";
 import { useToast } from "vue-toastification";
@@ -58,7 +53,6 @@ export default {
         };
     },
     components: {
-        ReportModal,
         Report,
     },
     methods: {
@@ -67,21 +61,17 @@ export default {
             this.getReports();
         },
         getReports() {
-            clearTimeout(this.debounce);
-
-            this.debounce = setTimeout(() => {
-                api.get(this.url)
-                    .then(response => {
-                        if (response.data.success) {
-                            this.reports = response.data.data.data;
-                            this.last_page = response.data.data.last_page;
-                            this.total = response.data.data.total;
-                        }
-                    })
-                    .catch(error => {
-                        toast.error(error.response.data.message);
-                    });
-            }, 1000);
+            api.get(this.url)
+                .then(response => {
+                    if (response.data.success) {
+                        this.reports = response.data.data.data;
+                        this.last_page = response.data.data.last_page;
+                        this.total = response.data.data.total;
+                    }
+                })
+                .catch(error => {
+                    toast.error(error.response.data.message);
+                });
         },
         backPage() {
             if (this.filters.page > 1) {
@@ -108,7 +98,7 @@ export default {
             this.debounce = setTimeout(() => {
                 this.filters.page = 1;
                 this.getReports();
-            }, 1000);
+            }, 900);
         }
     },
     computed: {
@@ -256,7 +246,7 @@ export default {
             font-size: 2rem;
 
             @media screen and (max-width: 570px) {
-                font-size: 1.5rem;
+                font-size: 1.4rem;
             }
         }
     }

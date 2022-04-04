@@ -1,17 +1,12 @@
 <template>
     <div class="people">
-        <PersonModal
-            v-if="modal"
-            @close="modal = false;"
-            @save="save()">
-        </PersonModal>
         <div class="header">
             <h1>Pessoas</h1>
-            <button @click="modal = true;" class="btn">Nova pessoa</button>
+            <router-link to="/people/new" class="btn">Nova pessoa</router-link>
         </div>
         <template v-if="people.length > 0">
             <div class="people-list">
-                <router-link v-for="person in people" :key="person.id" :to="`/people/${person.id}`" class="title">{{ person.name }}</router-link>
+                <router-link v-for="person in people" :key="person.id" :to="`/person/${person.id}`" class="title">{{ person.name }}</router-link>
             </div>
         </template>
         <p v-else class="no-people">Não há pessoas cadastradas.</p>
@@ -19,7 +14,6 @@
 </template>
 
 <script>
-import PersonModal from "@/components/People/PersonModal";
 import api from "@/services/api";
 import { useToast} from "vue-toastification";
 
@@ -31,9 +25,6 @@ export default {
             modal: false,
             people: [],
         };
-    },
-    components: {
-        PersonModal
     },
     methods: {
         getPeople() {

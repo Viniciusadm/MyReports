@@ -1,77 +1,71 @@
 <template>
-    <BaseModal :scroll="true">
-        <div class="new_report">
-            <h1 class="title_page">{{ title }}</h1>
-            <div class="form_report">
-                <div class="form_group">
-                    <label class="form_label" for="title">Título</label>
-                    <input v-model="report.title" class="input_text" type="text" id="title" placeholder="Título do relato">
+    <div class="new_report">
+        <h1 class="title_page">{{ title }}</h1>
+        <div class="form_report">
+            <div class="form_group">
+                <label class="form_label" for="title">Título</label>
+                <input v-model="report.title" class="input_text" type="text" id="title" placeholder="Título do relato">
+            </div>
+            <div class="form_group">
+                <label class="form_label" for="report">Relato</label>
+                <textarea v-model="report.report" class="input_text" id="report" placeholder="Relato"></textarea>
+            </div>
+            <div class="form_group">
+                <label class="form_label" for="humor">Humor</label>
+                <select v-model="report.humor" id="humor">
+                    <option value="">Selecione um humor</option>
+                    <option v-for="humor in humors" :key="humor[0]" :value="humor[0]">{{ humor[1] }}</option>
+                </select>
+            </div>
+            <div class="form_group">
+                <label class="form_label">Tipo</label>
+                <div class="radios_type">
+                    <input v-model="report.type" name="type" type="radio" id="type_personal" value="personal">
+                    <label for="type_personal">Pessoal</label>
                 </div>
-                <div class="form_group">
-                    <label class="form_label" for="report">Relato</label>
-                    <textarea v-model="report.report" class="input_text" id="report" placeholder="Relato"></textarea>
-                </div>
-                <div class="form_group">
-                    <label class="form_label" for="humor">Humor</label>
-                    <select v-model="report.humor" id="humor">
-                        <option value="">Selecione um humor</option>
-                        <option v-for="humor in humors" :key="humor[0]" :value="humor[0]">{{ humor[1] }}</option>
-                    </select>
-                </div>
-                <div class="form_group">
-                    <label class="form_label">Tipo</label>
-                    <div class="radios_type">
-                        <input v-model="report.type" name="type" type="radio" id="type_personal" value="personal">
-                        <label for="type_personal">Pessoal</label>
-                    </div>
-                    <div class="radios_type">
-                        <input v-model="report.type" name="type" type="radio" id="type_daily" value="daily">
-                        <label for="type_daily">Diário</label>
-                    </div>
-                </div>
-                <div class="form_group" id="people_group">
-                    <label class="form_label" for="people">Pessoas</label>
-                    <input @input="searchPerson()" v-model="query" class="input_text" type="text" id="people" placeholder="Pessoas">
-                    <div class="list_people">
-                        <button class="person" @click="addPerson($event)" :value="person.id" :name="person.name" v-for="person in people_search" :key="person.id">{{ person.name }}</button>
-                    </div>
-                    <div class="list_people_selected">
-                        <button class="person" :class="{ main: person.type === 'main' }" @click="changeType($event)" @dblclick="removePerson($event)" :value="person.id" :name="person.name" v-for="person in people" :key="person.id">{{ person.name }}</button>
-                    </div>
-                </div>
-                <div class="form_group buttons">
-                    <button @click="$emit('close')" class="btn close_report">Fechar</button>
-                    <button @click="sendReport()" class="btn send_report">{{ button_text }}</button>
+                <div class="radios_type">
+                    <input v-model="report.type" name="type" type="radio" id="type_daily" value="daily">
+                    <label for="type_daily">Diário</label>
                 </div>
             </div>
+            <div class="form_group" id="people_group">
+                <label class="form_label" for="people">Pessoas</label>
+                <input @input="searchPerson()" v-model="query" class="input_text" type="text" id="people" placeholder="Pessoas">
+                <div class="list_people">
+                    <button class="person" @click="addPerson($event)" :value="person.id" :name="person.name" v-for="person in people_search" :key="person.id">{{ person.name }}</button>
+                </div>
+                <div class="list_people_selected">
+                    <button class="person" :class="{ main: person.type === 'main' }" @click="changeType($event)" @dblclick="removePerson($event)" :value="person.id" :name="person.name" v-for="person in people" :key="person.id">{{ person.name }}</button>
+                </div>
+            </div>
+            <div class="form_group buttons">
+                <button @click="sendReport()" class="btn send_report">{{ button_text }}</button>
+            </div>
         </div>
-    </BaseModal>
+    </div>
 </template>
 
 <script>
 import api from '../../services/api'
 import { useToast } from "vue-toastification";
-import BaseModal from "@/components/BaseModal";
 
 const toast = useToast();
 
 export default {
-    emits: ['close', 'save'],
-    props: {
-      id: {
-          required: false,
-      },
-    },
-    components: {
-        BaseModal
-    },
     computed: {
         button_text() {
           return this.id ? 'Editar' : 'Criar';
         },
         title() {
             return this.id ? 'Editar Relato' : 'Novo Relato';
-        }
+        },
+        id() {
+            if (this.$route.params.id) {
+                return this.$route.params.id;
+            } else {
+                return null;
+            }
+        },
     },
     data() {
         return {
@@ -115,7 +109,7 @@ export default {
                 .then(response => {
                     if (response.data.success) {
                         toast.success('Relato enviado com sucesso!');
-                        this.$emit('save');
+                        this.$router.push('/reports');
                     } else {
                         toast.error(response.data.message);
                     }
@@ -129,7 +123,7 @@ export default {
                 .then(response => {
                     if (response.data.success) {
                         toast.success('Relato atualizado com sucesso!');
-                        this.$emit('save');
+                        this.$router.push('/reports');
                     } else {
                         toast.error(response.data.message);
                     }
@@ -232,13 +226,13 @@ export default {
 
         .title_page {
             font-size: 2rem;
-            margin: 1rem 0;
+            margin-bottom: 1rem;
             font-weight: bold;
         }
 
         .form_report {
             width: 80%;
-            max-width: 600px;
+            max-width: 800px;
 
             .form_group {
                 display: flex;
@@ -355,14 +349,6 @@ export default {
                     button {
                         flex: 1;
                         margin-right: 0.5rem;
-
-                        &:nth-child(1) {
-                            background-color: #b6b6b6;
-
-                            &:hover {
-                                background-color: #ccc;
-                            }
-                        }
                     }
                 }
             }

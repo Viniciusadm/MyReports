@@ -1,17 +1,10 @@
 <template>
     <div class="person-page">
-        <PersonModal
-            v-if="modal"
-            @close="modal = false;"
-            :id="id"
-            @save="save()">
-        </PersonModal>
-
         <div class="total">
             <div class="menu_person">
                 <p class="name">{{ person.name }}</p>
                 <div class="buttons">
-                    <button @click="modal = true" class="btn">Editar</button>
+                    <router-link :to="`/people/edit/${id}`" class="btn">Editar</router-link>
                     <button class="btn">Desativar</button>
                 </div>
             </div>
@@ -47,7 +40,6 @@
 <script>
 import api from "@/services/api";
 import { useToast } from "vue-toastification";
-import PersonModal from "@/components/People/PersonModal";
 import { BIconPerson } from "bootstrap-icons-vue";
 
 const toast = useToast();
@@ -127,7 +119,6 @@ export default {
         }
     },
     components: {
-        PersonModal,
         BIconPerson,
     },
     created() {

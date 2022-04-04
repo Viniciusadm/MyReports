@@ -2,7 +2,7 @@
     <div class="report">
         <div class="card">
             <div class="card-header">
-                <router-link :to="`/reports/${report.id}`" class="title">{{ report.title }}</router-link>
+                <router-link :to="`/report/${report.id}`" class="title">{{ report.title }}</router-link>
                 <p class="date">{{ dateFormat(report.created_at) }}</p>
             </div>
             <div class="card-body">

@@ -1,79 +1,73 @@
 <template>
-    <BaseModal :scroll="true">
-        <div class="person_modal">
-            <h1 class="title_page">{{ title }}</h1>
-            <div class="form_report">
-                <div class="form_group photo">
-                    <label class="form_label" for="photo">Foto</label>
-                    <img :src="image" alt="foto da pessoa" v-if="person.image.url" class="person_image">
-                    <BIconFileEarmarkArrowUp class="icon_file" v-else></BIconFileEarmarkArrowUp>
-                    <input @change="onFileChange" class="input_file" type="file" id="photo" placeholder="Foto">
-                </div>
-                <div class="form_group">
-                    <label class="form_label" for="name">Nome</label>
-                    <input v-model="person.name" class="input_text" type="text" id="name" placeholder="Nome">
-                </div>
-                <div class="form_group">
-                    <label class="form_label" for="nickname">Apelido</label>
-                    <input v-model="person.nickname" class="input_text" type="text" id="nickname" placeholder="Apelido">
-                </div>
-                <div class="form_group">
-                    <label class="form_label" for="email">E-mail</label>
-                    <input v-model="person.email" class="input_text" type="email" id="email" placeholder="E-mail">
-                </div>
-                <div class="form_group">
-                    <label class="form_label" for="phone">Telefone</label>
-                    <input v-model="person.phone" class="input_text" type="text" id="phone" placeholder="Telefone">
-                </div>
-                <div class="form_group">
-                    <label class="form_label">Data de nascimento</label>
-                    <div class="date">
-                        <select v-model="person.birth_date.day" class="input_select">
-                            <option value="">Selecione</option>
-                            <option v-for="day in 31" :value="day" :key="day">{{ day }}</option>
-                        </select>
-                        <select v-model="person.birth_date.month" class="input_select">
-                            <option value="">Selecione</option>
-                            <option v-for="month in 12" :value="month" :key="month">{{ month }}</option>
-                        </select>
-                        <select v-model="person.birth_date.year" class="input_select">
-                            <option value="">Selecione</option>
-                                <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form_group">
-                    <label class="form_label" for="address">Endereço</label>
-                    <input v-model="person.address" class="input_text" type="text" id="address" placeholder="Endereço">
-                </div>
-                <div class="form_group">
-                    <label class="form_label" for="description">Descrição</label>
-                    <textarea v-model="person.description" class="input_text" id="description" placeholder="Descrição"></textarea>
-                </div>
-                <div class="form_group social_medias">
-                    <label class="form_label">Redes sociais</label>
-                    <div class="medias">
-                        <div class="social_media">
-                            <label class="form_label" for="instagram">Instagram</label>
-                            <input v-model="person.instagram" class="input_text" type="text" id="instagram" placeholder="Instagram">
-                        </div>
-                        <div class="social_media">
-                            <label class="form_label" for="twitter">Twitter</label>
-                            <input v-model="person.twitter" class="input_text" type="text" id="twitter" placeholder="Twitter">
-                        </div>
-                    </div>
-                </div>
-                <div class="form_group buttons">
-                    <button @click="$emit('close')" class="btn close_report">Fechar</button>
-                    <button @click="sendPerson()" class="btn send_report">{{ button_text }}</button>
+    <div class="person_modal">
+        <h1 class="title_page">{{ title }}</h1>
+        <div class="form_report">
+            <div class="form_group photo">
+                <label class="form_label" for="photo">Foto</label>
+                <img :src="image" alt="foto da pessoa" v-if="person.image.url" class="person_image">
+                <BIconFileEarmarkArrowUp class="icon_file" v-else></BIconFileEarmarkArrowUp>
+                <input @change="onFileChange" class="input_file" type="file" id="photo" placeholder="Foto">
+            </div>
+            <div class="form_group">
+                <label class="form_label" for="name">Nome</label>
+                <input v-model="person.name" class="input_text" type="text" id="name" placeholder="Nome">
+            </div>
+            <div class="form_group">
+                <label class="form_label" for="nickname">Apelido</label>
+                <input v-model="person.nickname" class="input_text" type="text" id="nickname" placeholder="Apelido">
+            </div>
+            <div class="form_group">
+                <label class="form_label" for="email">E-mail</label>
+                <input v-model="person.email" class="input_text" type="email" id="email" placeholder="E-mail">
+            </div>
+            <div class="form_group">
+                <label class="form_label" for="phone">Telefone</label>
+                <input v-model="person.phone" class="input_text" type="text" id="phone" placeholder="Telefone">
+            </div>
+            <div class="form_group">
+                <label class="form_label">Data de nascimento</label>
+                <div class="date">
+                    <select v-model="person.birth_date.day" class="input_select">
+                        <option value="">Selecione</option>
+                        <option v-for="day in 31" :value="day" :key="day">{{ day }}</option>
+                    </select>
+                    <select v-model="person.birth_date.month" class="input_select">
+                        <option value="">Selecione</option>
+                        <option v-for="month in 12" :value="month" :key="month">{{ month }}</option>
+                    </select>
+                    <select v-model="person.birth_date.year" class="input_select">
+                        <option value="">Selecione</option>
+                            <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
+                    </select>
                 </div>
             </div>
+            <div class="form_group">
+                <label class="form_label" for="address">Endereço</label>
+                <input v-model="person.address" class="input_text" type="text" id="address" placeholder="Endereço">
+            </div>
+            <div class="form_group">
+                <label class="form_label" for="description">Descrição</label>
+                <textarea v-model="person.description" class="input_text" id="description" placeholder="Descrição"></textarea>
+            </div>
+            <div class="form_group social_medias">
+                <label class="form_label">Redes sociais</label>
+                <div class="medias">
+                    <div class="social_media">
+                        <label class="form_label" for="instagram">Instagram</label>
+                        <input v-model="person.instagram" class="input_text" type="text" id="instagram" placeholder="Instagram">
+                    </div>
+                    <div class="social_media">
+                        <label class="form_label" for="twitter">Twitter</label>
+                        <input v-model="person.twitter" class="input_text" type="text" id="twitter" placeholder="Twitter">
+                    </div>
+                </div>
+            </div>
+            <button @click="sendPerson()" class="btn send_report">{{ button_text }}</button>
         </div>
-    </BaseModal>
+    </div>
 </template>
 
 <script>
-import BaseModal from "@/components/BaseModal";
 import { BIconFileEarmarkArrowUp } from "bootstrap-icons-vue";
 import { useToast } from "vue-toastification";
 import api from "@/services/api";
@@ -104,11 +98,6 @@ export default {
                 instagram: "",
             }
         }
-    },
-    props: {
-        id: {
-            required: false
-        },
     },
     methods: {
         onFileChange(e) {
@@ -148,7 +137,7 @@ export default {
                 .then(response => {
                     if (response.data.success) {
                         toast.success('Pessoa adicionada com sucesso!');
-                        this.$emit("save");
+                        this.$router.push("/people");
                     } else {
                         toast.error(response.data.message);
                     }
@@ -162,7 +151,7 @@ export default {
                 .then(response => {
                     if (response.data.success) {
                         toast.success('Pessoa atualizada com sucesso!');
-                        this.$emit("save");
+                        this.$router.push("/people");
                     } else {
                         toast.error(response.data.message);
                     }
@@ -248,7 +237,6 @@ export default {
         },
     },
     components: {
-        BaseModal,
         BIconFileEarmarkArrowUp,
     },
     computed: {
@@ -272,6 +260,13 @@ export default {
                 return `${process.env.VUE_APP_URL_IMAGES}/${this.person.image.url}`;
             }
         },
+        id() {
+            if (this.$route.params.id) {
+                return this.$route.params.id;
+            } else {
+                return null;
+            }
+        },
     },
     mounted() {
         if (this.id) {
@@ -291,13 +286,13 @@ export default {
 
         .title_page {
             font-size: 2rem;
-            margin: 1rem 0;
+            margin-bottom: 1rem;
             font-weight: bold;
         }
 
         .form_report {
             width: 80%;
-            max-width: 600px;
+            max-width: 800px;
 
             .form_group {
                 display: flex;
@@ -333,10 +328,10 @@ export default {
                             flex-direction: column;
                             align-items: center;
                             margin-bottom: 1rem;
+                            width: 100%;
 
                             @media screen and (max-width: 600px) {
                                 margin-bottom: 0;
-                                width: 100%;
 
                                 .input_text {
                                     width: 100%;
@@ -349,24 +344,6 @@ export default {
 
                             .form_label {
                                 margin-bottom: 0.5rem;
-                            }
-                        }
-                    }
-                }
-
-                &.buttons {
-                    display: flex;
-                    flex-direction: row;
-
-                    button {
-                        flex: 1;
-                        margin-right: 0.5rem;
-
-                        &:nth-child(1) {
-                            background-color: #b6b6b6;
-
-                            &:hover {
-                                background-color: #ccc;
                             }
                         }
                     }
@@ -424,6 +401,10 @@ export default {
                         }
                     }
                 }
+            }
+
+            .btn {
+                width: 100%;
             }
         }
     }

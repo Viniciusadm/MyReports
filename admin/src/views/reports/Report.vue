@@ -1,16 +1,10 @@
 <template>
     <div class="report">
-        <ReportModal
-            v-if="modal"
-            @close="modal = false"
-            @save="save()"
-            :id="id"/>
-
         <div class="total">
             <div class="menu_report">
                 <h3>Relato Nº {{ id }}</h3>
                 <div class="buttons">
-                    <button @click="modal = true;" class="btn">Editar</button>
+                    <router-link :to="`/reports/edit/${id}`" class="btn">Editar</router-link>
                     <button @click="deleteReport()" class="btn">Excluir</button>
                 </div>
             </div>
@@ -36,7 +30,6 @@
 
 <script>
 import api from "@/services/api";
-import ReportModal from "@/components/Reports/ReportModal";
 import { useToast } from "vue-toastification";
 
 const toast = useToast();
@@ -56,9 +49,6 @@ export default {
                 participants: [],
             },
         }
-    },
-    components: {
-        ReportModal,
     },
     computed: {
         date() {
