@@ -11,6 +11,7 @@
     "axios": "^0.25.0",
     "bootstrap-icons-vue": "^1.8.1",
     "core-js": "^3.6.5",
+    "moment": "^2.29.2",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0-0",
     "vue-toastification": "^2.0.0-rc.5",

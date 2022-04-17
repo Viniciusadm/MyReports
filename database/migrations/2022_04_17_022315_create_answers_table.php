@@ -18,6 +18,7 @@ class CreateAnswersTable extends Migration
             $table->unsignedBigInteger('question_id');
             $table->enum('answer', ['yes', 'no']);
             $table->string('comment')->nullable();
+            $table->date('date');
             $table->timestamps();
 
             $table->foreign('question_id')->references('id')->on('questions')->onDelete('cascade');

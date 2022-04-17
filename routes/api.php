@@ -42,11 +42,13 @@ Route::prefix('people')->group(function () {
 Route::prefix('questions')->group(function () {
     Route::get('/', [QuestionController::class, 'index']);
     Route::post('/', [QuestionController::class, 'store']);
-    Route::post('/{id}', [QuestionController::class, 'update']);
-    Route::delete('{id}', [QuestionController::class, 'delete']);
+    Route::post('/{id}/question', [QuestionController::class, 'changeQuestion']);
+    Route::post('/{id}/type', [QuestionController::class, 'changeType']);
+    Route::delete('{id}/disable', [QuestionController::class, 'delete']);
 
     Route::prefix('/answer')->group(function () {
-        Route::post('/', [AnswerController::class, 'store']);
-        Route::post('{id}', [AnswerController::class, 'update']);
+        Route::post('/reply', [AnswerController::class, 'reply']);
+        Route::post('{id}', [AnswerController::class, 'change']);
+        Route::post('/{id}/comment', [AnswerController::class, 'comment']);
     });
 });

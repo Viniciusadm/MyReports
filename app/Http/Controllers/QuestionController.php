@@ -14,8 +14,10 @@ class QuestionController extends Controller
         $date = request()->input('date') ?? date('Y-m-d');
         try {
             $questions = Question::query()
+                ->select('id', 'question', 'type', 'deactivated_at')
                 ->with('answer', function ($query) use ($date) {
-                    $query->where('created_at', 'like', $date . '%');
+                    $query->select('id', 'question_id', 'answer', 'comment', 'created_at')
+                        ->where('date', '=', $date);
                 })
                 ->where('deactivated_at', '>=', $date)
                 ->orWhereNull('deactivated_at')
@@ -52,12 +54,25 @@ class QuestionController extends Controller
         }
     }
 
-    public function update(Request $request, int $id): JsonResponse
+    public function changeQuestion(Request $request, int $id): JsonResponse
     {
         try {
             $question = Question::query()->findOrFail($id);
             $question->update([
                 'question' => $request->input('question'),
+            ]);
+
+            return response()->json(['success' => true, 'data' => $question]);
+        } catch (Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function changeType(Request $request, int $id): JsonResponse
+    {
+        try {
+            $question = Question::query()->findOrFail($id);
+            $question->update([
                 'type' => $request->input('type'),
             ]);
 

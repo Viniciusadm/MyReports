@@ -14,6 +14,7 @@ class Answer extends Model
         'question_id',
         'answer',
         'comment',
+        'date',
         'deactivated_at',
     ];
 
