@@ -2,6 +2,7 @@
     <nav class="menu">
         <router-link to="/">Página Inicial</router-link>
         <router-link to="/reports">Relatos</router-link>
+        <router-link to="/questions">Perguntas</router-link>
         <router-link to="/people">Pessoas</router-link>
     </nav>
 </template>

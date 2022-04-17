@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\AnswerController;
 use App\Http\Controllers\PersonController;
+use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\ReportController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -35,4 +37,16 @@ Route::prefix('people')->group(function () {
     Route::post('/', [PersonController::class, 'store']);
     Route::delete('{id}', [PersonController::class, 'delete']);
     Route::post('{id}', [PersonController::class, 'update']);
+});
+
+Route::prefix('questions')->group(function () {
+    Route::get('/', [QuestionController::class, 'index']);
+    Route::post('/', [QuestionController::class, 'store']);
+    Route::post('/{id}', [QuestionController::class, 'update']);
+    Route::delete('{id}', [QuestionController::class, 'delete']);
+
+    Route::prefix('/answer')->group(function () {
+        Route::post('/', [AnswerController::class, 'store']);
+        Route::post('{id}', [AnswerController::class, 'update']);
+    });
 });
