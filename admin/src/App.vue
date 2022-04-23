@@ -18,7 +18,7 @@
     }
 
     .btn {
-        background: #00bcd4;
+        background: #575757;
         color: #fff;
         border: none;
         padding: 0.62rem 1.25rem;
