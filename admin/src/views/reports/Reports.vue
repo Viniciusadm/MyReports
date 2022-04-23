@@ -12,7 +12,7 @@
                 </label>
             </div>
         </div>
-        <template v-if="reports.length > 0">
+        <template v-if="reports.length > 0 && !carregando">
             <div class="reports-list">
                 <report v-for="report in reports" :report="report" :key="report.id" />
             </div>
@@ -28,13 +28,17 @@
                 </button>
             </p>
         </template>
-        <p v-else class="no-reports">Não há relatos com esses filtros</p>
+        <p v-else-if="reports.length === 0 && !carregando" class="no-reports">Não há relatos com esses filtros</p>
+        <div class="loading" v-else-if="carregando">
+            <loading />
+        </div>
     </div>
 </template>
 
 <script>
 import api from "@/services/api";
 import report from "@/components/Reports/Report";
+import loading from "@/components/Loading";
 import { useToast } from "vue-toastification";
 
 const toast = useToast();
@@ -49,11 +53,13 @@ export default {
             last_page: 0,
             filters: {
                 page: 1,
-            }
+            },
+            carregando: false,
         };
     },
     components: {
         report,
+        loading,
     },
     methods: {
         save() {
@@ -61,6 +67,7 @@ export default {
             this.getReports();
         },
         getReports() {
+            this.carregando = true;
             api.get(this.url)
                 .then(response => {
                     if (response.data.success) {
@@ -71,6 +78,9 @@ export default {
                 })
                 .catch(error => {
                     toast.error(error.response.data.message);
+                })
+                .finally(() => {
+                    this.carregando = false;
                 });
         },
         backPage() {
@@ -247,6 +257,24 @@ export default {
             @media screen and (max-width: 570px) {
                 font-size: 1.4rem;
             }
+        }
+    }
+
+    .loading {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        position: fixed;
+        top: 0;
+        left: 0;
+        color: #fff;
+        font-size: 2rem;
+
+        @media screen and (max-width: 570px) {
+            font-size: 1.4rem;
         }
     }
 </style>

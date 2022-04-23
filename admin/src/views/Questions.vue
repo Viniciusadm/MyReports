@@ -2,7 +2,7 @@
     <div class="questions-page">
         <div class="questions">
             <input type="date" v-model="date" @change="getQuestions()">
-            <div class="list">
+            <div v-if="!carregando" class="list">
                 <question :date="date"
                           @answered="reply($event)"
                           @comment="comment($event)"
@@ -12,7 +12,7 @@
                           v-for="question in questions" :question="question"
                           :key="question.id">
                 </question>
-                <div class="new-question">
+                <div v-if="!carregando" class="new-question">
                     <input type="text" @keyup.enter="addQuestion()" v-model="question.text" placeholder="Nova pergunta">
                     <select v-model="question.type">
                         <option value="good">Bom</option>
@@ -23,6 +23,9 @@
                 </div>
             </div>
         </div>
+        <div class="loading" v-if="carregando" >
+            <loading />
+        </div>
     </div>
 </template>
 
@@ -30,7 +33,8 @@
 import api from "@/services/api";
 import moment from "moment";
 import question from "@/components/Questions/QuestionComponent";
-import {useToast} from "vue-toastification";
+import { useToast } from "vue-toastification";
+import loading from "@/components/Loading";
 
 const toast = useToast();
 
@@ -38,33 +42,45 @@ export default {
     data() {
         return {
             questions: [],
+            debounce: null,
             date: moment().format("YYYY-MM-DD"),
             question: {
                 text: "",
                 type: "good"
             },
+            carregando: true,
         }
     },
     components: {
         question,
+        loading,
     },
     methods: {
         getQuestions() {
-            if (!moment(this.date).isAfter(moment().format("YYYY-MM-DD"))) {
-                api.get("/questions", {
-                    params: {
-                        date: this.date,
-                    }
-                }).then(response => {
-                    if (response.data.success) {
-                        this.questions = response.data.data;
-                    } else {
-                        toast.error(response.data.message);
-                    }
-                });
-            } else {
-                this.date = moment().format("YYYY-MM-DD");
-            }
+            clearTimeout(this.debounce);
+
+            this.debounce = setTimeout(() => {
+                if (!moment(this.date).isAfter(moment().format("YYYY-MM-DD"))) {
+                    this.carregando = true;
+                    api.get("/questions", {
+                        params: {
+                            date: this.date,
+                        }
+                    })
+                        .then(response => {
+                            if (response.data.success) {
+                                this.questions = response.data.data;
+                            } else {
+                                toast.error(response.data.message);
+                            }
+                        })
+                        .finally(() => {
+                            this.carregando = false;
+                        });
+                } else {
+                    this.date = moment().format("YYYY-MM-DD");
+                }
+            }, 900);
         },
         reply($event) {
             this.questions.forEach(question => {
@@ -151,53 +167,71 @@ export default {
                 padding: 5px;
                 margin-bottom: 10px;
             }
+
+            .list {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+                grid-gap: 1rem;
+
+                @media screen and (max-width: 768px) {
+                    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                }
+
+                .new-question {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-between;
+                    height: 160px;
+
+                    input {
+                        width: 100%;
+                        height: calc(100% / 3 - 0.5rem);
+                        font-size: 1.1rem;
+                        margin-bottom: 0;
+                        padding: 0 0.5rem;
+                    }
+
+                    select {
+                        width: 100%;
+                        height: calc(100% / 3 - 0.5rem);
+                        font-size: 1.1rem;
+                        border: 1px solid #ccc;
+                        background-color: #fff;
+                        cursor: pointer;
+                        padding: 0 0.5rem;
+                        border-radius: 5px;
+                    }
+
+                    button {
+                        border: none;
+                        height: calc(100% / 3 - 0.5rem);
+                        background-color: #00a65a;
+                        color: white;
+                        font-size: 1.1rem;
+                        border-radius: 0.2rem;
+                        cursor: pointer;
+                        font-weight: bold;
+                        user-select: none;
+                    }
+                }
+            }
         }
 
-        .list {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            grid-gap: 1rem;
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            position: fixed;
+            top: 0;
+            left: 0;
+            color: #fff;
+            font-size: 2rem;
 
-            @media screen and (max-width: 768px) {
-                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            }
-
-            .new-question {
-                display: flex;
-                flex-direction: column;
-                justify-content: space-between;
-                height: 160px;
-
-                input {
-                    width: 100%;
-                    height: calc(100% / 3 - 0.5rem);
-                    font-size: 1.1rem;
-                    margin-bottom: 0;
-                    padding: 0 0.5rem;
-                }
-
-                select {
-                    width: 100%;
-                    height: calc(100% / 3 - 0.5rem);
-                    font-size: 1.1rem;
-                    border: 1px solid #ccc;
-                    background-color: #fff;
-                    cursor: pointer;
-                    padding: 0 0.5rem;
-                    border-radius: 5px;
-                }
-
-                button {
-                    border: none;
-                    height: calc(100% / 3 - 0.5rem);
-                    background-color: #00a65a;
-                    color: white;
-                    font-size: 1.1rem;
-                    border-radius: 0.2rem;
-                    cursor: pointer;
-                    font-weight: bold;
-                    user-select: none;
-                }
+            @media screen and (max-width: 570px) {
+                font-size: 1.4rem;
             }
         }
     }
