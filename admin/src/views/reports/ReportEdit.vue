@@ -1,5 +1,5 @@
 <template>
-    <div class="new_report">
+    <div v-if="!carregando" class="new_report">
         <h1 class="title_page">{{ title }}</h1>
         <div class="form_report">
             <div class="form_group">
@@ -43,15 +43,20 @@
             </div>
         </div>
     </div>
+    <loading v-else-if="carregando" />
 </template>
 
 <script>
 import api from '../../services/api'
 import { useToast } from "vue-toastification";
+import loading from '@/components/Loading';
 
 const toast = useToast();
 
 export default {
+    components: {
+        loading,
+    },
     computed: {
         button_text() {
           return this.id ? 'Editar' : 'Criar';
@@ -85,7 +90,8 @@ export default {
                     type: 'main'
                 }],
                 report: ''
-            }
+            },
+            carregando: true,
         }
     },
     methods: {
@@ -106,6 +112,7 @@ export default {
             }
         },
         createReport() {
+            this.carregando = true;
             api.post('/reports', this.report)
                 .then(response => {
                     if (response.data.success) {
@@ -117,9 +124,13 @@ export default {
                 })
                 .catch(error => {
                     toast.error(error.response.data.message);
+                })
+                .finally(() => {
+                    this.carregando = false;
                 });
         },
         updateReport() {
+            this.carregando = true;
             api.put('/reports/' + this.id, this.report)
                 .then(response => {
                     if (response.data.success) {
@@ -131,6 +142,9 @@ export default {
                 })
                 .catch(error => {
                     toast.error(error.response.data.message);
+                })
+                .finally(() => {
+                    this.carregando = false;
                 });
         },
         searchPerson() {
@@ -207,6 +221,9 @@ export default {
                         toast.error(response.data.message);
                     }
                 })
+                .finally(() => {
+                    this.carregando = false;
+                });
         },
         setReport(report) {
             this.report = {

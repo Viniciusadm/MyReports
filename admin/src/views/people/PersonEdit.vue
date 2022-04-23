@@ -1,5 +1,5 @@
 <template>
-    <div class="person_modal">
+    <div v-if="!carregando" class="person_modal">
         <h1 class="title_page">{{ title }}</h1>
         <div class="form_report">
             <div class="form_group photo">
@@ -65,12 +65,14 @@
             <button @click="sendPerson()" class="btn send_report">{{ button_text }}</button>
         </div>
     </div>
+    <loading v-else-if="carregando" />
 </template>
 
 <script>
 import { BIconFileEarmarkArrowUp } from "bootstrap-icons-vue";
 import { useToast } from "vue-toastification";
 import api from "@/services/api";
+import loading from "@/components/Loading";
 
 const toast = useToast();
 
@@ -96,7 +98,8 @@ export default {
                 },
                 twitter: "",
                 instagram: "",
-            }
+            },
+            carregando: true,
         }
     },
     methods: {
@@ -133,6 +136,7 @@ export default {
             this.sendImage();
         },
         createPerson() {
+            this.carregando = true;
             api.post("/people", this.formData)
                 .then(response => {
                     if (response.data.success) {
@@ -144,9 +148,13 @@ export default {
                 })
                 .catch(error => {
                     toast.error(error.response.data.message);
+                })
+                .finally(() => {
+                    this.carregando = false;
                 });
         },
         updatePerson() {
+            this.carregando = true;
             api.post(`/people/${this.id}`, this.formData)
                 .then(response => {
                     if (response.data.success) {
@@ -158,6 +166,9 @@ export default {
                 })
                 .catch(error => {
                     toast.error(error.response.data.message);
+                })
+                .finally(() => {
+                    this.carregando = false;
                 });
         },
         sendImage() {
@@ -203,6 +214,9 @@ export default {
                 })
                 .catch(error => {
                     toast.error(error.response.data.message);
+                })
+                .finally(() => {
+                    this.carregando = false;
                 });
         },
         setPerson(person) {
@@ -238,6 +252,7 @@ export default {
     },
     components: {
         BIconFileEarmarkArrowUp,
+        loading,
     },
     computed: {
         years() {

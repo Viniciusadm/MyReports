@@ -1,5 +1,5 @@
 <template>
-    <div class="people">
+    <div class="people" v-if="!carregando">
         <div class="header">
             <h1>Pessoas</h1>
             <router-link to="/people/new" class="btn">Nova pessoa</router-link>
@@ -11,11 +11,13 @@
         </template>
         <p v-else class="no-people">Não há pessoas cadastradas.</p>
     </div>
+    <loading v-else-if="carregando" />
 </template>
 
 <script>
 import api from "@/services/api";
 import { useToast} from "vue-toastification";
+import loading from "@/components/Loading";
 
 const toast = useToast();
 
@@ -24,7 +26,11 @@ export default {
         return {
             modal: false,
             people: [],
+            carregando: true,
         };
+    },
+    components: {
+        loading,
     },
     methods: {
         getPeople() {
@@ -38,6 +44,9 @@ export default {
                 })
                 .catch(error => {
                     toast.error(error.response.data.message);
+                })
+                .finally(() => {
+                    this.carregando = false;
                 });
         },
         save() {

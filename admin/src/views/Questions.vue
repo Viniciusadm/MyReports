@@ -23,9 +23,7 @@
                 </div>
             </div>
         </div>
-        <div class="loading" v-if="carregando" >
-            <loading />
-        </div>
+        <loading v-if="carregando" />
     </div>
 </template>
 
@@ -80,7 +78,7 @@ export default {
                 } else {
                     this.date = moment().format("YYYY-MM-DD");
                 }
-            }, 900);
+            }, 500);
         },
         reply($event) {
             this.questions.forEach(question => {
@@ -214,24 +212,6 @@ export default {
                         user-select: none;
                     }
                 }
-            }
-        }
-
-        .loading {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            position: fixed;
-            top: 0;
-            left: 0;
-            color: #fff;
-            font-size: 2rem;
-
-            @media screen and (max-width: 570px) {
-                font-size: 1.4rem;
             }
         }
     }

@@ -1,5 +1,5 @@
 <template>
-    <div class="person-page">
+    <div v-if="!carregando" class="person-page">
         <div class="total">
             <div class="menu_person">
                 <p class="name">{{ person.name }}</p>
@@ -35,12 +35,14 @@
             </div>
         </div>
     </div>
+    <loading v-else-if="carregando" />
 </template>
 
 <script>
 import api from "@/services/api";
 import { useToast } from "vue-toastification";
 import { BIconPerson } from "bootstrap-icons-vue";
+import loading from "@/components/Loading";
 
 const toast = useToast();
 
@@ -60,7 +62,8 @@ export default {
                 image: "",
                 twitter: "",
                 instagram: "",
-            }
+            },
+            carregando: true,
         };
     },
     methods: {
@@ -75,6 +78,9 @@ export default {
                 })
                 .catch(error => {
                     toast.error(error.response.data.message);
+                })
+                .finally(() => {
+                    this.carregando = false;
                 });
         },
         setPerson(person) {
@@ -120,6 +126,7 @@ export default {
     },
     components: {
         BIconPerson,
+        loading,
     },
     created() {
         this.getPerson();

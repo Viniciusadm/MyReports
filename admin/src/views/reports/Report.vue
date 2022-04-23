@@ -1,5 +1,5 @@
 <template>
-    <div class="report">
+    <div v-if="!carregando" class="report">
         <div class="total">
             <div class="menu_report">
                 <h3>Relato Nº {{ id }}</h3>
@@ -26,11 +26,13 @@
             </div>
         </div>
     </div>
+    <loading v-else-if="carregando" />
 </template>
 
 <script>
 import api from "@/services/api";
 import { useToast } from "vue-toastification";
+import loading from "@/components/Loading";
 
 const toast = useToast();
 
@@ -48,7 +50,11 @@ export default {
                 updated_at: '',
                 participants: [],
             },
+            carregando: true,
         }
+    },
+    components: {
+        loading,
     },
     computed: {
         date() {
@@ -105,6 +111,9 @@ export default {
                 })
                 .catch(error => {
                     toast.error(error.response.data.message);
+                })
+                .finally(() => {
+                    this.carregando = false;
                 });
         },
         deleteReport() {

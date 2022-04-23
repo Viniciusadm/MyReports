@@ -29,9 +29,7 @@
             </p>
         </template>
         <p v-else-if="reports.length === 0 && !carregando" class="no-reports">Não há relatos com esses filtros</p>
-        <div class="loading" v-else-if="carregando">
-            <loading />
-        </div>
+        <loading v-else-if="carregando" />
     </div>
 </template>
 
@@ -266,24 +264,6 @@ export default {
             @media screen and (max-width: 570px) {
                 font-size: 1.4rem;
             }
-        }
-    }
-
-    .loading {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        position: fixed;
-        top: 0;
-        left: 0;
-        color: #fff;
-        font-size: 2rem;
-
-        @media screen and (max-width: 570px) {
-            font-size: 1.4rem;
         }
     }
 </style>
