@@ -139,7 +139,7 @@ export default {
             clearTimeout(this.debounce);
 
             this.debounce = setTimeout(() => {
-                api.get('/people/search/', {
+                api.get('/people/search', {
                     params: {
                         q: this.query,
                         exclude: exclude
