@@ -315,6 +315,7 @@ export default {
             align-items: center;
             justify-content: center;
             margin: 0.5rem;
+            width: 90%;
 
             .inputs {
                 display: flex;
@@ -366,7 +367,7 @@ export default {
                 }
             }
 
-            input {
+            .input_comment {
                 width: 100%;
                 margin: 0.5rem 0;
                 padding: 0.5rem;

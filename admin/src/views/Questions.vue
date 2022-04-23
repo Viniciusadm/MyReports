@@ -14,21 +14,12 @@
                 </question>
                 <div class="new-question">
                     <input type="text" @keyup.enter="addQuestion()" v-model="question.text" placeholder="Nova pergunta">
-                    <div class="question-type">
-                        <label :class="question.type === 'good' ? 'active' : ''">
-                            <input v-model="question.type" type="radio" value="good" />
-                            <span>Bom</span>
-                        </label>
-                        <label :class="question.type === 'neutral' ? 'active' : ''">
-                            <input v-model="question.type" type="radio" value="neutral" />
-                            <span @click="changeType('neutral')">Neutro</span>
-                        </label>
-                        <label :class="question.type === 'bad' ? 'active' : ''">
-                            <input v-model="question.type" type="radio" value="bad" />
-                            <span @click="changeType('bad')">Ruim</span>
-                        </label>
-                        <button @click="addQuestion()">Adicionar</button>
-                    </div>
+                    <select v-model="question.type">
+                        <option value="good">Bom</option>
+                        <option value="neutral">Neutro</option>
+                        <option value="bad">Ruim</option>
+                    </select>
+                    <button @click="addQuestion()">Adicionar</button>
                 </div>
             </div>
         </div>
@@ -110,7 +101,6 @@ export default {
         disable($event) {
             this.questions.forEach(question => {
                 if (question.id === $event.question_id) {
-                    console.log(question);
                     question.deactivated_at = this.date;
                 }
             });
@@ -168,79 +158,45 @@ export default {
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             grid-gap: 1rem;
 
+            @media screen and (max-width: 768px) {
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            }
+
             .new-question {
                 display: flex;
                 flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                height: 100%;
+                justify-content: space-between;
+                height: 160px;
 
                 input {
                     width: 100%;
-                    padding: 1.5rem 1rem;
-                    margin-bottom: 1rem;
+                    height: calc(100% / 3 - 0.5rem);
                     font-size: 1.1rem;
+                    margin-bottom: 0;
+                    padding: 0 0.5rem;
                 }
 
-                .question-type {
-                    display: flex;
-                    flex-direction: row;
-                    align-items: center;
-                    justify-content: center;
-                    width: 90%;
+                select {
+                    width: 100%;
+                    height: calc(100% / 3 - 0.5rem);
+                    font-size: 1.1rem;
+                    border: 1px solid #ccc;
+                    background-color: #fff;
+                    cursor: pointer;
+                    padding: 0 0.5rem;
+                    border-radius: 5px;
+                }
 
-                    label {
-                        display: flex;
-                        border: 1px solid #ccc;
-                        cursor: pointer;
-                        color: black;
-                        margin-right: 0.3rem;
-                        flex: 1;
-
-                        &:hover {
-                            background-color: #00bcd4;
-                            color: white;
-                        }
-
-                        &.active {
-                            background-color: #00bcd4;
-                            color: white;
-                        }
-
-                        &:first-child {
-                            border-top-left-radius: 0.2rem;
-                            border-bottom-left-radius: 0.2rem;
-                        }
-
-                        &:last-child {
-                            border-top-right-radius: 0.2rem;
-                            border-bottom-right-radius: 0.2rem;
-                            margin-right: 0;
-                        }
-
-                        span {
-                            font-size: 1.1rem;
-                            font-weight: bold;
-                            padding: 0.9rem;
-                            user-select: none;
-                        }
-
-                        input {
-                            display: none;
-                        }
-                    }
-
-                    button {
-                        border: none;
-                        background-color: #00a65a;
-                        color: white;
-                        padding: 0.9rem 1rem;
-                        font-size: 1.1rem;
-                        border-radius: 0.2rem;
-                        cursor: pointer;
-                        font-weight: bold;
-                        user-select: none;
-                    }
+                button {
+                    border: none;
+                    height: calc(100% / 3 - 0.5rem);
+                    background-color: #00a65a;
+                    color: white;
+                    font-size: 1.1rem;
+                    border-radius: 0.2rem;
+                    cursor: pointer;
+                    font-weight: bold;
+                    user-select: none;
                 }
             }
         }
