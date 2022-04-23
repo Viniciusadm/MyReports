@@ -84,15 +84,24 @@ export default {
                 });
         },
         backPage() {
+            clearTimeout(this.debounce);
+
             if (this.filters.page > 1) {
                 this.filters.page--;
-                this.getReports();
+
+                this.debounce = setTimeout(() => {
+                    this.getReports();
+                }, 500);
             }
         },
         nextPage() {
+            clearTimeout(this.debounce);
             if (this.filters.page < this.last_page) {
                 this.filters.page++;
-                this.getReports();
+
+                this.debounce = setTimeout(() => {
+                    this.getReports();
+                }, 500);
             }
         },
         setQuery($event) {
