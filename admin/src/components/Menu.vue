@@ -66,10 +66,11 @@
             display: flex;
             justify-content: space-around;
             align-items: center;
-            padding: 1rem;
+            padding: 0.6rem 1rem;
             font-size: 1.2rem;
             font-weight: bold;
             cursor: pointer;
+            border-bottom: 1px solid #575757;
 
             button {
                 border: 1px solid black;
@@ -98,7 +99,7 @@
             height: 0;
             overflow: hidden;
             transition: height 0.4s;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.6rem;
 
             &.show {
                 height: 13.75rem;
