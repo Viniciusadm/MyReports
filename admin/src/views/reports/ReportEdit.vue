@@ -72,6 +72,7 @@ export default {
             humors: Object.entries(this.$store.state.humors),
             query: '',
             people_search: [],
+            debounce: null,
             people: [],
             report: {
                 title: '',
@@ -134,7 +135,23 @@ export default {
         },
         searchPerson() {
             const exclude = JSON.stringify(this.people.map(person => person.id));
-            this.people_search = this.$store.getters.searchPeople(this.query, exclude);
+
+            clearTimeout(this.debounce);
+
+            this.debounce = setTimeout(() => {
+                api.get('/people/search/', {
+                    params: {
+                        q: this.query,
+                        exclude: exclude
+                    }
+                })
+                    .then(response => {
+                        this.people_search = response.data.data;
+                    })
+                    .catch(error => {
+                        toast.error(error.response.data.message);
+                    });
+            }, 500);
         },
         addPerson($event) {
             this.people.push({

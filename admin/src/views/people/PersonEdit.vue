@@ -137,10 +137,7 @@ export default {
                 .then(response => {
                     if (response.data.success) {
                         toast.success('Pessoa adicionada com sucesso!');
-                        this.getPeople()
-                            .then(() => {
-                                this.$router.push("/people");
-                            })
+                        this.$router.push("/people");
                     } else {
                         toast.error(response.data.message);
                     }
@@ -154,10 +151,7 @@ export default {
                 .then(response => {
                     if (response.data.success) {
                         toast.success('Pessoa atualizada com sucesso!');
-                        this.getPeople()
-                            .then(() => {
-                                this.$router.push("/people");
-                            })
+                        this.$router.push("/people");
                     } else {
                         toast.error(response.data.message);
                     }
@@ -240,20 +234,6 @@ export default {
                     year: ""
                 }
             }
-        },
-        getPeople() {
-            return api.get("/people")
-                .then(response => {
-                    if (response.data.success) {
-                        this.people = response.data.data;
-                        this.$store.commit("setPeople", response.data.data);
-                    } else {
-                        toast.error(response.data.message);
-                    }
-                })
-                .catch(error => {
-                    toast.error(error.response.data.message);
-                });
         },
     },
     components: {

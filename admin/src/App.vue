@@ -35,25 +35,11 @@
 </style>
 
 <script>
-import api from "@/services/api";
 import Menu from "./components/Menu.vue";
 
 export default {
     components: {
         Menu,
-    },
-    methods: {
-        getPeople() {
-            api.get("/people")
-                .then(response => {
-                    if (response.data.success) {
-                        this.$store.commit("setPeople", response.data.data);
-                    }
-            });
-        },
-    },
-    mounted() {
-        this.getPeople();
     },
 };
 </script>

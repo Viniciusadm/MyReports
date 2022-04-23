@@ -26,14 +26,17 @@ class PersonController extends Controller
     public function search(): JsonResponse
     {
         try {
-            if (request('q') == null) {
+            if (request('q') === null) {
                 return response()->json('');
             }
 
             $exclude = json_decode(request('exclude'));
 
             $people = Person::query()->select('id', 'name')
-                ->where('name', 'like', '%' . request('q') . '%')
+                ->where(function ($query) {
+                    $query->where('name', 'like', '%' . request('q') . '%')
+                        ->orWhere('nickname', 'like', '%' . request('q') . '%');
+                })
                 ->whereNotIn('id', $exclude)
                 ->take(5)
                 ->get();
