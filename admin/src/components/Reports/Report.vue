@@ -58,32 +58,8 @@ export default {
 
 <style scoped lang="scss">
     .report {
-        width: 25rem;
-        height: 10rem;
-        margin-bottom: 1.2rem;
         border: black 1px solid;
         padding: 1rem;
-
-        &:last-child {
-            margin: 0;
-        }
-
-        @media screen and (max-width: 1386px) {
-            width: 20rem;
-        }
-
-        @media screen and (max-width: 925px) {
-            width: 15rem;
-        }
-
-        @media screen and (max-width: 570px) {
-            width: 25rem;
-            height: auto;
-        }
-
-        @media screen and (max-width: 440px) {
-            width: 100%;
-        }
 
         .card {
             &-header {

@@ -14,7 +14,7 @@
         </div>
         <template v-if="reports.length > 0">
             <div class="reports-list">
-                <Report v-for="report in reports" :report="report" :key="report.id" />
+                <report v-for="report in reports" :report="report" :key="report.id" />
             </div>
             <p class="paginas" v-if="total > 12">
                 <button @click="backPage()" :disabled="filters.page === 1">
@@ -34,7 +34,7 @@
 
 <script>
 import api from "@/services/api";
-import Report from "@/components/Reports/Report";
+import report from "@/components/Reports/Report";
 import { useToast } from "vue-toastification";
 
 const toast = useToast();
@@ -53,7 +53,7 @@ export default {
         };
     },
     components: {
-        Report,
+        report,
     },
     methods: {
         save() {
@@ -202,15 +202,14 @@ export default {
         }
 
         .reports-list {
-            display: flex;
-            flex-direction: row;
-            flex-wrap: wrap;
-            justify-content: space-evenly;
-            width: 90%;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-gap: 1.25rem;
+            margin-bottom: 1.5rem;
 
-            @media screen and (max-width: 570px) {
-                font-size: 1rem;
-                margin-bottom: 1rem;
+
+            @media screen and (max-width: 1600px) {
+                width: 90%;
             }
         }
 
