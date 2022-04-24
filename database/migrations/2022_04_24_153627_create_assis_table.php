@@ -1,0 +1,43 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreateAssisTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up(): void
+    {
+        Schema::create('assis', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('collection_id');
+            $table->string('name');
+            $table->integer('total');
+            $table->enum('type', ['anime', 'dorama', 'movie', 'serie', 'other']);
+            $table->enum('status', ['assistindo', 'para_assistir', 'desistido', 'completo', 'pausado']);
+            $table->integer('order');
+            $table->string('image')->nullable();
+            $table->integer('average_time')->nullable();
+            $table->integer('year')->nullable();
+            $table->string('sinopse')->nullable();
+            $table->timestamps();
+
+            $table->foreign('collection_id')->references('id')->on('assis_collections')->onDelete('cascade');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('assis');
+    }
+}

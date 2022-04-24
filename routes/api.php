@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\AnswerController;
+use App\Http\Controllers\AssisCollectionController;
+use App\Http\Controllers\AssisController;
+use App\Http\Controllers\EpisodeController;
 use App\Http\Controllers\PersonController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\ReportController;
@@ -50,5 +53,21 @@ Route::prefix('questions')->group(function () {
         Route::post('/reply', [AnswerController::class, 'reply']);
         Route::post('{id}', [AnswerController::class, 'change']);
         Route::post('/{id}/comment', [AnswerController::class, 'comment']);
+    });
+});
+
+Route::prefix('assis')->group(function () {
+    Route::get('/status/{status}', [AssisController::class, 'status']);
+    Route::get('/{id}', [AssisController::class, 'show']);
+
+    Route::prefix('/collection')->group(function () {
+        Route::post('/', [AssisCollectionController::class, 'newCollection']);
+        Route::get('/{id}', [AssisCollectionController::class, 'show']);
+        Route::post('/{id_collection}/add', [AssisCollectionController::class, 'addToCollection']);
+    });
+
+    Route::prefix('/episode')->group(function () {
+        Route::post('/{id_assis}/add', [EpisodeController::class, 'addToEpisode']);
+        Route::get('/date/{date}', [EpisodeController::class, 'getByDate']);
     });
 });
