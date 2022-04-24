@@ -245,6 +245,8 @@ export default {
     created() {
         if (this.id) {
             this.getReport();
+        } else  {
+            this.carregando = false;
         }
     }
 }

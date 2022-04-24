@@ -286,6 +286,8 @@ export default {
     mounted() {
         if (this.id) {
             this.getPerson();
+        } else {
+            this.carregando = false;
         }
     }
 }
