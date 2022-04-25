@@ -18,7 +18,7 @@ class CreateAssisTable extends Migration
             $table->unsignedBigInteger('collection_id');
             $table->string('name')->nullable();
             $table->integer('total');
-            $table->enum('type', ['anime', 'dorama', 'movie', 'serie', 'other']);
+            $table->enum('type', ['anime', 'cartoon', 'dorama', 'movie', 'serie', 'other']);
             $table->enum('status', ['assistindo', 'para_assistir', 'desistido', 'completo', 'pausado']);
             $table->integer('order');
             $table->string('image')->nullable();

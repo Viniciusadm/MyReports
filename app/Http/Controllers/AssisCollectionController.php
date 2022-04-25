@@ -39,7 +39,7 @@ class AssisCollectionController extends Controller
                 'total' => $data['assis']['total'],
                 'type' => $data['assis']['type'],
                 'status' => $data['assis']['status'],
-                'order' => $data['assis']['order'],
+                'order' => 0,
                 'average_time' => $data['assis']['average_time'] ?? null,
                 'image' => $data['assis']['image'] ?? null,
                 'year' => $data['assis']['year'] ?? null,

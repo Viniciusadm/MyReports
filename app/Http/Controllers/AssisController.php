@@ -8,17 +8,23 @@ use Illuminate\Http\JsonResponse;
 
 class AssisController extends Controller
 {
-    public function status(string $status): JsonResponse
+    public function index(): JsonResponse
     {
         try {
-            $assis = Assis::query()
+            $status = request()->input('status');
+
+            $query = Assis::query()
                 ->select('id', 'collection_id', 'name', 'total', 'status', 'created_at', 'type', 'image')
                 ->with('collection', function ($query) {
                     $query->select('id', 'name', 'image');
                 })
-                ->withCount('episodes')
-                ->where('status', $status)
-                ->get();
+                ->withCount('episodes');
+
+            if ($status) {
+                $query->where('status', $status);
+            }
+
+            $assis = $query->get();
 
             return response()->json(['success' => true, 'data' => $assis]);
         } catch (Exception $e) {

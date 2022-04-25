@@ -1,11 +1,12 @@
 <template>
     <div class="assis">
-        <img :src="image" :alt="`Imagem de capa: ${assis.collection.name} - ${assis.name}`">
+        <img v-if="image" :src="image" :alt="`Imagem de capa: ${assis.collection.name} - ${assis.name}`">
+        <img v-else src="../../../assets/images/default.png" alt="imagem padrão">
         <div class="assis_info">
             <p>{{ assis.collection.name }}{{assis.name ? ` - ${assis.name}` : ''}}</p>
-            <p>{{assis.episodes_count}} episódios assistidos de {{assis.total}} totais</p>
+            <p>{{assis.episodes_count}} de {{assis.total}} episódios assistidos</p>
             <p>{{ type }}</p>
-            <p>Status: {{ assis.status }}</p>
+            <p>Status: {{ status }}</p>
         </div>
     </div>
 </template>
@@ -37,23 +38,27 @@ export default {
     computed: {
         image() {
             if (this.assis.image) {
-                return this.assis.image;
+                return `${process.env.VUE_APP_URL_IMAGES}/${this.assis.image}`;
             } else if (this.assis.collection.image) {
-                return this.assis.collection.image;
+                return `${process.env.VUE_APP_URL_IMAGES}/${this.assis.collection.image}`;
             } else {
-                return "https://via.placeholder.com/150";
+                return null;
             }
         },
         type() {
             const types = {
                 anime: "Anime",
                 dorama: "Dorama",
+                cartoon: "Desenho",
                 movie: "Filme",
                 serie: "Série",
                 other: "Outro"
             }
 
             return types[this.assis.type];
+        },
+        status() {
+            return this.assis.status.replace(/_/g, " ");
         }
     },
 }
@@ -66,10 +71,23 @@ export default {
         margin-bottom: 1rem;
 
         img {
-            width: 10rem;
+            width: 12rem;
             height: 10rem;
-            object-fit: contain;
+            object-fit: cover;
+            object-position: center;
             margin-right: 0.8rem;
+        }
+
+        .assis_info {
+            width: 100%;
+
+            p {
+                margin-bottom: 0.3rem;
+
+                &:last-child {
+                    margin-bottom: 0;
+                }
+            }
         }
     }
 </style>

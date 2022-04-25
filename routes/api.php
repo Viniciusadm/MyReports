@@ -57,7 +57,7 @@ Route::prefix('questions')->group(function () {
 });
 
 Route::prefix('assis')->group(function () {
-    Route::get('/status/{status}', [AssisController::class, 'status']);
+    Route::get('/', [AssisController::class, 'index']);
     Route::get('/{id}', [AssisController::class, 'show']);
 
     Route::prefix('/collection')->group(function () {
