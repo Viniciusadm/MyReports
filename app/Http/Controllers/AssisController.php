@@ -14,7 +14,7 @@ class AssisController extends Controller
             $assis = Assis::query()
                 ->select('id', 'collection_id', 'name', 'total', 'status', 'created_at', 'type', 'image')
                 ->with('collection', function ($query) {
-                    $query->select('id', 'name');
+                    $query->select('id', 'name', 'image');
                 })
                 ->withCount('episodes')
                 ->where('status', $status)

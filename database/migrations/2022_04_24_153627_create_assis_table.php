@@ -16,7 +16,7 @@ class CreateAssisTable extends Migration
         Schema::create('assis', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('collection_id');
-            $table->string('name');
+            $table->string('name')->nullable();
             $table->integer('total');
             $table->enum('type', ['anime', 'dorama', 'movie', 'serie', 'other']);
             $table->enum('status', ['assistindo', 'para_assistir', 'desistido', 'completo', 'pausado']);

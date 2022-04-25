@@ -4,6 +4,7 @@
         <router-link to="/reports">Relatos</router-link>
         <router-link to="/questions">Perguntas</router-link>
         <router-link to="/people">Pessoas</router-link>
+        <router-link to="/assis">Assis</router-link>
     </nav>
     <nav class="menu-mobile">
         <div class="top">
@@ -15,6 +16,7 @@
             <router-link @click="showMenu" to="/reports">Relatos</router-link>
             <router-link @click="showMenu" to="/questions">Perguntas</router-link>
             <router-link @click="showMenu" to="/people">Pessoas</router-link>
+            <router-link @click="showMenu" to="/assis">Assis</router-link>
         </div>
     </nav>
 </template>
@@ -102,7 +104,7 @@
             margin-bottom: 0.6rem;
 
             &.show {
-                height: 13.75rem;
+                height: 275px;
             }
 
             a {

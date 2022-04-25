@@ -19,7 +19,7 @@ class AssisCollectionController extends Controller
 
             return response()->json(['success' => true, 'data' => $collection]);
         } catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+            return response()->json(['sucess' => false, 'error' => $e->getMessage()], 500);
         }
     }
 
@@ -35,7 +35,7 @@ class AssisCollectionController extends Controller
 
             $assis = Assis::query()->create([
                 'collection_id' => $collection['id'],
-                'name' => $data['assis']['name'],
+                'name' => $data['assis']['name'] ?? null,
                 'total' => $data['assis']['total'],
                 'type' => $data['assis']['type'],
                 'status' => $data['assis']['status'],
@@ -61,7 +61,7 @@ class AssisCollectionController extends Controller
 
             $assis = Assis::query()->create([
                 'collection_id' => $collection['id'],
-                'name' => $data['name'],
+                'name' => $data['name'] ?? null,
                 'total' => $data['total'],
                 'type' => $data['type'],
                 'status' => $data['status'],

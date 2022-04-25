@@ -29,7 +29,7 @@
         text-decoration: none;
 
         &:hover {
-            background: #00acc1;
+            background: #1b1e21;
         }
     }
 </style>
