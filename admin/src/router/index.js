@@ -57,6 +57,11 @@ const routes = [
         component: () => import("../views/assis/Assis.vue"),
     },
     {
+        path: "/assis/:id",
+        name: "Assis Details",
+        component: () => import("../views/assis/AssisDetails.vue"),
+    },
+    {
         path: "/assis/new-collection",
         name: "NewAssisCollection",
         component: () => import("../views/assis/AssisCollectionEdit.vue"),

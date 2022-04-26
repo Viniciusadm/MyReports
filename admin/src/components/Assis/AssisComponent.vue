@@ -1,9 +1,11 @@
 <template>
     <div class="assis">
-        <img v-if="image" :src="image" :alt="`Imagem de capa: ${assis.collection.name} - ${assis.name}`">
-        <img v-else src="../../../assets/images/default.png" alt="imagem padrão">
+        <router-link :to="`/assis/${assis.id}`">
+            <img v-if="image" :src="image" :alt="`Imagem de capa: ${assis.collection.name} - ${assis.name}`">
+            <img v-else src="../../../assets/images/default.png" alt="imagem padrão">
+        </router-link>
         <div class="assis_info">
-            <p>{{ nome }}</p>
+            <p><router-link :to="`/assis/${assis.id}`">{{name}}</router-link></p>
             <p>{{assis.episodes_count}} de {{assis.total}} episódios assistidos</p>
             <p>{{ type }}</p>
             <p>{{ status }}</p>
@@ -61,7 +63,7 @@ export default {
         status() {
             return this.assis.status.replace(/_/g, " ")[0].toUpperCase() + this.assis.status.replace(/_/g, " ").slice(1);
         },
-        nome() {
+        name() {
             if (this.assis.hidden_collection) {
                 return this.assis.name;
             }
@@ -95,6 +97,11 @@ export default {
 
             p {
                 margin-bottom: 0.3rem;
+
+                a {
+                    color: #000;
+                    text-decoration: none;
+                }
 
                 &:last-child {
                     margin-bottom: 0;
