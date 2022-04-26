@@ -24,6 +24,7 @@ class Assis extends Model
         'year',
         'sinopse',
         'order',
+        'hidden_collection',
     ];
 
     public function collection(): BelongsTo

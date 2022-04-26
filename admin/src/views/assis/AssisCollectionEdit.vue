@@ -2,21 +2,21 @@
     <div class="new-collection">
         <h1 class="title_page">Nova coleção</h1>
         <div class="form_collection">
-            <div class="form_group form_group-single">
+            <div class="form-group form-group-single">
                 <input v-model="collection.name" class="input_text" placeholder="Nome da coleção">
             </div>
             <h2 class="title_assis">Detalhes do assis</h2>
-            <div class="form_group form_group-single">
+            <div class="form-group form-group-single">
                 <input v-model="collection.assis.name" class="input_text" placeholder="Nome">
             </div>
-            <div class="form_group form_group-double">
+            <div class="form-group form-group-double">
                 <input v-model="collection.assis.total" @input="removeNumbers($event)" class="input_text" placeholder="Total">
                 <input v-model="collection.assis.average_time" @input="removeNumbers($event)" class="input_text" placeholder="Tempo médio">
             </div>
-            <div class="form_group form_group-single">
+            <div class="form-group form-group-single">
                 <input v-model="collection.assis.year" class="input_text" placeholder="Ano de lançamento">
             </div>
-            <div class="form_group form_group-double">
+            <div class="form-group form-group-double">
                 <select v-model="collection.assis.type" class="input_select">
                     <option value="anime">Anime</option>
                     <option value="dorama">Dorama</option>
@@ -33,7 +33,14 @@
                     <option value="pausado">Pausado</option>
                 </select>
             </div>
-            <div class="form_group form_group-single">
+            <div class="form-group form-group-single">
+                <label class="label_checkbox">
+                    <input v-model="collection.assis.hidden_collection" type="checkbox">
+                    <span class="checkmark" :class="{ 'checked': collection.assis.hidden_collection }"></span>
+                    <span>Ocultar nome da coleção</span>
+                </label>
+            </div>
+            <div class="form-group form-group-single">
                 <textarea v-model="collection.assis.sinopse" class="input_textarea" placeholder="Sinopse"></textarea>
             </div>
             <button @click="sendCollection()" class="btn">Criar</button>
@@ -53,6 +60,7 @@ export default {
                     name: '',
                     total: '',
                     average_time: '',
+                    hidden_collection: false,
                     year: '',
                     type: 'serie',
                     status: 'assistindo',
@@ -102,7 +110,7 @@ export default {
             width: 80%;
             max-width: 800px;
 
-            .form_group {
+            .form-group {
                 .input_text {
                     padding: 1rem;
                     border: none;
@@ -139,7 +147,33 @@ export default {
                     margin-bottom: 1rem;
                 }
 
-                &.form_group-double {
+                .label_checkbox {
+                    margin-bottom: 1rem;
+
+                    .checkmark {
+                        background: #ccc;
+                        display: inline-block;
+                        width: 1.1rem;
+                        height: 1.1rem;
+                        margin-right: 0.2rem;
+
+                        &.checked {
+                            background: #00bfa5;
+                        }
+                    }
+
+                    input {
+                        display: none;
+                    }
+
+                    span {
+                        font-size: 1.5rem;
+                        cursor: pointer;
+                        user-select: none;
+                    }
+                }
+
+                &.form-group-double {
                     display: flex;
                     flex-direction: row;
                     align-items: center;

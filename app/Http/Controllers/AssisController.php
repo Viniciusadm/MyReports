@@ -14,7 +14,7 @@ class AssisController extends Controller
             $status = request()->input('status');
 
             $query = Assis::query()
-                ->select('id', 'collection_id', 'name', 'total', 'status', 'created_at', 'type', 'image')
+                ->select('id', 'collection_id', 'name', 'total', 'status', 'created_at', 'type', 'image', 'hidden_collection')
                 ->with('collection', function ($query) {
                     $query->select('id', 'name', 'image');
                 })

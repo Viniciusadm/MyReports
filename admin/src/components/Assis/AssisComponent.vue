@@ -3,10 +3,10 @@
         <img v-if="image" :src="image" :alt="`Imagem de capa: ${assis.collection.name} - ${assis.name}`">
         <img v-else src="../../../assets/images/default.png" alt="imagem padrão">
         <div class="assis_info">
-            <p>{{ assis.collection.name }}{{assis.name ? ` - ${assis.name}` : ''}}</p>
+            <p>{{ nome }}</p>
             <p>{{assis.episodes_count}} de {{assis.total}} episódios assistidos</p>
             <p>{{ type }}</p>
-            <p>Status: {{ status }}</p>
+            <p>{{ status }}</p>
         </div>
     </div>
 </template>
@@ -27,6 +27,7 @@ export default {
                 type: "",
                 image: "",
                 episodes_count: 0,
+                hidden_collection: false,
                 collection: {
                     id: 0,
                     name: "",
@@ -58,7 +59,18 @@ export default {
             return types[this.assis.type];
         },
         status() {
-            return this.assis.status.replace(/_/g, " ");
+            return this.assis.status.replace(/_/g, " ")[0].toUpperCase() + this.assis.status.replace(/_/g, " ").slice(1);
+        },
+        nome() {
+            if (this.assis.hidden_collection) {
+                return this.assis.name;
+            }
+
+            if (this.assis.name) {
+                return `${this.assis.collection.name} - ${this.assis.name}`;
+            } else {
+                return this.assis.collection.name;
+            }
         }
     },
 }

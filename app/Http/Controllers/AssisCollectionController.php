@@ -44,6 +44,7 @@ class AssisCollectionController extends Controller
                 'image' => $data['assis']['image'] ?? null,
                 'year' => $data['assis']['year'] ?? null,
                 'sinopse' => $data['assis']['sinopse'] ?? null,
+                'hidden_collection' => $data['assis']['hidden_collection'] ?? null,
             ]);
 
             return response()->json(['success' => true, 'data' => $assis]);
@@ -70,6 +71,7 @@ class AssisCollectionController extends Controller
                 'image' => $data['image'] ?? null,
                 'year' => $data['year'] ?? null,
                 'sinopse' => $data['sinopse'] ?? null,
+                'hidden_collection' => $data['hidden_collection'] ?? null,
             ]);
 
             return response()->json(['success' => true, 'data' => $assis]);

@@ -21,6 +21,7 @@ class CreateAssisTable extends Migration
             $table->enum('type', ['anime', 'cartoon', 'dorama', 'movie', 'serie', 'other']);
             $table->enum('status', ['assistindo', 'para_assistir', 'desistido', 'completo', 'pausado']);
             $table->integer('order');
+            $table->boolean('hidden_collection')->default(false);
             $table->string('image')->nullable();
             $table->integer('average_time')->nullable();
             $table->integer('year')->nullable();
