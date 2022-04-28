@@ -6,12 +6,21 @@
         </div>
         <div class="info">
             <p>Nome da coleção: {{ assis.collection.name }}</p>
-            <p>Nome do assis: {{ assis.name }}</p>
-            <p>Sinopse: {{ assis.sinopse }}</p>
-            <p>Ano: {{ assis.year }}</p>
-            <p>Tempo médio: {{ assis.average_time }}</p>
-            <p>Tipo: {{ assis.type }}</p>
+            <p v-if="assis.name">Nome do assis: {{ assis.name }}</p>
+            <p v-if="assis.sinopse">Sinopse: {{ assis.sinopse }}</p>
+            <p v-if="assis.year">Ano: {{ assis.year }}</p>
+            <p v-if="assis.average_time">Tempo médio: {{ assis.average_time }}</p>
+            <p>Tipo: {{ type }}</p>
             <p>Status: {{ assis.status }}</p>
+            <p>Episódios: {{ assis.total }}</p>
+            <p>Último episódio: {{ lastEpisode }}</p>
+        </div>
+        <div class="addFast" v-if="lastEpisode < assis.total">
+            <button @click="addEpisode(lastEpisode + 1)">Adicionar episódio {{ lastEpisode + 1 }}</button>
+        </div>
+        <div class="addSpecific" v-if="lastEpisode.length !== assis.total">
+            <input type="number" v-model="specificEpisode" />
+            <button @click="addEpisode(specificEpisode)">Adicionar</button>
         </div>
         <div class="episodes">
             <h2>Episódios</h2>
@@ -62,8 +71,9 @@ export default {
                     assis_id: 0,
                     episode: 0,
                     comment: "",
-                }
+                },
             },
+            specificEpisode: 1,
         };
     },
     components: {
@@ -72,7 +82,26 @@ export default {
     computed: {
         id() {
             return this.$route.params.id;
-        }
+        },
+        lastEpisode() {
+            if (this.assis.episodes.length > 0) {
+                return this.assis.episodes.reduce((a, b) => a.episode > b.episode ? a : b).episode;
+            } else {
+                return 0;
+            }
+        },
+        type() {
+            const types = {
+                anime: "Anime",
+                dorama: "Dorama",
+                cartoon: "Desenho",
+                movie: "Filme",
+                serie: "Série",
+                other: "Outro"
+            }
+
+            return types[this.assis.type];
+        },
     },
     methods: {
         getAssis() {
@@ -90,6 +119,10 @@ export default {
             return this.assis.episodes.find(e => e.episode === episode);
         },
         addEpisode(episode) {
+            if (this.hasEpisode(episode) || episode <= 0) {
+                return;
+            }
+
             this.carregando = true;
             api.post(`/assis/episode/${this.id}/add`, { episode })
                 .then(response => {
@@ -118,13 +151,23 @@ export default {
         flex-direction: column;
         align-items: center;
 
+        button {
+            font-size: 1.25em;
+            font-weight: bold;
+            color: #333;
+            background-color: #fff;
+            border: none;
+            cursor: pointer;
+            user-select: none;
+        }
+
         .header {
             display: flex;
             flex-direction: row;
             align-items: center;
             justify-content: space-between;
             width: 90%;
-            margin-bottom: 1.25rem;
+            margin-bottom: 1.20rem;
 
             .btn {
                 @media screen and (max-width: 570px) {
@@ -151,11 +194,30 @@ export default {
             }
         }
 
+        .addFast {
+            width: 90%;
+            margin-top: 1.20rem;
+        }
+
+        .addSpecific {
+            width: 90%;
+            margin-top: 1.20rem;
+
+            input {
+                font-size: 1.25rem;
+                padding: 0.2rem 0.5rem;
+                margin-right: 0.5rem;
+                border: 1px solid #333;
+                border-radius: 0.25rem;
+                margin-bottom: 0.5rem;
+            }
+        }
+
         .episodes {
             width: 90%;
             display: flex;
             flex-direction: column;
-            margin: 1.25rem 0;
+            margin: 1.20rem 0;
 
             h2 {
                 font-size: 1.5em;
@@ -168,7 +230,7 @@ export default {
                 display: flex;
                 flex-direction: column;
                 align-items: flex-start;
-                margin-top: 1.25rem;
+                margin-top: 1.20rem;
                 padding-bottom: 0.8rem;
                 border-bottom: 1px solid #333;
 
@@ -177,15 +239,6 @@ export default {
                     font-weight: bold;
                     color: #333;
                     margin-bottom: 0.2rem;
-                }
-
-                button {
-                    font-size: 1.25em;
-                    font-weight: bold;
-                    color: #333;
-                    background-color: #fff;
-                    border: none;
-                    cursor: pointer;
                 }
             }
         }
