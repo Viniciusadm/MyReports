@@ -5,6 +5,7 @@
         <router-link to="/questions">Perguntas</router-link>
         <router-link to="/people">Pessoas</router-link>
         <router-link to="/assis">Assis</router-link>
+        <router-link to="/assis/log">Log</router-link>
     </nav>
     <nav class="menu-mobile">
         <div class="top">
@@ -17,6 +18,7 @@
             <router-link @click="showMenu" to="/questions">Perguntas</router-link>
             <router-link @click="showMenu" to="/people">Pessoas</router-link>
             <router-link @click="showMenu" to="/assis">Assis</router-link>
+            <router-link @click="showMenu" to="/assis/log" class="btn">Log</router-link>
         </div>
     </nav>
 </template>
@@ -104,7 +106,7 @@
             margin-bottom: 0.6rem;
 
             &.show {
-                height: 275px;
+                height: 330px;
             }
 
             a {
