@@ -6,6 +6,7 @@
         </div>
         <div class="filters">
             <select @change="getAssis" v-model="filters.status">
+                <option value="">Todos</option>
                 <option value="assistindo">Assistindo</option>
                 <option value="para_assistir">Para Assistir</option>
                 <option value="desistido">Desistido</option>
@@ -36,8 +37,8 @@ export default {
             assis: [],
             carregando: false,
             filters: {
-                status: "assistindo",
-            }
+                status: "",
+            },
         }
     },
     components: {

@@ -20,9 +20,7 @@
                 </div>
             </div>
             <div class="body">
-                <p class="content">
-                    {{ report.report }}
-                </p>
+                <p class="content" v-html="reportHTML"></p>
             </div>
         </div>
     </div>
@@ -97,6 +95,9 @@ export default {
             } else {
                 return 'Nenhum participante';
             }
+        },
+        reportHTML() {
+            return this.report.report.replace(/\n/g, '<br>');
         },
     },
     methods: {
