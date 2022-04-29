@@ -5,7 +5,7 @@
             <router-link to="/assis/new-collection" class="btn">Nova coleção</router-link>
         </div>
         <div class="filters">
-            <select @change="getAssis" v-model="filters.status">
+            <select @change="changeStatus" v-model="filters.status">
                 <option value="">Todos</option>
                 <option value="assistindo">Assistindo</option>
                 <option value="para_assistir">Para Assistir</option>
@@ -37,7 +37,7 @@ export default {
             assis: [],
             carregando: false,
             filters: {
-                status: "",
+                status: localStorage.getItem("assis_status") || "",
             },
         }
     },
@@ -46,6 +46,10 @@ export default {
         loading,
     },
     methods: {
+        changeStatus() {
+            localStorage.setItem("assis_status", this.filters.status);
+            this.getAssis();
+        },
         getAssis() {
             this.carregando = true;
             api.get(`/assis?status=${this.filters.status}`)
