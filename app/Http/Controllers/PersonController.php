@@ -51,7 +51,9 @@ class PersonController extends Controller
     public function show(int $id): JsonResponse
     {
         try {
-            $person = Person::query()->find($id);
+            $person = Person::query()
+                ->withCount('participants')
+                ->find($id);
 
             if (!$person) {
                 return response()->json(['success' => false, 'message' => 'Pessoa não encontrada!'], 404);

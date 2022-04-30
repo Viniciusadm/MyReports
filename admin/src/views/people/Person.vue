@@ -25,6 +25,7 @@
                         <p v-if="person.address" class="info">Endereço: {{ person.address }}</p>
                         <p v-if="person.twitter" class="info">Twitter: <a target="_blank" :href="`https://twitter.com/${person.twitter}`">{{ person.twitter }}</a></p>
                         <p v-if="person.instagram" class="info">Instagram: <a target="_blank" :href="`https://instagram.com/${person.instagram}`">{{ person.instagram }}</a></p>
+                        <p class="info">Número de relatos: {{ person.participants_count }}</p>
                     </div>
                 </div>
                 <div class="row" v-if="person.description">
@@ -62,6 +63,7 @@ export default {
                 image: "",
                 twitter: "",
                 instagram: "",
+                participants_count: 0,
             },
             carregando: true,
         };
@@ -95,6 +97,7 @@ export default {
                 twitter: person.twitter,
                 instagram: person.instagram,
                 image: person.image,
+                participants_count: person.participants_count,
             }
         },
         save() {
