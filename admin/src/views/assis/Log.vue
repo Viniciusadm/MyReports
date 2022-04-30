@@ -5,18 +5,16 @@
         </div>
         <div class="logs">
             <input class="date" type="date" v-model="date" @change="getLogs()">
-            <p class="quantity">{{ logs.length }} {{ logs.length > 1 ? 'episódios assistidos' : 'episódio assistido' }}</p>
-            <p class="time">{{ time }}</p>
             <template v-if="logs.length > 0">
-                <div class="log-item" v-for="log in logs" :key="log.id">
-                    <p>Episódio {{ log.episode }} de {{ name(log.assis) }} confirmado.</p>
-                </div>
+                <p class="quantity">{{ logs.length }} {{ logs.length > 1 ? 'episódios assistidos' : 'episódio assistido' }}</p>
+                <p class="time">{{ time }}</p>
             </template>
-            <template v-else>
-                <div class="log-item">
-                    <p>Nenhum log encontrado</p>
-                </div>
-            </template>
+            <div v-if="logs.length > 0" class="items">
+                <p class="log-item" v-for="log in logs" :key="log.id">Episódio {{ log.episode }} de {{ name(log.assis) }} confirmado.</p>
+            </div>
+            <div v-else class="items">
+                <p class="log-item">Nenhum episódio assistido.</p>
+            </div>
         </div>
     </div>
     <loading v-else-if="carregando" />
@@ -57,7 +55,10 @@ export default {
 
             if (time > 60) {
                 const hours = Math.floor(time / 60);
-                return hours + " horas e " + (time - (hours * 60)) + " minutos";
+                const hours_text = hours > 1 ? `${hours} horas` : `${hours} hora`;
+                const minutes = time - (hours * 60);
+                const minutes_text = minutes > 0 ? ' e ' + minutes + ' minutos' : '';
+                return hours_text + minutes_text;
             } else {
                 return time + " minutos";
             }
@@ -161,16 +162,10 @@ export default {
                 margin-bottom: 1rem;
             }
 
-            .log-item {
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-                justify-content: space-between;
-                width: 100%;
-                margin-bottom: 1rem;
-
-                p {
+            .items {
+                .log-item {
                     font-size: 1.3rem;
+
 
                     @media screen and (max-width: 570px) {
                         font-size: 1.2rem;
