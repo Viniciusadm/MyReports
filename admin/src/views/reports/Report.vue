@@ -235,7 +235,7 @@ export default {
 
                 p {
                     font-size: 1.5rem;
-                    margin-bottom: 0.5rem;
+                    margin-bottom: 0.1rem;
                     text-align: justify;
                     text-indent: 2rem;
                     word-break: break-word;
