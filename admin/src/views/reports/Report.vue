@@ -20,7 +20,7 @@
                 </div>
             </div>
             <div class="body">
-                <p class="content" v-html="reportHTML"></p>
+                <p v-for="(text, index) in reportArray" :key="index">{{ text }}</p>
             </div>
         </div>
     </div>
@@ -96,8 +96,8 @@ export default {
                 return 'Nenhum participante';
             }
         },
-        reportHTML() {
-            return this.report.report.replace(/\n/g, '<br>');
+        reportArray() {
+            return this.report.report.split('\n');
         },
     },
     methods: {
@@ -231,9 +231,11 @@ export default {
             }
 
             .body {
-                .content {
+                padding-bottom: 2rem;
+
+                p {
                     font-size: 1.5rem;
-                    margin-bottom: 2rem;
+                    margin-bottom: 0.5rem;
                     text-align: justify;
                     text-indent: 2rem;
                     word-break: break-word;
