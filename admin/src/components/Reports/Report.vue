@@ -4,6 +4,7 @@
             <div class="card-header">
                 <router-link :to="`/report/${report.id}`" class="title">{{ report.title }}</router-link>
                 <p class="type">Tipo: {{ report.type === 'daily' ? 'Diario' : 'Pessoal' }}</p>
+                <p class="humor">Humor: {{ humor }}</p>
                 <p class="date">{{ dateFormat(report.created_at) }}</p>
             </div>
             <div class="card-body">
@@ -29,6 +30,8 @@ export default {
                 return {
                     title: '',
                     created_at: '',
+                    type: '',
+                    humor: '',
                     participants: [{
                         person: {
                             name: '',
@@ -38,6 +41,11 @@ export default {
                 };
             },
         }
+    },
+    computed: {
+        humor() {
+            return this.$store.state.humors[this.report.humor];
+        },
     },
     methods: {
         dateFormat(date) {
@@ -84,8 +92,11 @@ export default {
                     font-size: 1.15rem;
                     font-weight: bold;
                     margin-bottom: 0.3rem;
-                    color: #000;
-                    display: block;
+                }
+
+                .humor {
+                    font-weight: bold;
+                    margin-bottom: 0.3rem;
                 }
 
                 .date {
