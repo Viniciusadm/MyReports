@@ -63,6 +63,7 @@ Route::prefix('assis')->group(function () {
     Route::prefix('/collection')->group(function () {
         Route::post('/', [AssisCollectionController::class, 'newCollection']);
         Route::get('/{id}', [AssisCollectionController::class, 'show']);
+        Route::get('/{id}/collection', [AssisCollectionController::class, 'showCollection']);
         Route::post('/{id_collection}/add', [AssisCollectionController::class, 'addToCollection']);
     });
 

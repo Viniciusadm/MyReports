@@ -23,6 +23,18 @@ class AssisCollectionController extends Controller
         }
     }
 
+    public function showCollection(int $id): JsonResponse
+    {
+        try {
+            $collection = AssisCollection::query()
+                ->findOrFail($id);
+
+            return response()->json(['success' => true, 'data' => $collection]);
+        } catch (Exception $e) {
+            return response()->json(['sucess' => false, 'error' => $e->getMessage()], 500);
+        }
+    }
+
     public function newCollection(Request $request): JsonResponse
     {
         try {
