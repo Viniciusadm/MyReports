@@ -32,7 +32,7 @@ class EpisodeController extends Controller
         try {
             $episodes = Episode::query()
                 ->with('assis', function ($query) {
-                    $query->select('id', 'collection_id', 'name', 'hidden_collection')
+                    $query->select('id', 'collection_id', 'name', 'hidden_collection', 'average_time')
                         ->with('collection', function ($query) {
                             $query->select('id', 'name');
                         });

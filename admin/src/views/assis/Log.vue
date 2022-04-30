@@ -1,3 +1,27 @@
+<template>
+    <div v-if="!carregando" class="log">
+        <div class="header">
+            <h1>Log</h1>
+        </div>
+        <div class="logs">
+            <input class="date" type="date" v-model="date" @change="getLogs()">
+            <p class="quantity">{{ logs.length }} {{ logs.length > 1 ? 'episódios assistidos' : 'episódio assistido' }}</p>
+            <p class="time">{{ time }}</p>
+            <template v-if="logs.length > 0">
+                <div class="log-item" v-for="log in logs" :key="log.id">
+                    <p>Episódio {{ log.episode }} de {{ name(log.assis) }} confirmado.</p>
+                </div>
+            </template>
+            <template v-else>
+                <div class="log-item">
+                    <p>Nenhum log encontrado</p>
+                </div>
+            </template>
+        </div>
+    </div>
+    <loading v-else-if="carregando" />
+</template>
+
 <script>
 import api from "@/services/api";
 import moment from "moment";
@@ -22,6 +46,21 @@ export default {
                 },
             }],
             carregando: true
+        }
+    },
+    computed: {
+        time() {
+            let time = 0;
+            this.logs.forEach(log => {
+                time += log.assis.average_time;
+            });
+
+            if (time > 60) {
+                const hours = Math.floor(time / 60);
+                return hours + " horas e " + (time - (hours * 60)) + " minutos";
+            } else {
+                return time + " minutos";
+            }
         }
     },
     methods: {
@@ -57,28 +96,6 @@ export default {
     }
 }
 </script>
-
-<template>
-    <div v-if="!carregando" class="log">
-        <div class="header">
-            <h1>Log</h1>
-        </div>
-        <div class="logs">
-            <input class="date" type="date" v-model="date" @change="getLogs()">
-            <template v-if="logs.length > 0">
-                <div class="log-item" v-for="log in logs" :key="log.id">
-                    <p>Episódio {{ log.episode }} de {{ name(log.assis) }} confirmado.</p>
-                </div>
-            </template>
-            <template v-else>
-                <div class="log-item">
-                    <p>Nenhum log encontrado</p>
-                </div>
-            </template>
-        </div>
-    </div>
-    <loading v-else-if="carregando" />
-</template>
 
 <style scoped lang="scss">
     .log {
@@ -129,6 +146,19 @@ export default {
                 margin-bottom: 1.20rem;
                 height: 2.5rem;
                 padding: 0.5rem;
+            }
+
+            .quantity {
+                font-size: 1.3rem;
+                font-weight: bold;
+                color: #333;
+            }
+
+            .time {
+                font-size: 1.3rem;
+                font-weight: bold;
+                color: #333;
+                margin-bottom: 1rem;
             }
 
             .log-item {
