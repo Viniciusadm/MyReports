@@ -59,6 +59,7 @@ Route::prefix('questions')->group(function () {
 Route::prefix('assis')->group(function () {
     Route::get('/', [AssisController::class, 'index']);
     Route::get('/{id}', [AssisController::class, 'show']);
+    Route::post('/change-status/{id}', [AssisController::class, 'changeStatus']);
 
     Route::prefix('/collection')->group(function () {
         Route::post('/', [AssisCollectionController::class, 'newCollection']);

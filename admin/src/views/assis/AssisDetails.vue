@@ -11,18 +11,33 @@
             <p v-if="assis.year">Ano: {{ assis.year }}</p>
             <p v-if="assis.average_time">Tempo médio: {{ assis.average_time }}</p>
             <p>Tipo: {{ type }}</p>
-            <p>Status: {{ assis.status }}</p>
+            <p>Status: {{ assis.status.replace('_', ' ') }}</p>
             <p>Episódios: {{ assis.total }}</p>
-            <p>Último episódio: {{ lastEpisode }}</p>
+            <p v-if="assis.status !== 'para_assistir'">Último episódio: {{ lastEpisode }}</p>
+            <p v-if="assis.status === 'completo'">Tempo para finalizar: {{ diffDays }}</p>
         </div>
-        <div class="addFast" v-if="lastEpisode < assis.total">
-            <button @click="addEpisode(lastEpisode + 1)">Adicionar episódio {{ lastEpisode + 1 }}</button>
+        <template v-if="lastEpisode < assis.total && assis.status !== 'para_assistir'">
+            <div class="item">
+                <button @click="addEpisode(lastEpisode + 1)">Adicionar episódio {{ lastEpisode + 1 }}</button>
+            </div>
+            <div class="addSpecific item" v-if="lastEpisode.length !== assis.total">
+                <input type="number" v-model="specificEpisode" />
+                <button @click="addEpisode(specificEpisode)">Adicionar</button>
+            </div>
+            <div class="item" v-if="assis.status === 'assistindo'">
+                <button @click="changeStatus('pausado')">Pausar</button>
+            </div>
+            <div class="item" v-if="assis.status === 'pausado'">
+                <button @click="changeStatus('assistindo')">Continuar</button>
+            </div>
+        </template>
+        <div class="item" v-else-if="lastEpisode === assis.total && assis.status !== 'completo'">
+            <button @click="changeStatus('completo')">Finalizar assis</button>
         </div>
-        <div class="addSpecific" v-if="lastEpisode.length !== assis.total">
-            <input type="number" v-model="specificEpisode" />
-            <button @click="addEpisode(specificEpisode)">Adicionar</button>
+        <div class="item" v-else-if="assis.status === 'para_assistir'">
+            <button @click="changeStatus('assistindo')">Começar assis</button>
         </div>
-        <div class="episodes">
+        <div v-if="assis.status !== 'para_assistir'" class="episodes">
             <h2>Episódios</h2>
             <div class="episode" v-for="episode in assis.total" :key="episode">
                 <template v-if="hasEpisode(episode)">
@@ -42,6 +57,7 @@
 <script>
 import api from "@/services/api";
 import loading from "@/components/Loading";
+import moment from "moment";
 
 export default {
     data() {
@@ -90,6 +106,34 @@ export default {
                 return 0;
             }
         },
+        firstDate() {
+            if (this.assis.episodes.length > 0) {
+                const stringDate = this.assis.episodes.reduce((a, b) => a.created_at < b.created_at ? a : b).created_at;
+                return new Date(stringDate);
+            } else {
+                return "";
+            }
+        },
+        lastDate() {
+            if (this.assis.episodes.length > 0) {
+                const stringDate = this.assis.episodes.reduce((a, b) => a.created_at > b.created_at ? a : b).created_at;
+                return new Date(stringDate);
+            } else {
+                return "";
+            }
+        },
+        diffDays() {
+            if (this.firstDate && this.lastDate) {
+                const days =  moment(this.lastDate).diff(this.firstDate, "days");
+                if (days > 30) {
+                    return `${Math.floor(days / 30)} meses e ${days % 30} dias`;
+                }
+
+                return `${days} dias`;
+            } else {
+                return '';
+            }
+        },
         type() {
             const types = {
                 anime: "Anime",
@@ -136,7 +180,19 @@ export default {
         },
         dataFormatada(data) {
             return data.split('T')[0].split('-').reverse().join('/');
-        }
+        },
+        changeStatus(status) {
+            this.carregando = true;
+            api.post(`/assis/change-status/${this.id}/`, { status })
+                .then(response => {
+                    if (response.data.success) {
+                        this.assis.status = status;
+                    }
+                })
+                .finally(() => {
+                    this.carregando = false;
+                });
+        },
     },
     mounted() {
         this.getAssis();
@@ -194,15 +250,12 @@ export default {
             }
         }
 
-        .addFast {
+        .item {
             width: 90%;
             margin-top: 1.20rem;
         }
 
         .addSpecific {
-            width: 90%;
-            margin-top: 1.20rem;
-
             input {
                 font-size: 1.25rem;
                 padding: 0.2rem 0.5rem;

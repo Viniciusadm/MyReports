@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Assis;
 use Exception;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class AssisController extends Controller
 {
@@ -42,6 +43,18 @@ class AssisController extends Controller
                 ->with('episodes')
                 ->where('id', $id)
                 ->first();
+
+            return response()->json(['success' => true, 'data' => $assis]);
+        } catch (Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function changeStatus(Request $request, int $id): JsonResponse
+    {
+        try {
+            $assis = Assis::query()->findOrFail($id);
+            $assis->update(['status' => $request->input('status')]);
 
             return response()->json(['success' => true, 'data' => $assis]);
         } catch (Exception $e) {
