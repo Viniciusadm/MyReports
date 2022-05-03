@@ -10,7 +10,17 @@
                 <p class="time">{{ time }}</p>
             </template>
             <div v-if="logs.length > 0" class="items">
-                <p class="log-item" v-for="log in logs" :key="log.id">Episódio {{ log.episode }} de {{ name(log.assis) }} confirmado.</p>
+                <p class="log-item" v-for="log in logs" :key="log.id">
+                    <template v-if="log.assis.type === 'movie'">
+                        Filme {{ name(log.assis) }} confirmado.
+                    </template>
+                    <template v-else-if="log.assis.type === 'special'">
+                        Especial de {{ name(log.assis) }} de {{ log.assis.year }} confirmado.
+                    </template>
+                    <template v-else>
+                        Episódio {{ log.episode }} de {{ name(log.assis) }} confirmado.
+                    </template>
+                </p>
             </div>
             <div v-else class="items">
                 <p class="log-item">Nenhum episódio assistido.</p>
@@ -37,6 +47,8 @@ export default {
                     id: 0,
                     name: "",
                     hidden_collection: false,
+                    type: "",
+                    year: "",
                     collection: {
                         id: 0,
                         name: ""

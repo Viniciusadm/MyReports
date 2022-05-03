@@ -10,7 +10,11 @@
                 <input v-model="collection.assis.name" class="input_text" placeholder="Nome">
             </div>
             <div class="form-group form-group-double">
-                <input v-model="collection.assis.total" @input="removeNumbers($event)" class="input_text" placeholder="Total">
+                <input v-model="collection.assis.total"
+                       @input="removeNumbers($event)"
+                       class="input_text"
+                       :disabled="collection.assis.type === 'movie' || collection.assis.type === 'special'"
+                       placeholder="Total">
                 <input v-model="collection.assis.average_time" @input="removeNumbers($event)" class="input_text" placeholder="Tempo médio">
             </div>
             <div class="form-group form-group-single">
@@ -23,6 +27,9 @@
                     <option value="cartoon">Desenho</option>
                     <option value="movie">Filme</option>
                     <option value="serie">Série</option>
+                    <option value="special">Especial</option>
+                    <option value="specials">Especiais</option>
+                    <option value="youtube">YouTube</option>
                     <option value="other">Outro</option>
                 </select>
                 <select v-model="collection.assis.status" class="input_select">
@@ -80,6 +87,13 @@ export default {
                         this.$router.push('/assis');
                     }
                 })
+        }
+    },
+    watch: {
+        'collection.assis.type'(value) {
+            if (value === 'special' || value === 'movie') {
+                this.collection.assis.total = 1;
+            }
         }
     }
 }

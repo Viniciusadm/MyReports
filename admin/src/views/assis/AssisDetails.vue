@@ -141,6 +141,9 @@ export default {
                 cartoon: "Desenho",
                 movie: "Filme",
                 serie: "Série",
+                special: "Especial",
+                specials: "Especiais",
+                youtube: "YouTube",
                 other: "Outro"
             }
 
@@ -153,6 +156,7 @@ export default {
                 .then(response => {
                     if (response.data.success) {
                         this.assis = response.data.data;
+                        console.log(this.assis.collection.id);
                     }
                 })
                 .finally(() => {

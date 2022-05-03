@@ -6,9 +6,14 @@
         </router-link>
         <div class="assis_info">
             <p><router-link :to="`/assis/${assis.id}`">{{name}}</router-link></p>
-            <p>{{assis.episodes_count}} de {{assis.total}} episódios</p>
+            <template v-if="type === 'Especial' || type === 'Filme'">
+                <p>{{ assis.episodes_count === 1 ? 'Assistido' : 'Não assistido' }}</p>
+            </template>
+            <template v-else>
+                <p>{{assis.episodes_count}} de {{assis.total}} episódios</p>
+            </template>
             <p>{{ type }}</p>
-            <p>{{ status }}</p>
+            <p v-if="type !== 'Especial' && type !== 'Filme'">{{ status }}</p>
         </div>
     </div>
 </template>
@@ -55,6 +60,9 @@ export default {
                 cartoon: "Desenho",
                 movie: "Filme",
                 serie: "Série",
+                special: "Especial",
+                specials: "Especiais",
+                youtube: "YouTube",
                 other: "Outro"
             }
 
