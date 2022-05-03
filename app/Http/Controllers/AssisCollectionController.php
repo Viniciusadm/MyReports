@@ -68,22 +68,20 @@ class AssisCollectionController extends Controller
     public function addToCollection(Request $request, int $id_collection): JsonResponse
     {
         try {
-            $data = $request->all();
-
             $collection = AssisCollection::query()->findOrFail($id_collection);
 
             $assis = Assis::query()->create([
                 'collection_id' => $collection['id'],
-                'name' => $data['name'] ?? null,
-                'total' => $data['total'],
-                'type' => $data['type'],
-                'status' => $data['status'],
-                'order' => $data['order'],
-                'average_time' => $data['average_time'] ?? null,
-                'image' => $data['image'] ?? null,
-                'year' => $data['year'] ?? null,
-                'sinopse' => $data['sinopse'] ?? null,
-                'hidden_collection' => $data['hidden_collection'] ?? null,
+                'name' => $request->input('name'),
+                'total' => $request->input('total'),
+                'type' => $request->input('type'),
+                'status' => $request->input('status'),
+                'order' => 0,
+                'average_time' => $request->input('average_time'),
+                'image' => $request->input('image'),
+                'year' => $request->input('year'),
+                'sinopse' => $request->input('sinopse'),
+                'hidden_collection' => $request->input('hidden_collection', false),
             ]);
 
             return response()->json(['success' => true, 'data' => $assis]);

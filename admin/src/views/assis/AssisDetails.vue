@@ -2,7 +2,7 @@
     <div v-if="!carregando" class="assis-details">
         <div class="header">
             <h1>Assis</h1>
-            <router-link to="/people/new" class="btn">Novo assis</router-link>
+            <router-link :to="`/assis/new-assis/${assis.collection.id}`" class="btn">Novo assis</router-link>
         </div>
         <div class="info">
             <p>Nome da coleção: {{ assis.collection.name }}</p>
