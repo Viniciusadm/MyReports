@@ -6,7 +6,7 @@
         </router-link>
         <div class="assis_info">
             <p><router-link :to="`/assis/${assis.id}`">{{name}}</router-link></p>
-            <p>{{assis.episodes_count}} de {{assis.total}} episódios assistidos</p>
+            <p>{{assis.episodes_count}} de {{assis.total}} episódios</p>
             <p>{{ type }}</p>
             <p>{{ status }}</p>
         </div>
@@ -85,8 +85,8 @@ export default {
         margin-bottom: 1rem;
 
         img {
-            width: 12rem;
-            height: 10rem;
+            width: 10rem;
+            height: 14rem;
             object-fit: cover;
             object-position: center;
             margin-right: 0.8rem;
@@ -96,7 +96,7 @@ export default {
             width: 100%;
 
             p {
-                margin-bottom: 0.3rem;
+                margin-bottom: 0.5rem;
 
                 a {
                     color: #000;

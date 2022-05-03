@@ -12,8 +12,6 @@
         margin: 0;
         padding: 0;
         box-sizing: border-box;
-        font-weight: normal;
-        font-size: 1rem;
         outline: none;
     }
 
