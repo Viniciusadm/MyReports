@@ -13,31 +13,31 @@
             <p>Tipo: {{ type }}</p>
             <p>Status: {{ assis.status.replace('_', ' ') }}</p>
             <p>Episódios: {{ assis.total }}</p>
-            <p v-if="assis.status !== 'para_assistir'">Último episódio: {{ lastEpisode }}</p>
+            <p v-if="lastEpisode !== 0">Último episódio: {{ lastEpisode }}</p>
             <p v-if="assis.status === 'completo'">Tempo para finalizar: {{ diffDays }}</p>
         </div>
-        <template v-if="lastEpisode < assis.total && assis.status !== 'para_assistir'">
+        <template v-if="lastEpisode < assis.total && assis.status === 'assistindo'">
             <div class="item">
-                <button @click="addEpisode(lastEpisode + 1)">Adicionar episódio {{ lastEpisode + 1 }}</button>
+                <button class="btn btn-episode" @click="addEpisode(lastEpisode + 1)">Adicionar episódio {{ lastEpisode + 1 }}</button>
             </div>
             <div class="addSpecific item" v-if="lastEpisode.length !== assis.total">
                 <input type="number" v-model="specificEpisode" />
                 <button @click="addEpisode(specificEpisode)">Adicionar</button>
             </div>
-            <div class="item" v-if="assis.status === 'assistindo'">
-                <button @click="changeStatus('pausado')">Pausar</button>
-            </div>
-            <div class="item" v-if="assis.status === 'pausado'">
-                <button @click="changeStatus('assistindo')">Continuar</button>
-            </div>
         </template>
-        <div class="item" v-else-if="lastEpisode === assis.total && assis.status !== 'completo'">
-            <button @click="changeStatus('completo')">Finalizar assis</button>
+        <div class="item" v-if="assis.status === 'assistindo'">
+            <button class="btn" @click="changeStatus('pausado')">Pausar</button>
         </div>
-        <div class="item" v-else-if="assis.status === 'para_assistir'">
-            <button @click="changeStatus('assistindo')">Começar assis</button>
+        <div class="item" v-if="assis.status === 'pausado'">
+            <button class="btn" @click="changeStatus('assistindo')">Continuar</button>
         </div>
-        <div v-if="assis.status !== 'para_assistir'" class="episodes">
+        <div class="item" v-if="assis.episodes.length === assis.total && assis.status !== 'completo'">
+            <button class="btn" @click="changeStatus('completo')">Finalizar</button>
+        </div>
+        <div class="item" v-if="assis.status === 'para_assistir'">
+            <button class="btn" @click="changeStatus('assistindo')">Começar</button>
+        </div>
+        <div class="episodes">
             <h2>Episódios</h2>
             <div class="episode" v-for="episode in assis.total" :key="episode">
                 <template v-if="hasEpisode(episode)">
@@ -46,7 +46,7 @@
                 </template>
                 <template v-else>
                     <p>Episódio {{ episode }}</p>
-                    <button @click="addEpisode(episode)">Adicionar episódio</button>
+                    <button v-if="assis.status === 'assistindo'" @click="addEpisode(episode)">Adicionar episódio</button>
                 </template>
             </div>
         </div>
@@ -82,12 +82,12 @@ export default {
                     id: 0,
                     name: "",
                 },
-                episodes: {
+                episodes: [{
                     id: 0,
                     assis_id: 0,
                     episode: 0,
                     comment: "",
-                },
+                }],
             },
             specificEpisode: 1,
         };
@@ -183,7 +183,7 @@ export default {
         },
         changeStatus(status) {
             this.carregando = true;
-            api.post(`/assis/change-status/${this.id}/`, { status })
+            api.post(`/assis/change-status/${this.id}`, { status })
                 .then(response => {
                     if (response.data.success) {
                         this.assis.status = status;
@@ -207,14 +207,10 @@ export default {
         flex-direction: column;
         align-items: center;
 
-        button {
-            font-size: 1.25em;
+        .btn {
             font-weight: bold;
-            color: #333;
-            background-color: #fff;
-            border: none;
-            cursor: pointer;
-            user-select: none;
+            width: 10rem;
+            text-align: center;
         }
 
         .header {
@@ -227,7 +223,7 @@ export default {
 
             .btn {
                 @media screen and (max-width: 570px) {
-                    font-size: 1rem;
+                    font-size: 1.15rem;
                 }
             }
 
@@ -247,12 +243,24 @@ export default {
                 font-size: 1.25rem;
                 margin-bottom: 0.3rem;
                 color: #333;
+
+                &:last-child {
+                    margin-bottom: 0;
+                }
+
+                @media screen and (max-width: 570px) {
+                    font-size: 1.15rem;
+                }
             }
         }
 
         .item {
             width: 90%;
             margin-top: 1.20rem;
+
+            .btn-episode {
+                width: fit-content;
+            }
         }
 
         .addSpecific {
@@ -263,6 +271,19 @@ export default {
                 border: 1px solid #333;
                 border-radius: 0.25rem;
                 margin-bottom: 0.5rem;
+            }
+
+            button {
+                background: transparent;
+                border: none;
+                font-size: 1.25rem;
+                font-weight: bold;
+                color: #333;
+                cursor: pointer;
+
+                @media screen and (max-width: 570px) {
+                    font-size: 1.15rem;
+                }
             }
         }
 
@@ -278,6 +299,20 @@ export default {
                 color: #333;
             }
 
+            button {
+                font-size: 1.25rem;
+                font-weight: bold;
+                color: #333;
+                background-color: #fff;
+                border: none;
+                cursor: pointer;
+                user-select: none;
+
+                @media screen and (max-width: 570px) {
+                    font-size: 1.15rem;
+                }
+            }
+
             .episode {
                 width: 100%;
                 display: flex;
@@ -288,10 +323,14 @@ export default {
                 border-bottom: 1px solid #333;
 
                 p {
-                    font-size: 1.25em;
+                    font-size: 1.25rem;
                     font-weight: bold;
                     color: #333;
                     margin-bottom: 0.2rem;
+
+                    @media screen and (max-width: 570px) {
+                        font-size: 1.15rem;
+                    }
                 }
             }
         }

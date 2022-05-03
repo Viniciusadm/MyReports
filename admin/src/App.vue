@@ -31,6 +31,10 @@
         &:hover {
             background: #1b1e21;
         }
+
+        @media screen and (max-width: 570px) {
+            font-size: 1.15rem;
+        }
     }
 </style>
 
