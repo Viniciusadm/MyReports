@@ -15,7 +15,7 @@
                         Filme {{ name(log.assis) }} confirmado.
                     </template>
                     <template v-else-if="log.assis.type === 'special'">
-                        Especial de {{ name(log.assis) }} de {{ log.assis.year }} confirmado.
+                        {{ name(log.assis) }} especial de {{ log.assis.year }} confirmado.
                     </template>
                     <template v-else>
                         Episódio {{ log.episode }} de {{ name(log.assis) }} confirmado.
