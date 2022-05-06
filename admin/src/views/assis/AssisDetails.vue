@@ -12,32 +12,40 @@
             <p v-if="assis.average_time">Tempo médio: {{ assis.average_time }}</p>
             <p>Tipo: {{ type }}</p>
             <p>Status: {{ assis.status.replace('_', ' ') }}</p>
-            <p>Episódios: {{ assis.total }}</p>
-            <p v-if="lastEpisode !== 0">Último episódio: {{ lastEpisode }}</p>
-            <p v-if="assis.status === 'completo'">Tempo para finalizar: {{ diffDays }}</p>
+            <p v-if="pausavel">Episódios: {{ assis.total }}</p>
+            <p v-if="lastEpisode !== 0 && pausavel">Último episódio: {{ lastEpisode }}</p>
+            <p v-if="assis.status === 'completo' && pausavel">Tempo para finalizar: {{ diffDays }}</p>
+            <p v-if="!pausavel && lastDateFormat">Assistido em: {{ lastDateFormat }}</p>
         </div>
         <template v-if="lastEpisode < assis.total && assis.status === 'assistindo'">
-            <div class="item">
-                <button class="btn btn-episode" @click="addEpisode(lastEpisode + 1)">Adicionar episódio {{ lastEpisode + 1 }}</button>
-            </div>
-            <div class="addSpecific item" v-if="lastEpisode.length !== assis.total">
-                <input type="number" v-model="specificEpisode" />
-                <button @click="addEpisode(specificEpisode)">Adicionar</button>
-            </div>
+            <template v-if="pausavel">
+                <div class="item">
+                    <button class="btn btn-episode" @click="addEpisode(lastEpisode + 1)">Adicionar episódio {{ lastEpisode + 1 }}</button>
+                </div>
+                <div class="addSpecific item" v-if="lastEpisode.length !== assis.total">
+                    <input type="number" v-model="specificEpisode" />
+                    <button @click="addEpisode(specificEpisode)">Adicionar</button>
+                </div>
+            </template>
+            <template v-else>
+                <div class="item">
+                    <button class="btn btn-episode" @click="addEpisode(1); changeStatus('completo')">Definir como assistido</button>
+                </div>
+            </template>
         </template>
-        <div class="item" v-if="assis.status === 'assistindo'">
+        <div class="item" v-if="assis.status === 'assistindo' && pausavel">
             <button class="btn" @click="changeStatus('pausado')">Pausar</button>
         </div>
-        <div class="item" v-if="assis.status === 'pausado'">
+        <div class="item" v-if="assis.status === 'pausado' && pausavel">
             <button class="btn" @click="changeStatus('assistindo')">Continuar</button>
         </div>
-        <div class="item" v-if="assis.episodes.length === assis.total && assis.status !== 'completo'">
+        <div class="item" v-if="assis.episodes.length === assis.total && assis.status !== 'completo' && pausavel">
             <button class="btn" @click="changeStatus('completo')">Finalizar</button>
         </div>
         <div class="item" v-if="assis.status === 'para_assistir'">
             <button class="btn" @click="changeStatus('assistindo')">Começar</button>
         </div>
-        <div class="episodes">
+        <div class="episodes" v-if="pausavel">
             <h2>Episódios</h2>
             <div class="episode" v-for="episode in assis.total" :key="episode">
                 <template v-if="hasEpisode(episode)">
@@ -122,6 +130,13 @@ export default {
                 return "";
             }
         },
+        lastDateFormat() {
+            if (this.assis.episodes.length > 0) {
+                return moment(this.lastDate).format("DD/MM/YYYY");
+            } else {
+                return null;
+            }
+        },
         diffDays() {
             if (this.firstDate && this.lastDate) {
                 const days =  moment(this.lastDate).diff(this.firstDate, "days");
@@ -149,6 +164,9 @@ export default {
 
             return types[this.assis.type];
         },
+        pausavel() {
+            return this.assis.type !== 'movie' && this.assis.type !== 'special';
+        }
     },
     methods: {
         getAssis() {
@@ -156,7 +174,6 @@ export default {
                 .then(response => {
                     if (response.data.success) {
                         this.assis = response.data.data;
-                        console.log(this.assis.collection.id);
                     }
                 })
                 .finally(() => {
