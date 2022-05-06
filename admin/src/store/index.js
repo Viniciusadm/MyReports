@@ -17,6 +17,17 @@ export default createStore({
             surprised: "Surpreso",
             sad: "Triste",
         },
+        types: {
+            anime: "Anime",
+            dorama: "Dorama",
+            cartoon: "Desenho",
+            movie: "Filme",
+            serie: "Série",
+            special: "Especial",
+            specials: "Especiais",
+            youtube: "YouTube",
+            other: "Outro",
+        }
     },
     mutations: {},
     modules: {},

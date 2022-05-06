@@ -107,6 +107,9 @@ export default {
         id() {
             return this.$route.params.id;
         },
+        types() {
+            return this.$store.state.types;
+        },
         lastEpisode() {
             if (this.assis.episodes.length > 0) {
                 return this.assis.episodes.reduce((a, b) => a.episode > b.episode ? a : b).episode;
@@ -150,19 +153,7 @@ export default {
             }
         },
         type() {
-            const types = {
-                anime: "Anime",
-                dorama: "Dorama",
-                cartoon: "Desenho",
-                movie: "Filme",
-                serie: "Série",
-                special: "Especial",
-                specials: "Especiais",
-                youtube: "YouTube",
-                other: "Outro"
-            }
-
-            return types[this.assis.type];
+            return this.types[this.assis.type];
         },
         pausavel() {
             return this.assis.type !== 'movie' && this.assis.type !== 'special';

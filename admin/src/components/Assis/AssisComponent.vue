@@ -53,20 +53,11 @@ export default {
                 return null;
             }
         },
+        types() {
+            return this.$store.state.types;
+        },
         type() {
-            const types = {
-                anime: "Anime",
-                dorama: "Dorama",
-                cartoon: "Desenho",
-                movie: "Filme",
-                serie: "Série",
-                special: "Especial",
-                specials: "Especiais",
-                youtube: "YouTube",
-                other: "Outro"
-            }
-
-            return types[this.assis.type];
+            return this.types[this.assis.type];
         },
         status() {
             return this.assis.status.replace(/_/g, " ")[0].toUpperCase() + this.assis.status.replace(/_/g, " ").slice(1);

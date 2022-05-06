@@ -13,6 +13,7 @@ class AssisController extends Controller
     {
         try {
             $status = request()->input('status');
+            $type = request()->input('type');
 
             $query = Assis::query()
                 ->select('id', 'collection_id', 'name', 'total', 'status', 'created_at', 'type', 'image', 'hidden_collection')
@@ -23,6 +24,10 @@ class AssisController extends Controller
 
             if ($status) {
                 $query->where('status', $status);
+            }
+
+            if ($type) {
+                $query->where('type', $type);
             }
 
             $assis = $query->get();

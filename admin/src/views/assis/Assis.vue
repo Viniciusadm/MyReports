@@ -13,6 +13,10 @@
                 <option value="completo">Completo</option>
                 <option value="pausado">Pausado</option>
             </select>
+            <select @change="changeType" v-model="filters.type">
+                <option value="">Todos</option>
+                <option v-for="type in Object.keys(types)" :value="type" :key="type">{{ types[type] }}</option>
+            </select>
         </div>
         <div v-if="!carregando" class="assis_list">
             <template v-if="assis.length > 0">
@@ -38,6 +42,7 @@ export default {
             carregando: false,
             filters: {
                 status: localStorage.getItem("assis_status") || "",
+                type: localStorage.getItem("assis_type") || ""
             },
         }
     },
@@ -45,14 +50,23 @@ export default {
         assis,
         loading,
     },
+    computed: {
+        types() {
+            return this.$store.state.types;
+        },
+    },
     methods: {
         changeStatus() {
             localStorage.setItem("assis_status", this.filters.status);
             this.getAssis();
         },
+        changeType() {
+            localStorage.setItem("assis_type", this.filters.type);
+            this.getAssis();
+        },
         getAssis() {
             this.carregando = true;
-            api.get(`/assis?status=${this.filters.status}`)
+            api.get(`/assis?status=${this.filters.status}&type=${this.filters.type}`)
                 .then(response => {
                     if (response.data.success) {
                         this.assis = response.data.data;
@@ -98,12 +112,15 @@ export default {
         }
 
         .filters {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: center;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-gap: 0.5rem;
             width: 90%;
             margin-bottom: 1.25rem;
+
+            @media screen and (max-width: 570px) {
+                grid-template-columns: 1fr;
+            }
 
             select {
                 width: 100%;
