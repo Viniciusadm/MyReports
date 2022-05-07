@@ -5,6 +5,11 @@
             <div class="form-group form-group-single">
                 <input v-model="collection.name" class="input_text" placeholder="Nome da coleção">
             </div>
+            <div class="form_group photo">
+                <label class="form_label" for="photo">Foto</label>
+                <img :src="image" alt="foto da pessoa" v-if="collection.image.url" class="person_image">
+                <input @change="onFileChange" class="input_file" type="file" id="photo" placeholder="Foto">
+            </div>
             <h2 class="title_assis">Detalhes do assis</h2>
             <div class="form-group form-group-single">
                 <input v-model="collection.assis.name" class="input_text" placeholder="Nome">
@@ -50,7 +55,7 @@
             <div class="form-group form-group-single">
                 <textarea v-model="collection.assis.sinopse" class="input_textarea" placeholder="Sinopse"></textarea>
             </div>
-            <button @click="sendCollection()" class="btn">Criar</button>
+            <button @click="sendImage" class="btn">Criar</button>
         </div>
     </div>
 </template>
@@ -63,6 +68,10 @@ export default {
         return {
             collection: {
                 name: '',
+                image: {
+                    url: "",
+                    file: null
+                },
                 assis: {
                     name: '',
                     total: '',
@@ -87,7 +96,40 @@ export default {
                         this.$router.push('/assis');
                     }
                 })
-        }
+        },
+        onFileChange(e) {
+            let file = e.target.files[0];
+            let reader = new FileReader();
+            reader.onload = (e) => {
+                this.collection.image.url = e.target.result;
+                this.collection.image.file = file;
+            }
+            reader.readAsDataURL(file);
+        },
+        sendImage() {
+            if (this.collection.image.file) {
+                let formData = new FormData();
+                formData.append("image", this.collection.image.file);
+                api.post(process.env.VUE_APP_URL_IMAGES, formData)
+                    .then(response => {
+                        if (response.data.success) {
+                            this.collection.image.url = response.data.data;
+                            this.sendCollection();
+                        }
+                    })
+            } else {
+                this.sendCollection();
+            }
+        },
+    },
+    computed: {
+        image() {
+            if (this.collection.image.url.substring(0, 5) === "data:") {
+                return this.collection.image.url;
+            } else {
+                return `${process.env.VUE_APP_URL_IMAGES}/${this.collection.image.url}`;
+            }
+        },
     },
     watch: {
         'collection.assis.type'(value) {

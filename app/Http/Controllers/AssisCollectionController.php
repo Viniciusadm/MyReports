@@ -42,7 +42,7 @@ class AssisCollectionController extends Controller
 
             $collection = AssisCollection::query()->create([
                 'name' => $data['name'],
-                'image' => $data['image'] ?? null,
+                'image' => $data['image']['url'] ?? null,
             ]);
 
             $assis = Assis::query()->create([
