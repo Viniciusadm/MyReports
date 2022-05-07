@@ -2,15 +2,12 @@
     <div class="new-collection">
         <h1 class="title_page">Nova coleção</h1>
         <div class="form_collection">
+            <image-upload id="collection" @upload="getImage($event)"></image-upload>
             <div class="form-group form-group-single">
                 <input v-model="collection.name" class="input_text" placeholder="Nome da coleção">
             </div>
-            <div class="form_group photo">
-                <label class="form_label" for="photo">Foto</label>
-                <img :src="image" alt="foto da pessoa" v-if="collection.image.url" class="person_image">
-                <input @change="onFileChange" class="input_file" type="file" id="photo" placeholder="Foto">
-            </div>
             <h2 class="title_assis">Detalhes do assis</h2>
+            <image-upload id="assis" @upload="getImage($event)"></image-upload>
             <div class="form-group form-group-single">
                 <input v-model="collection.assis.name" class="input_text" placeholder="Nome">
             </div>
@@ -55,23 +52,21 @@
             <div class="form-group form-group-single">
                 <textarea v-model="collection.assis.sinopse" class="input_textarea" placeholder="Sinopse"></textarea>
             </div>
-            <button @click="sendImage" class="btn">Criar</button>
+            <button @click="sendCollection" class="btn">Criar</button>
         </div>
     </div>
 </template>
 
 <script>
 import api from "@/services/api";
+import imageUpload from "@/components/ImageUpload";
 
 export default {
     data() {
         return {
             collection: {
                 name: '',
-                image: {
-                    url: "",
-                    file: null
-                },
+                image: '',
                 assis: {
                     name: '',
                     total: '',
@@ -85,6 +80,9 @@ export default {
             }
         }
     },
+    components: {
+        imageUpload,
+    },
     methods: {
         removeNumbers($event) {
             $event.target.value = $event.target.value.replace(/\D/g, '');
@@ -97,37 +95,11 @@ export default {
                     }
                 })
         },
-        onFileChange(e) {
-            let file = e.target.files[0];
-            let reader = new FileReader();
-            reader.onload = (e) => {
-                this.collection.image.url = e.target.result;
-                this.collection.image.file = file;
-            }
-            reader.readAsDataURL(file);
-        },
-        sendImage() {
-            if (this.collection.image.file) {
-                let formData = new FormData();
-                formData.append("image", this.collection.image.file);
-                api.post(process.env.VUE_APP_URL_IMAGES, formData)
-                    .then(response => {
-                        if (response.data.success) {
-                            this.collection.image.url = response.data.data;
-                            this.sendCollection();
-                        }
-                    })
+        getImage($event) {
+            if ($event.id === 'collection') {
+                this.collection.image = $event.image;
             } else {
-                this.sendCollection();
-            }
-        },
-    },
-    computed: {
-        image() {
-            if (this.collection.image.url.substring(0, 5) === "data:") {
-                return this.collection.image.url;
-            } else {
-                return `${process.env.VUE_APP_URL_IMAGES}/${this.collection.image.url}`;
+                this.collection.assis.image = $event.image;
             }
         },
     },

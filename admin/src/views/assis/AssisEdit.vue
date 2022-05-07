@@ -1,9 +1,10 @@
 <template>
     <div class="new-collection">
-        <h1 class="title_page">Nova coleção</h1>
+        <h1 class="title_page">Adicionar Assis</h1>
         <div class="form_collection">
-            <p class="name_collection">{{ collection.name }}</p>
+            <p class="name_collection">Nome da coleção: {{ collection.name }}</p>
             <h2 class="title_assis">Detalhes do assis</h2>
+            <image-upload id="collection" @upload="getImage($event)"></image-upload>
             <div class="form-group form-group-single">
                 <input v-model="collection.assis.name" class="input_text" placeholder="Nome">
             </div>
@@ -55,6 +56,7 @@
 
 <script>
 import api from "@/services/api";
+import ImageUpload from "@/components/ImageUpload";
 
 export default {
     data() {
@@ -70,7 +72,8 @@ export default {
                     year: '',
                     type: 'serie',
                     status: 'assistindo',
-                    sinopse: ''
+                    sinopse: '',
+                    image: null,
                 }
             }
         }
@@ -107,7 +110,13 @@ export default {
                         }
                     }
                 })
-        }
+        },
+        getImage($event) {
+            this.collection.assis.image = $event.image;
+        },
+    },
+    components: {
+        ImageUpload,
     },
     watch: {
         'collection.assis.type'(value) {
@@ -148,7 +157,6 @@ export default {
             max-width: 800px;
 
             .name_collection {
-                padding-left: 1rem;
                 font-size: 1.6rem;
             }
 
