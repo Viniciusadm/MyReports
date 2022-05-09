@@ -38,7 +38,7 @@ class PersonController extends Controller
                         ->orWhere('nickname', 'like', '%' . request('q') . '%');
                 })
                 ->whereNotIn('id', $exclude)
-                ->take(5)
+                ->take(10)
                 ->get();
 
             return response()->json(['success' => true, 'data' => $people]);
