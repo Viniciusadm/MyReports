@@ -6,8 +6,9 @@
         <div class="logs">
             <input class="date" type="date" v-model="date" @change="getLogs()">
             <template v-if="logs.length > 0">
-                <p class="quantity">{{ logs.length }} {{ logs.length > 1 ? 'episódios assistidos' : 'episódio assistido' }}</p>
-                <p class="time">{{ time }}</p>
+                <p class="quantity">{{ logs.length }} {{ logs.length > 1 ? 'episódios assistidos' : 'episódio assistido' }} hoje</p>
+                <p class="quantity">{{ total }} episódios no total</p>
+                <p class="time">{{ timeFormated }}</p>
             </template>
             <div v-if="logs.length > 0" class="items">
                 <p class="log-item" v-for="log in logs" :key="log.id">
@@ -55,24 +56,21 @@ export default {
                     }
                 },
             }],
+            total: 0,
+            time: 0,
             carregando: true
         }
     },
     computed: {
-        time() {
-            let time = 0;
-            this.logs.forEach(log => {
-                time += log.assis.average_time;
-            });
-
-            if (time > 60) {
-                const hours = Math.floor(time / 60);
+        timeFormated() {
+            if (this.time > 60) {
+                const hours = Math.floor(this.time / 60);
                 const hours_text = hours > 1 ? `${hours} horas` : `${hours} hora`;
-                const minutes = time - (hours * 60);
+                const minutes = this.time - (hours * 60);
                 const minutes_text = minutes > 0 ? ' e ' + minutes + ' minutos' : '';
                 return hours_text + minutes_text;
             } else {
-                return time + " minutos";
+                return this.time + " minutos";
             }
         }
     },
@@ -81,7 +79,9 @@ export default {
             api.get(`/assis/episode/date/${this.date}`)
                 .then(response => {
                     if (response.data.success) {
-                        this.logs = response.data.data;
+                        this.logs = response.data.data.episodes;
+                        this.total = response.data.data.total;
+                        this.time = response.data.data.time;
                         this.carregando = false;
                     }
                 });

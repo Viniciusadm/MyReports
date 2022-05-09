@@ -40,7 +40,23 @@ class EpisodeController extends Controller
                 ->where('created_at', 'like', $date.'%')
                 ->get();
 
-            return response()->json(['success' => true, 'data' => $episodes]);
+            $time = 0;
+
+            foreach ($episodes as $episode) {
+                $time += $episode['assis']['average_time'];
+            }
+
+            $total = Episode::query()
+                ->selectRaw('count(*) as total')
+                ->first()['total'];
+
+            $response = [
+                'episodes' => $episodes,
+                'total' => $total,
+                'time' => $time,
+            ];
+
+            return response()->json(['success' => true, 'data' => $response]);
         } catch (Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
