@@ -28,7 +28,7 @@ use([
 export default {
     methods: {
         getData() {
-            api.get('/dashboard/')
+            api.get('/dashboard')
                 .then(response => {
                     if (response.data.success) {
                         const participants = response.data.data.participants;
