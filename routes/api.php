@@ -3,6 +3,7 @@
 use App\Http\Controllers\AnswerController;
 use App\Http\Controllers\AssisCollectionController;
 use App\Http\Controllers\AssisController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EpisodeController;
 use App\Http\Controllers\PersonController;
 use App\Http\Controllers\QuestionController;
@@ -24,6 +25,8 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::get('/dashboard', [DashboardController::class, 'dashboard']);
 
 Route::prefix('reports')->group(function () {
     Route::get('/', [ReportController::class, 'index']);
