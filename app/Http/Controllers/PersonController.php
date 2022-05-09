@@ -122,7 +122,7 @@ class PersonController extends Controller
     {
         $objeto = [
             'name' => $data['name'],
-            'nickname' => $data['nickname'] ?? null,
+            'nickname' => $data['nickname'] ?? explode(' ', $data['name'])[0],
             'email' => $data['email'] ?? null,
             'phone' => $data['phone'] ?? null,
             'address' => $data['address'] ?? null,
