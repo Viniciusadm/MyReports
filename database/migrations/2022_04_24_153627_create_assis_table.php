@@ -25,7 +25,7 @@ class CreateAssisTable extends Migration
             $table->string('image')->nullable();
             $table->integer('average_time')->nullable();
             $table->integer('year')->nullable();
-            $table->string('sinopse')->nullable();
+            $table->text('sinopse')->nullable();
             $table->timestamps();
 
             $table->foreign('collection_id')->references('id')->on('assis_collections')->onDelete('cascade');
