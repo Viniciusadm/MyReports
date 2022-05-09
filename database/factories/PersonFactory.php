@@ -15,6 +15,7 @@ class PersonFactory extends Factory
     {
         return [
             'name' => $this->faker->name,
+            'nickname' => $this->faker->name,
             'birth_date' => $this->faker->date,
             'email' => $this->faker->email,
             'phone' => $this->faker->phoneNumber,
