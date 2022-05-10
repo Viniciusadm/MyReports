@@ -2,6 +2,7 @@
     <div class="questions-page">
         <div class="questions">
             <input type="date" v-model="date" @change="getQuestions()">
+            <p class="points">Pontuação: {{ points }}</p>
             <div v-if="!carregando" class="list">
                 <question :date="date"
                           @answered="reply($event)"
@@ -14,11 +15,18 @@
                 </question>
                 <div v-if="!carregando" class="new-question">
                     <input type="text" @keyup.enter="addQuestion()" v-model="question.text" placeholder="Nova pergunta">
-                    <select v-model="question.type">
-                        <option value="good">Bom</option>
-                        <option value="neutral">Neutro</option>
-                        <option value="bad">Ruim</option>
-                    </select>
+                    <div class="selects">
+                        <select v-model="question.yes">
+                            <option value="good">Bom</option>
+                            <option value="neutral">Neutro</option>
+                            <option value="bad">Ruim</option>
+                        </select>
+                        <select v-model="question.no">
+                            <option value="good">Bom</option>
+                            <option value="neutral">Neutro</option>
+                            <option value="bad">Ruim</option>
+                        </select>
+                    </div>
                     <button @click="addQuestion()">Adicionar</button>
                 </div>
             </div>
@@ -44,8 +52,10 @@ export default {
             date: moment().format("YYYY-MM-DD"),
             question: {
                 text: "",
-                type: "good"
+                yes: "good",
+                no: "good",
             },
+            points: 0,
             carregando: true,
         }
     },
@@ -65,20 +75,41 @@ export default {
                             date: this.date,
                         }
                     })
-                        .then(response => {
-                            if (response.data.success) {
-                                this.questions = response.data.data;
-                            } else {
-                                toast.error(response.data.message);
-                            }
-                        })
-                        .finally(() => {
-                            this.carregando = false;
-                        });
+                    .then(response => {
+                        if (response.data.success) {
+                            this.questions = response.data.data;
+                            this.setPoints(this.questions);
+                        } else {
+                            toast.error(response.data.message);
+                        }
+                    })
+                    .finally(() => {
+                        this.carregando = false;
+                    });
                 } else {
                     this.date = moment().format("YYYY-MM-DD");
                 }
             }, 500);
+        },
+        setPoints(questions) {
+            this.points = 0;
+            const score = {
+                good: 1,
+                neutral: 0,
+                bad: -1,
+            };
+
+            questions.forEach(question => {
+                if (!question.answer) return;
+
+                if (question.answer.answer === 'yes') {
+                    this.points += score[question.yes];
+                } else {
+                    this.points += score[question.no];
+                }
+            });
+
+            console.log(this.points);
         },
         reply($event) {
             this.questions.forEach(question => {
@@ -108,7 +139,7 @@ export default {
         changeType($event) {
             this.questions.forEach(question => {
                 if (question.id === $event.question_id) {
-                    question.type = $event.type;
+                    question.yes = $event.type;
                 }
             });
         },
@@ -123,14 +154,16 @@ export default {
             if (this.question.text) {
                 api.post("/questions", {
                     question: this.question.text,
-                    type: this.question.type,
+                    yes: this.question.yes,
+                    no: this.question.no,
                 })
                 .then(response => {
                     if (response.data.success) {
                         this.questions.push(response.data.data);
                         this.question = {
                             text: "",
-                            type: "good"
+                            yes: "good",
+                            no: "good",
                         };
                     } else {
                         toast.error(response.data.message);
@@ -166,6 +199,11 @@ export default {
                 margin-bottom: 10px;
             }
 
+            .points {
+                font-size: 1.5rem;
+                margin-bottom: 0.8rem;
+            }
+
             .list {
                 display: grid;
                 grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -189,15 +227,21 @@ export default {
                         padding: 0 0.5rem;
                     }
 
-                    select {
-                        width: 100%;
+                    .selects {
+                        display: flex;
+                        flex-direction: row;
+                        justify-content: space-between;
                         height: calc(100% / 3 - 0.5rem);
-                        font-size: 1.1rem;
-                        border: 1px solid #ccc;
-                        background-color: #fff;
-                        cursor: pointer;
-                        padding: 0 0.5rem;
-                        border-radius: 5px;
+
+                        select {
+                            width: calc(100% / 2 - 0.2rem);
+                            font-size: 1.1rem;
+                            border: 1px solid #ccc;
+                            background-color: #fff;
+                            cursor: pointer;
+                            padding: 0 0.5rem;
+                            border-radius: 5px;
+                        }
                     }
 
                     button {

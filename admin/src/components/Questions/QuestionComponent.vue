@@ -3,19 +3,19 @@
         <p class="question"
            @click="editQuestion()"
            v-if="input_question"
-           :class="question.type">
+           :class="question.yes">
             {{ question.question }}</p>
-        <input @keyup.enter="changeQuestion()" ref="question_input" type="text" @keyup.esc="cancelEdit()" v-if="!input_question" class="question" :value="question.question" :class="question.type">
+        <input @keyup.enter="changeQuestion()" ref="question_input" type="text" @keyup.esc="cancelEdit()" v-if="!input_question" class="question" :value="question.question" :class="question.yes">
         <div class="question-type" v-if="!input_question">
-            <label :class="question.type === 'good' ? 'active' : ''">
+            <label :class="question.yes === 'good' ? 'active' : ''">
                 <input type="radio" value="good" />
                 <span @click="changeType('good')">Bom</span>
             </label>
-            <label :class="question.type === 'neutral' ? 'active' : ''">
+            <label :class="question.yes === 'neutral' ? 'active' : ''">
                 <input type="radio" value="neutral" />
                 <span @click="changeType('neutral')">Neutro</span>
             </label>
-            <label :class="question.type === 'bad' ? 'active' : ''">
+            <label :class="question.yes === 'bad' ? 'active' : ''">
                 <input type="radio" value="bad" />
                 <span @click="changeType('bad')">Ruim</span>
             </label>
@@ -82,7 +82,7 @@ export default {
 
             api.post(`/questions/${this.question.id}/question`, {
                 question: this.$refs.question_input.value,
-                type: this.question.type,
+                type: this.question.yes,
             })
             .then(() => {
                 this.input_question = true;
@@ -108,16 +108,16 @@ export default {
             });
         },
         changeType(type) {
-            if (this.question.type === type) return;
+            if (this.question.yes === type) return;
 
             api.post(`/questions/${this.question.id}/type`, {
-                type: type,
+                yes: type,
             })
             .then(() => {
                 toast.success("Tipo alterado com sucesso!");
                 this.$emit("type", {
                     question_id: this.question.id,
-                    type: type,
+                    yes: type,
                 });
             })
         },
@@ -171,7 +171,8 @@ export default {
                 return {
                     id: null,
                     question: '',
-                    type: '',
+                    yes: '',
+                    no: '',
                     deactivated_at: null,
                     answer: {
                         id: null,

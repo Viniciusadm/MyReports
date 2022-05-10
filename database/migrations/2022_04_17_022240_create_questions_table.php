@@ -16,7 +16,8 @@ class CreateQuestionsTable extends Migration
         Schema::create('questions', function (Blueprint $table) {
             $table->id();
             $table->string('question');
-            $table->enum('type', ['good', 'neutral', 'bad']);
+            $table->enum('yes', ['good', 'neutral', 'bad']);
+            $table->enum('no', ['good', 'neutral', 'bad']);
             $table->date('deactivated_at')->nullable();
             $table->timestamps();
         });

@@ -14,7 +14,7 @@ class QuestionController extends Controller
         $date = request()->input('date') ?? date('Y-m-d');
         try {
             $questions = Question::query()
-                ->select('id', 'question', 'type', 'deactivated_at')
+                ->select('id', 'question', 'yes', 'no', 'deactivated_at')
                 ->with('answer', function ($query) use ($date) {
                     $query->select('id', 'question_id', 'answer', 'comment', 'created_at')
                         ->where('date', '=', $date);
@@ -34,7 +34,8 @@ class QuestionController extends Controller
         try {
             $question = Question::query()->create([
                 'question' => $request->input('question'),
-                'type' => $request->input('type'),
+                'yes' => $request->input('yes'),
+                'no' => $request->input('no'),
             ]);
 
             return response()->json(['success' => true, 'data' => $question]);
@@ -68,12 +69,12 @@ class QuestionController extends Controller
         }
     }
 
-    public function changeType(Request $request, int $id): JsonResponse
+    public function changeYes(Request $request, int $id): JsonResponse
     {
         try {
             $question = Question::query()->findOrFail($id);
             $question->update([
-                'type' => $request->input('type'),
+                'yes' => $request->input('yes'),
             ]);
 
             return response()->json(['success' => true, 'data' => $question]);

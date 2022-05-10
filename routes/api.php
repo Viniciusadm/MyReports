@@ -49,7 +49,7 @@ Route::prefix('questions')->group(function () {
     Route::get('/', [QuestionController::class, 'index']);
     Route::post('/', [QuestionController::class, 'store']);
     Route::post('/{id}/question', [QuestionController::class, 'changeQuestion']);
-    Route::post('/{id}/type', [QuestionController::class, 'changeType']);
+    Route::post('/{id}/type', [QuestionController::class, 'changeYes']);
     Route::delete('{id}/disable', [QuestionController::class, 'delete']);
 
     Route::prefix('/answer')->group(function () {

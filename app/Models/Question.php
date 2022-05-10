@@ -12,7 +12,8 @@ class Question extends Model
 
     protected $fillable = [
         'question',
-        'type',
+        'yes',
+        'no',
         'deactivated_at',
     ];
 
