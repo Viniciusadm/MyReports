@@ -14,6 +14,7 @@ class Episode extends Model
         'assis_id',
         'episode',
         'comment',
+        'date',
     ];
 
     public function assis(): BelongsTo

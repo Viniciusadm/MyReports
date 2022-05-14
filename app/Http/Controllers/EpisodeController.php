@@ -19,6 +19,7 @@ class EpisodeController extends Controller
                 'assis_id' => $assis['id'],
                 'episode' => $request->input('episode'),
                 'comment' => $request->input('comment') ?? null,
+                'date' => date('Y-m-d'),
             ]);
 
             return response()->json(['success' => true, 'data' => $episode]);
@@ -37,7 +38,7 @@ class EpisodeController extends Controller
                             $query->select('id', 'name');
                         });
                 })
-                ->where('created_at', 'like', $date.'%')
+                ->where('date', $date)
                 ->get();
 
             $time = 0;

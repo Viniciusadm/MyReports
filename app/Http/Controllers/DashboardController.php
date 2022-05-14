@@ -2,19 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Episode;
 use App\Models\Participant;
+use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
 class DashboardController extends Controller
 {
-    public function dashboard(): JsonResponse
+    public function dashboard(Request $request): JsonResponse
     {
+        $dates = $request->input('dates', []);
         $participants = $this->countParticipants();
+        $minutes = $this->minutesAssis($dates);
 
         return response()->json([
             'success' => true,
             'data' => [
                 'participants' => $participants,
+                'minutes' => $minutes,
             ],
         ]);
     }
@@ -36,5 +41,29 @@ class DashboardController extends Controller
         }
 
         return $participants;
+    }
+
+    private function minutesAssis($dates = []): array
+    {
+        $query = Episode::query()
+            ->selectRaw('sum(assis.average_time) as minutes, date')
+            ->join('assis', 'assis.id', '=', 'episodes.assis_id')
+            ->orderBy('date')
+            ->groupBy('date')
+            ->take(10);
+
+        if (count($dates) > 0) {
+            $query->whereBetween('episodes.date', $dates[0], $dates[1]);
+        }
+
+        $minutesQuery =  $query->get();
+
+        $minutes = [];
+
+        foreach ($minutesQuery as $minute) {
+            $minutes[$minute->date] = $minute->minutes;
+        }
+
+        return $minutes;
     }
 }

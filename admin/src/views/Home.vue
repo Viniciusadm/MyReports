@@ -1,15 +1,18 @@
 <template>
     <div class="home">
         <participants class="graphic"></participants>
+        <minutes class="graphic"></minutes>
     </div>
 </template>
 
 <script>
 import participants from "@/components/Dashboard/ParticipantsGraphic";
+import minutes from "@/components/Dashboard/MinutesGraphic";
 
 export default {
     components: {
-        participants
+        participants,
+        minutes,
     },
 }
 

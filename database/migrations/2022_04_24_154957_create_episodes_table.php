@@ -18,6 +18,7 @@ class CreateEpisodesTable extends Migration
             $table->unsignedBigInteger('assis_id');
             $table->integer('episode');
             $table->text('comment')->nullable();
+            $table->date('date');
             $table->timestamps();
 
             $table->foreign('assis_id')->references('id')->on('assis')->onDelete('cascade');
