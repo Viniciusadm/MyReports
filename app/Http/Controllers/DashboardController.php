@@ -48,7 +48,7 @@ class DashboardController extends Controller
         $query = Episode::query()
             ->selectRaw('sum(assis.average_time) as minutes, date')
             ->join('assis', 'assis.id', '=', 'episodes.assis_id')
-            ->orderBy('date')
+            ->orderBy('date', 'desc')
             ->groupBy('date')
             ->take(10);
 
