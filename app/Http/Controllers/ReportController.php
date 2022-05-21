@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ErrorResource;
+use App\Http\Resources\ResponseResource;
 use App\Models\Participant;
 use App\Models\Report;
 use Exception;
@@ -39,7 +41,7 @@ class ReportController extends Controller
 
             $reports = $query->paginate(12, ['*'], 'current_page', $page);
 
-            return response()->json(['success' => true, 'data' => $reports]);
+            return response()->json(ResponseResource::make($reports));
         } catch (Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
@@ -50,32 +52,26 @@ class ReportController extends Controller
         try {
             $report = Report::query()
                 ->with('participants.person')
-                ->find($id);
+                ->findOrFail($id);
 
-            if (!$report) {
-                return response()->json(['message' => 'Relato não encontrado.'], 404);
-            }
-
-            return response()->json(['success' => true, 'data' => $report]);
+            return response()->json(ResponseResource::make($report));
 
         } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 500);
+            return response()->json(ErrorResource::make($e->getMessage()), 500);
         }
     }
 
     public function store(Request $request): JsonResponse
     {
         try {
-            $data = $request->all();
-
             $report = Report::query()->create([
-                'title' => $data['title'],
-                'report' => $data['report'],
-                'humor' => $data['humor'],
-                'type' => $data['type'],
+                'title' => $request->input('title'),
+                'report' => $request->input('report'),
+                'humor' => $request->input('humor'),
+                'type' => $request->input('type'),
             ]);
 
-            $participants = $data['participants'];
+            $participants = $request->input('participants');
 
             foreach ($participants as $participant) {
                 Participant::query()->create([
@@ -85,9 +81,9 @@ class ReportController extends Controller
                 ]);
             }
 
-            return response()->json(['success' => true, 'data' => $report]);
+            return response()->json(ResponseResource::make($report));
         } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 500);
+            return response()->json(ErrorResource::make($e->getMessage()), 500);
         }
     }
 
@@ -96,11 +92,7 @@ class ReportController extends Controller
         try {
             $data = $request->all();
 
-            $report = Report::query()->find($id);
-
-            if (!$report) {
-                return response()->json(['message' => 'Relato não encontrado.'], 404);
-            }
+            $report = Report::query()->findOrFail($id);
 
             $report->update([
                 'title' => $data['title'],
@@ -111,7 +103,9 @@ class ReportController extends Controller
 
             $participants = $data['participants'];
 
-            Participant::query()->where('report_id', $id)->delete();
+            Participant::query()
+                ->where('report_id', $id)
+                ->delete();
 
             foreach ($participants as $participant) {
                 Participant::query()->create([
@@ -121,27 +115,22 @@ class ReportController extends Controller
                 ]);
             }
 
-            return response()->json(['success' => true, 'data' => $report]);
+            return response()->json(ResponseResource::make($report));
         } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 500);
+            return response()->json(ErrorResource::make($e->getMessage()), 500);
         }
     }
 
     public function delete($id): JsonResponse
     {
         try {
-            $report = Report::query()->find($id);
+            $report = Report::query()
+                ->findOrFail($id)
+                ->delete();
 
-            if (!$report) {
-                return response()->json(['message' => 'Relato não encontrado.'], 404);
-            }
-
-            $report->delete();
-
-            return response()->json(['message' => 'Relato deletado com sucesso!']);
-
+            return response()->json(ResponseResource::make($report));
         } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 500);
+            return response()->json(ErrorResource::make($e->getMessage()), 500);
         }
     }
 }

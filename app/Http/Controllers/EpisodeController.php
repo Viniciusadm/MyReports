@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ErrorResource;
+use App\Http\Resources\ResponseResource;
 use App\Models\Assis;
 use App\Models\Episode;
 use Exception;
@@ -22,23 +24,23 @@ class EpisodeController extends Controller
                 'date' => date('Y-m-d'),
             ]);
 
-            return response()->json(['success' => true, 'data' => $episode]);
+            return response()->json(ResponseResource::make($episode), 201);
         } catch (Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+            return response()->json(ErrorResource::make($e->getMessage()), 500);
         }
     }
 
     public function removeFromEpisode(int $assis_id, int $episode): JsonResponse
     {
         try {
-            Episode::query()
+            $episode = Episode::query()
                 ->where('assis_id', $assis_id)
                 ->where('episode', $episode)
                 ->delete();
 
-            return response()->json(['success' => true]);
+            return response()->json(ResponseResource::make($episode));
         } catch (Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+            return response()->json(ErrorResource::make($e->getMessage()), 500);
         }
     }
 
@@ -71,9 +73,9 @@ class EpisodeController extends Controller
                 'time' => $time,
             ];
 
-            return response()->json(['success' => true, 'data' => $response]);
+            return response()->json(ResponseResource::make($response));
         } catch (Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+            return response()->json(ErrorResource::make($e->getMessage()), 500);
         }
     }
 }

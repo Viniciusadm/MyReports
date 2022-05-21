@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ErrorResource;
+use App\Http\Resources\ResponseResource;
 use App\Models\Question;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -23,9 +25,9 @@ class QuestionController extends Controller
                 ->orWhereNull('deactivated_at')
                 ->get();
 
-            return response()->json(['success' => true, 'data' => $questions]);
+            return response()->json(ResponseResource::make($questions));
         } catch (Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+            return response()->json(ErrorResource::make($e->getMessage()), 500);
         }
     }
 
@@ -38,48 +40,52 @@ class QuestionController extends Controller
                 'no' => $request->input('no'),
             ]);
 
-            return response()->json(['success' => true, 'data' => $question]);
+            return response()->json(ResponseResource::make($question));
         } catch (Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+            return response()->json(ErrorResource::make($e->getMessage()), 500);
         }
     }
 
     public function delete(int $id): JsonResponse
     {
         try {
-            $question = Question::query()->findOrFail($id);
-            $question->update(['deactivated_at' => date('Y-m-d')]);
-            return response()->json(['success' => true, 'data' => $question]);
+            $question = Question::query()
+                ->findOrFail($id)
+                ->update(['deactivated_at' => date('Y-m-d')]);
+
+            return response()->json(ResponseResource::make($question));
         } catch (Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+            return response()->json(ErrorResource::make($e->getMessage()), 500);
         }
     }
 
     public function changeQuestion(Request $request, int $id): JsonResponse
     {
         try {
-            $question = Question::query()->findOrFail($id);
-            $question->update([
-                'question' => $request->input('question'),
-            ]);
+            $question = Question::query()
+                ->findOrFail($id)
+                ->update([
+                    'question' => $request->input('question'),
+                ]);
 
-            return response()->json(['success' => true, 'data' => $question]);
+            return response()->json(ResponseResource::make($question));
         } catch (Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+            return response()->json(ErrorResource::make($e->getMessage()), 500);
         }
     }
 
     public function changeYes(Request $request, int $id): JsonResponse
     {
         try {
-            $question = Question::query()->findOrFail($id);
-            $question->update([
-                'yes' => $request->input('yes'),
-            ]);
+            $question = Question::query()
+                ->findOrFail($id)
+                ->update([
+                    'yes' => $request->input('yes'),
+                ]);
 
-            return response()->json(['success' => true, 'data' => $question]);
+            return response()->json(ResponseResource::make($question));
         } catch (Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+            return response()->json(ErrorResource::make($e->getMessage()), 500);
         }
     }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ErrorResource;
+use App\Http\Resources\ResponseResource;
 use App\Models\Assis;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -32,9 +34,9 @@ class AssisController extends Controller
 
             $assis = $query->get();
 
-            return response()->json(['success' => true, 'data' => $assis]);
+            return response()->json(ResponseResource::make($assis));
         } catch (Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+            return response()->json(ErrorResource::make($e->getMessage()), 500);
         }
     }
 
@@ -46,24 +48,26 @@ class AssisController extends Controller
                     $query->select('id', 'name');
                 })
                 ->with('episodes')
-                ->where('id', $id)
-                ->first();
+                ->findOrFail($id);
 
-            return response()->json(['success' => true, 'data' => $assis]);
+            return response()->json(ResponseResource::make($assis));
         } catch (Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+            return response()->json(ErrorResource::make($e->getMessage()), 500);
         }
     }
 
     public function changeStatus(Request $request, int $id): JsonResponse
     {
         try {
-            $assis = Assis::query()->findOrFail($id);
-            $assis->update(['status' => $request->input('status')]);
+            $assis = Assis::query()
+                ->findOrFail($id)
+                ->update([
+                    'status' => $request->input('status')
+                ]);
 
-            return response()->json(['success' => true, 'data' => $assis]);
+            return response()->json(ResponseResource::make($assis));
         } catch (Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+            return response()->json(ErrorResource::make($e->getMessage()), 500);
         }
     }
 }
