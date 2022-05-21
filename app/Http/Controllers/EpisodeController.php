@@ -10,10 +10,10 @@ use Illuminate\Http\Request;
 
 class EpisodeController extends Controller
 {
-    public function addToEpisode(Request $request, int $id_assis): JsonResponse
+    public function addToEpisode(Request $request, int $assis_id): JsonResponse
     {
         try {
-            $assis = Assis::query()->findOrFail($id_assis);
+            $assis = Assis::query()->findOrFail($assis_id);
 
             $episode = Episode::query()->create([
                 'assis_id' => $assis['id'],
@@ -23,6 +23,20 @@ class EpisodeController extends Controller
             ]);
 
             return response()->json(['success' => true, 'data' => $episode]);
+        } catch (Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function removeFromEpisode(int $assis_id, int $episode): JsonResponse
+    {
+        try {
+            Episode::query()
+                ->where('assis_id', $assis_id)
+                ->where('episode', $episode)
+                ->delete();
+
+            return response()->json(['success' => true]);
         } catch (Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }

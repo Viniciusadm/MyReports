@@ -72,7 +72,8 @@ Route::prefix('assis')->group(function () {
     });
 
     Route::prefix('/episode')->group(function () {
-        Route::post('/{id_assis}/add', [EpisodeController::class, 'addToEpisode']);
+        Route::post('/{assis_id}/add', [EpisodeController::class, 'addToEpisode']);
+        Route::delete('/{assis_id}/remove/{episode}', [EpisodeController::class, 'removeFromEpisode']);
         Route::get('/date/{date}', [EpisodeController::class, 'getByDate']);
     });
 });

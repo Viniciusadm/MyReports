@@ -49,8 +49,9 @@
             <h2>Episódios</h2>
             <div class="episode" v-for="episode in assis.total" :key="episode">
                 <template v-if="hasEpisode(episode)">
-                    <p>Episódio {{ episode }} - {{ dataFormatada(hasEpisode(episode)['created_at']) }}</p>
+                    <p>Episódio {{ episode }} - {{ dataFormatada(hasEpisode(episode)['date']) }}</p>
                     <p>Comentário: {{ hasEpisode(episode).comment ? hasEpisode(episode).comment : "Não há comentário" }}</p>
+                    <button v-if="assis.status !== 'completo'" @click="removeEpisode(episode)">Remover</button>
                 </template>
                 <template v-else>
                     <p>Episódio {{ episode }}</p>
@@ -83,7 +84,7 @@ export default {
                 average_time: 0,
                 year: 0,
                 sinopse: null,
-                created_at: "",
+                date: "",
                 updated_at: "",
                 hidden_collection: false,
                 collection: {
@@ -119,7 +120,7 @@ export default {
         },
         firstDate() {
             if (this.assis.episodes.length > 0) {
-                const stringDate = this.assis.episodes.reduce((a, b) => a.created_at < b.created_at ? a : b).created_at;
+                const stringDate = this.assis.episodes.reduce((a, b) => a.date < b.date ? a : b).date;
                 return new Date(stringDate);
             } else {
                 return "";
@@ -127,7 +128,7 @@ export default {
         },
         lastDate() {
             if (this.assis.episodes.length > 0) {
-                const stringDate = this.assis.episodes.reduce((a, b) => a.created_at > b.created_at ? a : b).created_at;
+                const stringDate = this.assis.episodes.reduce((a, b) => a.date > b.date ? a : b).date;
                 return new Date(stringDate);
             } else {
                 return "";
@@ -189,6 +190,30 @@ export default {
                 .finally(() => {
                     this.carregando = false;
                 });
+        },
+        removeEpisode(episode) {
+            this.$swal('Atenção', 'Você tem certeza que deseja remover este episódio?', 'warning', {
+                showCancelButton: true,
+                confirmButtonText: 'Sim',
+                cancelButtonText: 'Não',
+            }).then((result) => {
+                if (result.value) {
+                    if (!this.hasEpisode(episode)) {
+                        return;
+                    }
+
+                    this.carregando = true;
+                    api.delete(`/assis/episode/${this.id}/remove/${episode}`)
+                        .then(response => {
+                            if (response.data.success) {
+                                this.assis.episodes = this.assis.episodes.filter(e => e.episode !== episode);
+                            }
+                        })
+                        .finally(() => {
+                            this.carregando = false;
+                        });
+                }
+            });
         },
         dataFormatada(data) {
             return data.split('T')[0].split('-').reverse().join('/');

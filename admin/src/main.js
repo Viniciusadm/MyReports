@@ -6,6 +6,10 @@ import store from "./store";
 import Toast from "vue-toastification";
 import "vue-toastification/dist/index.css";
 
+import VueSweetalert2 from 'vue-sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
+
+
 const options = {
     transition: "Vue-Toastification__bounce",
     maxToasts: 3,
@@ -15,4 +19,9 @@ const options = {
     pauseOnHover: false,
 };
 
-createApp(App).use(store).use(router).use(Toast, options).mount("#app");
+createApp(App)
+    .use(store)
+    .use(router)
+    .use(Toast, options)
+    .use(VueSweetalert2)
+    .mount("#app");
