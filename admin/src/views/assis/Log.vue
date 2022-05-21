@@ -6,7 +6,7 @@
         <div class="logs">
             <input class="date" type="date" v-model="date" @change="getLogs()">
             <template v-if="logs.length > 0">
-                <p class="quantity">{{ logs.length }} {{ logs.length > 1 ? 'episódios assistidos' : 'episódio assistido' }} hoje</p>
+                <p class="quantity">{{ logs.length }} {{ logs.length > 1 ? 'episódios assistidos' : 'episódio assistido' }}</p>
                 <p class="quantity">{{ total }} episódios no total</p>
                 <p class="time">{{ timeFormated }}</p>
             </template>
@@ -177,7 +177,7 @@ export default {
             .items {
                 .log-item {
                     font-size: 1.3rem;
-
+                    margin-bottom: 0.5rem;
 
                     @media screen and (max-width: 570px) {
                         font-size: 1.2rem;
