@@ -26,7 +26,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/dashboard', [DashboardController::class, 'dashboard']);
+Route::prefix('/dashboard')->group(function () {
+    Route::get('/participants', [DashboardController::class, 'participants']);
+    Route::get('/minutes', [DashboardController::class, 'minutes']);
+    Route::get('/episodes', [DashboardController::class, 'episodes']);
+});
 
 Route::prefix('reports')->group(function () {
     Route::get('/', [ReportController::class, 'index']);

@@ -2,31 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ResponseResource;
 use App\Models\Episode;
 use App\Models\Participant;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
 class DashboardController extends Controller
 {
-    public function dashboard(Request $request): JsonResponse
+    public function participants(): JsonResponse
     {
-        $dates = $request->input('dates', []);
-        $participants = $this->countParticipants();
-        $minutes = $this->minutesAssis($dates);
-
-        return response()->json([
-            'success' => true,
-            'data' => [
-                'participants' => $participants,
-                'minutes' => $minutes,
-            ],
-        ]);
-    }
-
-    private function countParticipants(): array
-    {
-        $participantsQuery = Participant::query()
+        $participants = Participant::query()
             ->selectRaw('count(*) as participations, people.nickname')
             ->join('people', 'people.id', '=', 'participants.person_id')
             ->groupBy('people.id')
@@ -34,29 +19,18 @@ class DashboardController extends Controller
             ->limit(10)
             ->get();
 
-        $participants = [];
-
-        foreach ($participantsQuery as $participant) {
-            $participants[$participant->nickname] = $participant->participations;
-        }
-
-        return $participants;
+        return response()->json(ResponseResource::make($participants));
     }
 
-    private function minutesAssis($dates = []): array
+    public function minutes(): JsonResponse
     {
-        $query = Episode::query()
+        $minutesQuery = Episode::query()
             ->selectRaw('sum(assis.average_time) as minutes, date')
             ->join('assis', 'assis.id', '=', 'episodes.assis_id')
             ->orderBy('date', 'desc')
             ->groupBy('date')
-            ->take(10);
-
-        if (count($dates) > 0) {
-            $query->whereBetween('episodes.date', $dates[0], $dates[1]);
-        }
-
-        $minutesQuery =  $query->get();
+            ->take(10)
+            ->get();
 
         $minutes = [];
 
@@ -64,6 +38,21 @@ class DashboardController extends Controller
             $minutes[$minute->date] = $minute->minutes;
         }
 
-        return $minutes;
+        return response()->json(ResponseResource::make($minutes));
+    }
+
+    public function episodes(): JsonResponse
+    {
+        $episodes = Episode::query()
+            ->selectRaw('count(episodes.id) as count, assis_collections.name as name, assis_collections.id as collection_id')
+            ->join('assis', 'assis.id', '=', 'episodes.assis_id')
+            ->join('assis_collections', 'assis_collections.id', '=', 'assis.collection_id')
+            ->groupBy('collection_id')
+            ->orderBy('count', 'desc')
+            ->limit(10)
+            ->get();
+
+
+        return response()->json(ResponseResource::make($episodes));
     }
 }

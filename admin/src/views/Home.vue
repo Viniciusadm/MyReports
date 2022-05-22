@@ -1,18 +1,23 @@
 <template>
     <div class="home">
-        <participants class="graphic"></participants>
-        <minutes class="graphic"></minutes>
+        <div class="graphics">
+            <participants class="graphic"></participants>
+            <assis class="graphic"></assis>
+            <minutes class="graphic"></minutes>
+        </div>
     </div>
 </template>
 
 <script>
-import participants from "@/components/Dashboard/ParticipantsGraphic";
+import participants from "@/components/Dashboard/Participants";
 import minutes from "@/components/Dashboard/MinutesGraphic";
+import assis from "@/components/Dashboard/Assis";
 
 export default {
     components: {
         participants,
         minutes,
+        assis,
     },
 }
 
@@ -24,10 +29,14 @@ export default {
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        height: 70vh;
 
-        .graphic {
-            max-height: 40rem;
+        .graphics {
+            width: 90%;
+            height: 70vh;
+
+            .graphic {
+                max-height: 40rem;
+            }
         }
     }
 </style>

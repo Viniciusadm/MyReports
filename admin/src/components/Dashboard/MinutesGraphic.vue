@@ -28,10 +28,10 @@ use([
 export default {
     methods: {
         getData() {
-            api.get('/dashboard')
+            api.get('/dashboard/minutes')
                 .then(response => {
                     if (response.data.success) {
-                        const minutes = response.data.data.minutes;
+                        const minutes = response.data.data;
                         this.option.xAxis.data = Object.keys(minutes);
                         this.option.series[0].data = Object.values(minutes);
                     }
