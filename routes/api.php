@@ -30,6 +30,7 @@ Route::prefix('/dashboard')->group(function () {
     Route::get('/participants', [DashboardController::class, 'participants']);
     Route::get('/minutes', [DashboardController::class, 'minutes']);
     Route::get('/episodes', [DashboardController::class, 'episodes']);
+    Route::get('/points', [DashboardController::class, 'points']);
 });
 
 Route::prefix('reports')->group(function () {

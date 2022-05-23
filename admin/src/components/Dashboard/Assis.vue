@@ -2,7 +2,7 @@
     <div class="participants">
         <h2>Top 10 coleções</h2>
         <p v-for="collection in collections" :key="collection.name">
-            {{ collection.name }}: {{ collection.count }}
+            {{ collection.name }}: {{ collection.count }} {{ collection.count === 1 ? 'episódio' : 'episódios' }}
         </p>
     </div>
 </template>
@@ -13,10 +13,7 @@ import api from '@/services/api';
 export default {
     data() {
         return {
-            collections: [{
-                name: '',
-                count: 0,
-            }],
+            collections: [],
         }
     },
     methods: {
@@ -37,9 +34,6 @@ export default {
 
 <style lang="scss" scoped>
 .participants {
-    margin: 2rem 0;
-    width: 100%;
-
     h2 {
         margin-bottom: 0.5rem;
         font-size: 2rem;

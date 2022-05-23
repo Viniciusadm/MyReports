@@ -13,10 +13,7 @@ import api from '@/services/api';
 export default {
     data() {
         return {
-            participants: [{
-                nickname: '',
-                participations: 0,
-            }],
+            participants: [],
         }
     },
     methods: {
@@ -37,9 +34,6 @@ export default {
 
 <style lang="scss" scoped>
     .participants {
-        margin: 2rem 0;
-        width: 100%;
-
         h2 {
             margin-bottom: 0.5rem;
             font-size: 2rem;
