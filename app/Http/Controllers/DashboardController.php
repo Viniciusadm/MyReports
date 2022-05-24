@@ -18,7 +18,7 @@ class DashboardController extends Controller
             ->groupBy('people.id')
             ->orderBy('participations', 'desc')
             ->limit(10)
-            ->where('created_at', '>=', now()->subDays(30))
+            ->where('participants.created_at', '>=', now()->subDays(30))
             ->get();
 
         return response()->json(ResponseResource::make($participants));
