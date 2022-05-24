@@ -6,7 +6,6 @@ use App\Http\Resources\ResponseResource;
 use App\Models\Answer;
 use App\Models\Episode;
 use App\Models\Participant;
-use App\Models\Question;
 use Illuminate\Http\JsonResponse;
 
 class DashboardController extends Controller
@@ -19,6 +18,7 @@ class DashboardController extends Controller
             ->groupBy('people.id')
             ->orderBy('participations', 'desc')
             ->limit(10)
+            ->where('created_at', '>=', now()->subDays(30))
             ->get();
 
         return response()->json(ResponseResource::make($participants));
@@ -52,6 +52,7 @@ class DashboardController extends Controller
             ->groupBy('collection_id')
             ->orderBy('count', 'desc')
             ->limit(10)
+            ->where('episodes.date', '>=', now()->subDays(30))
             ->get();
 
 
