@@ -143,7 +143,7 @@ export default {
         },
         diffDays() {
             if (this.firstDate && this.lastDate) {
-                const days =  moment(this.lastDate).diff(this.firstDate, "days");
+                const days =  moment(this.lastDate).diff(this.firstDate, "days") + 1;
                 if (days > 30) {
                     return `${Math.floor(days / 30)} meses e ${days % 30} dias`;
                 }
