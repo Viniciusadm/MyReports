@@ -2,7 +2,7 @@
     <div class="participants">
         <h2>Top 10 coleções</h2>
         <p v-for="collection in collections" :key="collection.name">
-            {{ collection.name }}: {{ collection.count }} {{ collection.count === 1 ? 'episódio' : 'episódios' }}
+            <a>{{ collection.name }}</a>: {{ collection.count }} {{ collection.count === 1 ? 'episódio' : 'episódios' }}
         </p>
     </div>
 </template>
@@ -42,6 +42,16 @@ export default {
     p {
         margin-bottom: 0.4rem;
         font-size: 1.5rem;
+
+        a {
+            color: #000;
+            text-decoration: none;
+            font-weight: bold;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
     }
 }
 </style>

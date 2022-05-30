@@ -36,4 +36,45 @@ class Assis extends Model
     {
         return $this->hasMany(Episode::class);
     }
+
+    public function getFullNameAttribute(): string
+    {
+        if ($this['hidden_collection']) {
+            return $this['name'];
+        }
+
+        if ($this['name']) {
+            return $this['collection']['name'] .  ' - ' .  $this['name'];
+        } else {
+            return $this['collection']['name'];
+        }
+    }
+
+    public function getImageUrlAttribute(): string
+    {
+        if ($this['image']) {
+            return env('APP_URL_IMAGES') . $this['image'];
+        } else if ($this['collection']['image']) {
+            return env('APP_URL_IMAGES') . $this['collection']['image'];
+        } else {
+            return '';
+        }
+    }
+
+    public function getTypeFormattedAttribute(): string
+    {
+        $types = [
+            "anime" => "Anime",
+            "dorama" => "Dorama",
+            "cartoon" => "Desenho",
+            "movie" => "Filme",
+            "serie" => "Série",
+            "special" => "Especial",
+            "specials" => "Especiais",
+            "youtube" => "YouTube",
+            "other" => "Outro",
+        ];
+
+        return $types[$this['type']];
+    }
 }

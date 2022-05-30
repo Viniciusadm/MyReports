@@ -13,7 +13,7 @@ class DashboardController extends Controller
     public function participants(): JsonResponse
     {
         $participants = Participant::query()
-            ->selectRaw('count(*) as participations, people.nickname')
+            ->selectRaw('count(*) as participations, people.nickname, people.id as person_id')
             ->join('people', 'people.id', '=', 'participants.person_id')
             ->groupBy('people.id')
             ->orderBy('participations', 'desc')

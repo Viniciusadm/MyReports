@@ -46,7 +46,7 @@ export default {
                 margin-right: 2rem;
                 margin-bottom: 1.5rem;
 
-                :last-child {
+                &:last-child {
                     margin-right: 0;
                 }
             }

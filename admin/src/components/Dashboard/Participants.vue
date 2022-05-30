@@ -2,7 +2,7 @@
     <div class="participants">
         <h2>Top 10 participantes</h2>
         <p v-for="participant in participants" :key="participant.nickname">
-            {{ participant.nickname }}: {{ participant.participations }} {{ participant.participations === 1 ? 'relato' : 'relatos' }}
+            <router-link :to="`/person/${participant.person_id}`">{{ participant.nickname }}:</router-link> {{ participant.participations }} {{ participant.participations === 1 ? 'relato' : 'relatos' }}
         </p>
     </div>
 </template>
@@ -42,6 +42,16 @@ export default {
         p {
             margin-bottom: 0.4rem;
             font-size: 1.5rem;
+
+            a {
+                color: #000;
+                text-decoration: none;
+                font-weight: bold;
+
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
         }
     }
 </style>

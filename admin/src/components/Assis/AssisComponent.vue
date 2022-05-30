@@ -1,19 +1,19 @@
 <template>
     <div class="assis">
         <router-link :to="`/assis/${assis.id}`">
-            <img v-if="image" :src="image" :alt="`Imagem de capa: ${assis.collection.name} - ${assis.name}`">
+            <img v-if="assis.image_url" :src="assis.image_url" :alt="`Imagem de capa: ${assis.collection.name} - ${assis.name}`">
             <img v-else src="../../../assets/images/default.png" alt="imagem padrão">
         </router-link>
         <div class="assis_info">
-            <p><router-link :to="`/assis/${assis.id}`">{{name}}</router-link></p>
-            <template v-if="type === 'Especial' || type === 'Filme'">
+            <p><router-link :to="`/assis/${assis.id}`">{{ assis.full_name }}</router-link></p>
+            <template v-if="assis.type_formatted === 'Especial' || assis.type_formatted === 'Filme'">
                 <p>{{ assis.episodes_count === 1 ? 'Assistido' : 'Não assistido' }}</p>
             </template>
             <template v-else>
                 <p>{{assis.episodes_count}} de {{assis.total}} episódios</p>
             </template>
-            <p>{{ type }}</p>
-            <p v-if="type !== 'Especial' && type !== 'Filme'">{{ status }}</p>
+            <p>{{ assis.type_formatted }}</p>
+            <p v-if="assis.type_formatted !== 'Especial' && assis.type_formatted !== 'Filme'">{{ status }}</p>
         </div>
     </div>
 </template>
@@ -35,6 +35,9 @@ export default {
                 image: "",
                 episodes_count: 0,
                 hidden_collection: false,
+                full_name: "",
+                image_url: "",
+                type_formatted: "",
                 collection: {
                     id: 0,
                     name: "",
@@ -44,35 +47,9 @@ export default {
         }
     },
     computed: {
-        image() {
-            if (this.assis.image) {
-                return `${process.env.VUE_APP_URL_IMAGES}/${this.assis.image}`;
-            } else if (this.assis.collection.image) {
-                return `${process.env.VUE_APP_URL_IMAGES}/${this.assis.collection.image}`;
-            } else {
-                return null;
-            }
-        },
-        types() {
-            return this.$store.state.types;
-        },
-        type() {
-            return this.types[this.assis.type];
-        },
         status() {
             return this.assis.status.replace(/_/g, " ")[0].toUpperCase() + this.assis.status.replace(/_/g, " ").slice(1);
         },
-        name() {
-            if (this.assis.hidden_collection) {
-                return this.assis.name;
-            }
-
-            if (this.assis.name) {
-                return `${this.assis.collection.name} - ${this.assis.name}`;
-            } else {
-                return this.assis.collection.name;
-            }
-        }
     },
 }
 </script>

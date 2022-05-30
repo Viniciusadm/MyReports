@@ -69,7 +69,9 @@ export default {
             api.get(`/assis?status=${this.filters.status}&type=${this.filters.type}`)
                 .then(response => {
                     if (response.data.success) {
-                        this.assis = response.data.data;
+                        this.assis = response.data.data.sort((a, b) => {
+                            return a.full_name.localeCompare(b.full_name);
+                        });
                     }
                 })
                 .finally(() => {

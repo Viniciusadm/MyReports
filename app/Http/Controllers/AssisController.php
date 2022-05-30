@@ -18,7 +18,6 @@ class AssisController extends Controller
             $type = request()->input('type');
 
             $query = Assis::query()
-                ->select('id', 'collection_id', 'name', 'total', 'status', 'created_at', 'type', 'image', 'hidden_collection')
                 ->with('collection', function ($query) {
                     $query->select('id', 'name', 'image');
                 })
@@ -33,6 +32,10 @@ class AssisController extends Controller
             }
 
             $assis = $query->get();
+
+            $assis->each->append('full_name');
+            $assis->each->append('image_url');
+            $assis->each->append('type_formatted');
 
             return response()->json(ResponseResource::make($assis));
         } catch (Exception $e) {
