@@ -108,8 +108,6 @@ export default {
                     this.points += score[question.no];
                 }
             });
-
-            console.log(this.points);
         },
         reply($event) {
             this.questions.forEach(question => {

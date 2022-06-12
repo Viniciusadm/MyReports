@@ -25,6 +25,8 @@ class Assis extends Model
         'sinopse',
         'order',
         'hidden_collection',
+        'airing',
+        'weekday',
     ];
 
     public function collection(): BelongsTo
@@ -76,5 +78,21 @@ class Assis extends Model
         ];
 
         return $types[$this['type']];
+    }
+
+    public function getWeekdayFormattedAttribute(): string
+    {
+        $weekdays = [
+            "" => "",
+            "monday" => "Segunda-feira",
+            "tuesday" => "Terça-feira",
+            "wednesday" => "Quarta-feira",
+            "thursday" => "Quinta-feira",
+            "friday" => "Sexta-feira",
+            "saturday" => "Sábado",
+            "sunday" => "Domingo",
+        ];
+
+        return $weekdays[$this['weekday']];
     }
 }

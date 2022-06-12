@@ -27,6 +27,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::prefix('/dashboard')->group(function () {
+    Route::get('/warnings', [DashboardController::class, 'warnings']);
     Route::get('/participants', [DashboardController::class, 'participants']);
     Route::get('/minutes', [DashboardController::class, 'minutes']);
     Route::get('/episodes', [DashboardController::class, 'episodes']);
@@ -68,6 +69,7 @@ Route::prefix('assis')->group(function () {
     Route::get('/', [AssisController::class, 'index']);
     Route::get('/{id}', [AssisController::class, 'show']);
     Route::post('/change-status/{id}', [AssisController::class, 'changeStatus']);
+    Route::post('/finish-airing/{id}', [AssisController::class, 'finishAiring']);
 
     Route::prefix('/collection')->group(function () {
         Route::post('/', [AssisCollectionController::class, 'newCollection']);

@@ -12,14 +12,15 @@
             <p v-if="assis.average_time">Tempo médio: {{ assis.average_time }}</p>
             <p>Tipo: {{ type }}</p>
             <p>Status: {{ assis.status.replace('_', ' ') }}</p>
+            <p v-if="assis.airing">Dia de lançamento: {{ assis.weekday_formatted }}</p>
             <p v-if="pausavel">Episódios: {{ assis.total }}</p>
             <p v-if="lastEpisode !== 0 && pausavel">Último episódio: {{ lastEpisode }}</p>
             <p v-if="assis.status === 'completo' && pausavel">Tempo para finalizar: {{ diffDays }}</p>
             <p v-if="!pausavel && lastDateFormat">Assistido em: {{ lastDateFormat }}</p>
         </div>
-        <template v-if="lastEpisode < assis.total && assis.status === 'assistindo'">
+        <template v-if="assis.status === 'assistindo'">
             <template v-if="pausavel">
-                <div class="item">
+                <div class="item" v-if="lastEpisode < assis.total">
                     <button class="btn btn-episode" @click="addEpisode(lastEpisode + 1)">Adicionar episódio {{ lastEpisode + 1 }}</button>
                 </div>
                 <div class="addSpecific item" v-if="lastEpisode.length !== assis.total">
@@ -35,6 +36,9 @@
         </template>
         <div class="item" v-if="assis.status === 'assistindo' && pausavel">
             <button class="btn" @click="changeStatus('pausado')">Pausar</button>
+        </div>
+        <div class="item" v-if="assis.airing">
+            <button class="btn" @click="finishAiring()">Acabar</button>
         </div>
         <div class="item" v-if="assis.status === 'pausado' && pausavel">
             <button class="btn" @click="changeStatus('assistindo')">Continuar</button>
@@ -87,6 +91,9 @@ export default {
                 date: "",
                 updated_at: "",
                 hidden_collection: false,
+                airing: false,
+                weekday: "",
+                weekday_formatted: "",
                 collection: {
                     id: 0,
                     name: "",
@@ -229,6 +236,26 @@ export default {
                 .finally(() => {
                     this.carregando = false;
                 });
+        },
+        finishAiring() {
+            this.$swal('Atenção', 'Você tem certeza que deseja acabar este assis?', 'warning', {
+                showCancelButton: true,
+                confirmButtonText: 'Sim',
+                cancelButtonText: 'Não',
+            }).then((result) => {
+                if (result.value) {
+                    this.carregando = true;
+                    api.post(`/assis/finish-airing/${this.id}`)
+                        .then(response => {
+                            if (response.data.success) {
+                                this.assis.airing = false;
+                            }
+                        })
+                        .finally(() => {
+                            this.carregando = false;
+                        });
+                }
+            });
         },
     },
     mounted() {

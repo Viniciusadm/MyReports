@@ -20,6 +20,8 @@ class CreateAssisTable extends Migration
             $table->integer('total');
             $table->enum('type', ['anime', 'cartoon', 'dorama', 'movie', 'serie', 'special', 'specials', 'youtube', 'other']);
             $table->enum('status', ['assistindo', 'para_assistir', 'desistido', 'completo', 'pausado']);
+            $table->boolean('airing')->default(false);
+            $table->enum('weekday', ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'])->nullable();
             $table->integer('order');
             $table->boolean('hidden_collection')->default(false);
             $table->string('image')->nullable();

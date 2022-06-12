@@ -33,9 +33,11 @@ class AssisController extends Controller
 
             $assis = $query->get();
 
-            $assis->each->append('full_name');
-            $assis->each->append('image_url');
-            $assis->each->append('type_formatted');
+            foreach ($assis as $assi) {
+                $assi->append('full_name');
+                $assi->append('image_url');
+                $assi->append('type_formatted');
+            }
 
             return response()->json(ResponseResource::make($assis));
         } catch (Exception $e) {
@@ -53,6 +55,8 @@ class AssisController extends Controller
                 ->with('episodes')
                 ->findOrFail($id);
 
+            $assis->append('weekday_formatted');
+
             return response()->json(ResponseResource::make($assis));
         } catch (Exception $e) {
             return response()->json(ErrorResource::make($e->getMessage()), 500);
@@ -66,6 +70,21 @@ class AssisController extends Controller
                 ->findOrFail($id)
                 ->update([
                     'status' => $request->input('status')
+                ]);
+
+            return response()->json(ResponseResource::make($assis));
+        } catch (Exception $e) {
+            return response()->json(ErrorResource::make($e->getMessage()), 500);
+        }
+    }
+
+    public function finishAiring(int $id): JsonResponse
+    {
+        try {
+            $assis = Assis::query()
+                ->findOrFail($id)
+                ->update([
+                    'airing' => false
                 ]);
 
             return response()->json(ResponseResource::make($assis));

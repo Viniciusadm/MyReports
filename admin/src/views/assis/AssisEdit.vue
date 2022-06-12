@@ -16,8 +16,18 @@
                        placeholder="Total">
                 <input v-model="collection.assis.average_time" @input="removeNumbers($event)" class="input_text" placeholder="Tempo médio">
             </div>
-            <div class="form-group form-group-single">
+            <div class="form-group form-group-double">
                 <input v-model="collection.assis.year" class="input_text" placeholder="Ano de lançamento">
+                <select v-model="collection.assis.weekday" class="input_select">
+                    <option value="">Terminado</option>
+                    <option value="sunday">Domingo</option>
+                    <option value="monday">Segunda-feira</option>
+                    <option value="tuesday">Terça-feira</option>
+                    <option value="wednesday">Quarta-feira</option>
+                    <option value="thursday">Quinta-feira</option>
+                    <option value="friday">Sexta-feira</option>
+                    <option value="saturday">Sábado</option>
+                </select>
             </div>
             <div class="form-group form-group-double">
                 <select v-model="collection.assis.type" class="input_select">
@@ -74,6 +84,7 @@ export default {
                     status: 'assistindo',
                     sinopse: '',
                     image: null,
+                    weekday: '',
                 }
             }
         }
@@ -105,7 +116,8 @@ export default {
                                 year: '',
                                 type: 'serie',
                                 status: 'assistindo',
-                                sinopse: ''
+                                sinopse: '',
+                                weekday: '',
                             },
                         }
                     }
@@ -180,6 +192,7 @@ export default {
                     width: 100%;
                     background: transparent;
                     margin-bottom: 1rem;
+                    flex: 1;
 
                     @media (max-width: 600px) {
                         margin-bottom: 1rem;

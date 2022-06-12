@@ -1,6 +1,9 @@
 <template>
     <div class="home">
         <div class="lists">
+            <warnings class="list" />
+        </div>
+        <div class="lists">
             <assis class="list"></assis>
             <participants class="list"></participants>
         </div>
@@ -16,6 +19,7 @@ import participants from "@/components/Dashboard/Participants";
 import minutes from "@/components/Dashboard/MinutesGraphic";
 import assis from "@/components/Dashboard/Assis";
 import points from "@/components/Dashboard/PointsGraphic";
+import warnings from "@/components/Dashboard/Warnings";
 
 export default {
     components: {
@@ -23,6 +27,7 @@ export default {
         participants,
         minutes,
         assis,
+        warnings,
     },
 }
 
