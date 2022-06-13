@@ -223,7 +223,11 @@ export default {
             });
         },
         dataFormatada(data) {
-            return data.split('T')[0].split('-').reverse().join('/');
+            if (data) {
+                return data.split('T')[0].split('-').reverse().join('/');
+            } else {
+                return "Episódio sem data";
+            }
         },
         changeStatus(status) {
             this.carregando = true;
