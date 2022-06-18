@@ -118,19 +118,27 @@ export default {
                 });
         },
         deleteReport() {
-            api.delete(`/reports/${this.id}`)
-                .then(response => {
-                    if (response.data.success) {
-                        toast.success('Relato excluído com sucesso!');
-                    } else {
-                        toast.error(response.data.message);
+            this.$swal('Atenção', 'Você tem certeza que deseja remover este relato?', 'warning', {
+                showCancelButton: true,
+                confirmButtonText: 'Sim',
+                cancelButtonText: 'Não',
+            }).then((result) => {
+                    if (result.value) {
+                        api.delete(`/reports/${this.id}`)
+                            .then(response => {
+                                if (response.data.success) {
+                                    toast.success('Relato excluído com sucesso!');
+                                } else {
+                                    toast.error(response.data.message);
+                                }
+                            })
+                            .catch(error => {
+                                toast.error(error.response.data.message);
+                            })
+                            .finally(() => {
+                                this.$router.push('/reports');
+                            });
                     }
-                })
-                .catch(error => {
-                    toast.error(error.response.data.message);
-                })
-                .finally(() => {
-                    this.$router.push('/reports');
                 });
         },
         save() {
