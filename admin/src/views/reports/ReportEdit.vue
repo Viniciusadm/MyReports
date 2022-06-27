@@ -291,7 +291,7 @@ export default {
 
                     &#report {
                         resize: none;
-                        height: 20rem;
+                        height: 30rem;
                     }
                 }
 
