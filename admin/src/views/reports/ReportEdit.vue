@@ -35,7 +35,10 @@
                     <button class="person" @click="addPerson($event)" :value="person.id" :name="person.name" v-for="person in people_search" :key="person.id">{{ person.name }}</button>
                 </div>
                 <div class="list_people_selected">
-                    <button class="person" :class="{ main: person.type === 'main' }" @click="changeType($event)" @dblclick="removePerson($event)" :value="person.id" :name="person.name" v-for="person in people" :key="person.id">{{ person.name }}</button>
+                    <template v-for="person in people" :key="person.id">
+                        <button class="person" :class="{ main: person.type === 'main' }" @click="changeType($event)" :value="person.id" :name="person.name">{{ person.name }}</button>
+                        <button class="remove" @click="removePerson($event)" :value="person.id">X</button>
+                    </template>
                 </div>
             </div>
             <div class="form_group buttons">
@@ -171,7 +174,7 @@ export default {
             this.people.push({
                 id: $event.target.value,
                 name: $event.target.name,
-                type: 'main',
+                type: this.report.type === 'personal' ? 'main' : 'daily',
             });
 
             this.people_search = [];
@@ -182,7 +185,7 @@ export default {
             person.type = person.type === 'main' ? 'secondary' : 'main';
         },
         removePerson($event) {
-            this.people = this.people.filter(person => person.id !== Number($event.target.value));
+            this.people = this.people.filter(person => person.id !== $event.target.value);
         },
         validateForm() {
             if (this.report.title === '') {
@@ -374,6 +377,14 @@ export default {
                             &.main {
                                 color: red;
                             }
+                        }
+
+                        .remove {
+                            margin-right: 0.5rem;
+                            font-weight: bold;
+                            cursor: pointer;
+                            color: red;
+                            border: none;
                         }
                     }
                 }
