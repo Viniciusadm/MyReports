@@ -22,7 +22,7 @@ export default {
                 .then(response => {
                     if (response.data.success) {
                         this.warnings = response.data.data.sort((a, b) => {
-                            return a.priority - b.priority;
+                            return b.priority - a.priority;
                         });
                     }
                 })

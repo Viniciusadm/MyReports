@@ -131,13 +131,13 @@ class DashboardController extends Controller
             $episode = Episode::query()
                 ->select('id', 'date')
                 ->where('assis_id', '=', $assi->id)
-                ->where('date', '>=', now()->subDays(1))
+                ->where('date', '>=', now()->subDays())
                 ->first();
 
             if (!$episode) {
                 $warnings[] = [
                     'message' => 'Episódio novo de <strong>' . $assi->full_name . '</strong>',
-                    'priority' => 8,
+                    'priority' => 9,
                 ];
             }
         }
@@ -156,17 +156,25 @@ class DashboardController extends Controller
         $warnings = [];
 
         $today = now()->format('Y-m-d');
-        $sevenDays = now()->addDays(8)->format('Y-m-d');
+        $tenDays = now()->addDays(10)->format('Y-m-d');
 
         foreach ($birthdays as $birthday) {
-            if ($birthday->birth_date >= $today && $birthday->birth_date < $sevenDays) {
+            if ($birthday->birth_date >= $today && $birthday->birth_date < $tenDays) {
                 $day = date('d/m', strtotime($birthday->birth_date));
                 $today_formatted = now()->format('d/m');
-                $final = $day === $today_formatted  ? ' hoje' : ' em ' . $day;
+                $tomorrow_formatted = now()->addDay()->format('d/m');
+
+                if ($day === $today_formatted) {
+                    $final = ' hoje';
+                } elseif ($day === $tomorrow_formatted) {
+                    $final = ' amanhã';
+                } else {
+                    $final = ' em ' . $day;
+                }
 
                 $warnings[] = [
                     'message' => 'Aniversário do(a) <strong>' . $birthday->nickname . '</strong>' . $final,
-                    'priority' => 8 - (now()->diffInDays($birthday->birth_date) + 1),
+                    'priority' => 10 - (now()->diffInDays($birthday->birth_date) + 1),
                 ];
             }
         }
