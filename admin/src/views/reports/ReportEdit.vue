@@ -120,7 +120,7 @@ export default {
                 .then(response => {
                     if (response.data.success) {
                         toast.success('Relato enviado com sucesso!');
-                        this.$router.push('/reports');
+                        this.$router.push('/report/' + response.data.id);
                     } else {
                         toast.error(response.data.message);
                     }
@@ -138,7 +138,7 @@ export default {
                 .then(response => {
                     if (response.data.success) {
                         toast.success('Relato atualizado com sucesso!');
-                        this.$router.push('/reports');
+                        this.$router.push('/report/' + this.id);
                     } else {
                         toast.error(response.data.message);
                     }
@@ -162,12 +162,12 @@ export default {
                         exclude: exclude
                     }
                 })
-                    .then(response => {
-                        this.people_search = response.data.data;
-                    })
-                    .catch(error => {
-                        toast.error(error.response.data.message);
-                    });
+                .then(response => {
+                    this.people_search = response.data.data;
+                })
+                .catch(error => {
+                    toast.error(error.response.data.message);
+                });
             }, 500);
         },
         addPerson($event) {
