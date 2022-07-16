@@ -15,7 +15,7 @@
                     <p class="label">Data do relato: {{ date }}</p>
                     <p class="label">Hora do relato: {{ hour }}</p>
                     <p class="label">Humor: {{ humor }}</p>
-                    <p class="label">Tipo: {{ type }}</p>
+                    <p class="label">Tipo: {{ getType(report.type) }}</p>
                     <p class="label">Participantes: {{ participants }}</p>
                 </div>
             </div>
@@ -72,9 +72,6 @@ export default {
         humor() {
             return this.$store.state.humors[this.report.humor];
         },
-        type() {
-            return this.report.type === 'personal' ? 'Pessoal' : 'Diário';
-        },
         participants() {
             if (this.report.participants.length > 0) {
                 return this.report.participants.map(participant => {
@@ -101,6 +98,9 @@ export default {
         },
     },
     methods: {
+        getType(type) {
+            return this.$store.state.types_report[type];
+        },
         getReport() {
             api.get(`/reports/${this.id}`)
                 .then(response => {

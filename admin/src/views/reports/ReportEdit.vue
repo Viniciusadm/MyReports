@@ -27,6 +27,18 @@
                     <input v-model="report.type" name="type" type="radio" id="type_daily" value="daily">
                     <label for="type_daily">Diário</label>
                 </div>
+                <div class="radios_type">
+                    <input v-model="report.type" name="type" type="radio" id="type_thought" value="thought">
+                    <label for="type_thought">Pensamento</label>
+                </div>
+                <div class="radios_type">
+                    <input v-model="report.type" name="type" type="radio" id="type_dream" value="dream">
+                    <label for="type_dream">Sonho</label>
+                </div>
+                <div class="radios_type">
+                    <input v-model="report.type" name="type" type="radio" id="type_memory" value="memory">
+                    <label for="type_memory">Bom lembrar</label>
+                </div>
             </div>
             <div class="form_group" id="people_group">
                 <label class="form_label" for="people">Pessoas</label>

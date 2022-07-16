@@ -27,6 +27,13 @@ export default createStore({
             specials: "Especiais",
             youtube: "YouTube",
             other: "Outro",
+        },
+        types_report: {
+            personal: "Pessoal",
+            daily: "Diário",
+            thought: "Pensamento",
+            dream: "Sonho",
+            memory: "Bom lembrar",
         }
     },
     mutations: {},

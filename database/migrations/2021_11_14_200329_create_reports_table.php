@@ -18,7 +18,7 @@ class CreateReportsTable extends Migration
             $table->string('title');
             $table->text('report');
             $table->string('humor');
-            $table->enum('type', ['personal', 'daily']);
+            $table->enum('type', ['personal', 'daily', 'thought', 'dream', 'memory']);
             $table->timestamps();
         });
     }

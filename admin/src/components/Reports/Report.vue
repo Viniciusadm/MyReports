@@ -3,7 +3,7 @@
         <div class="card">
             <div class="card-header">
                 <router-link :to="`/report/${report.id}`" class="title">{{ report.title }}</router-link>
-                <p class="type">Tipo: {{ report.type === 'daily' ? 'Diario' : 'Pessoal' }}</p>
+                <p class="type">Tipo: {{ getType(report.type) }}</p>
                 <p class="humor">Humor: {{ humor }}</p>
                 <p class="date">{{ dateFormat(report.created_at) }}</p>
             </div>
@@ -50,6 +50,9 @@ export default {
     methods: {
         dateFormat(date) {
             return date.split('T')[0].split('-').reverse().join('/') + ' ' + date.split('T')[1].split('.')[0];
+        },
+        getType(type) {
+            return this.$store.state.types_report[type];
         },
         participantsFormated(participants) {
             return participants.map(participant => {
