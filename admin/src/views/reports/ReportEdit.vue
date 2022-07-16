@@ -174,7 +174,7 @@ export default {
             this.people.push({
                 id: $event.target.value,
                 name: $event.target.name,
-                type: this.report.type === 'personal' ? 'main' : 'daily',
+                type: this.report.type === 'personal' ? 'main' : 'secondary',
             });
 
             this.people_search = [];
